@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     halfedge.cpp \
     vertex.cpp \
     face.cpp \
-    point2d.cpp
+    point2d.cpp \
+    predicates.c
 
 HEADERS  += mainwindow.h \
     triangulation.h \
