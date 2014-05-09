@@ -1,4 +1,4 @@
-/*****************************************************************************/
+﻿/*****************************************************************************/
 /*                                                                           */
 /*  Routines for Arbitrary Precision Floating-point Arithmetic               */
 /*  and Fast Robust Geometric Predicates                                     */
@@ -116,7 +116,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <sys/time.h>
+//#include <sys/time.h>
 
 /* On some machines, the exact arithmetic routines might be defeated by the  */
 /*   use of internal extended precision floating-point registers.  Sometimes */
@@ -493,24 +493,24 @@ REAL *e;
 /*                                                                           */
 /*****************************************************************************/
 
-double doublerand()
-{
-  double result;
-  double expo;
-  long a, b, c;
-  long i;
+//double doublerand()
+//{
+//  double result;
+//  double expo;
+//  long a, b, c;
+//  long i;
 
-  a = random();
-  b = random();
-  c = random();
-  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
-  for (i = 512, expo = 2; i <= 131072; i *= 2, expo = expo * expo) {
-    if (c & i) {
-      result *= expo;
-    }
-  }
-  return result;
-}
+//  a = random();
+//  b = random();
+//  c = random();
+//  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
+//  for (i = 512, expo = 2; i <= 131072; i *= 2, expo = expo * expo) {
+//    if (c & i) {
+//      result *= expo;
+//    }
+//  }
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -519,24 +519,24 @@ double doublerand()
 /*                                                                           */
 /*****************************************************************************/
 
-double narrowdoublerand()
-{
-  double result;
-  double expo;
-  long a, b, c;
-  long i;
+//double narrowdoublerand()
+//{
+//  double result;
+//  double expo;
+//  long a, b, c;
+//  long i;
 
-  a = random();
-  b = random();
-  c = random();
-  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
-  for (i = 512, expo = 2; i <= 2048; i *= 2, expo = expo * expo) {
-    if (c & i) {
-      result *= expo;
-    }
-  }
-  return result;
-}
+//  a = random();
+//  b = random();
+//  c = random();
+//  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
+//  for (i = 512, expo = 2; i <= 2048; i *= 2, expo = expo * expo) {
+//    if (c & i) {
+//      result *= expo;
+//    }
+//  }
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -544,16 +544,16 @@ double narrowdoublerand()
 /*                                                                           */
 /*****************************************************************************/
 
-double uniformdoublerand()
-{
-  double result;
-  long a, b;
+//double uniformdoublerand()
+//{
+//  double result;
+//  long a, b;
 
-  a = random();
-  b = random();
-  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
-  return result;
-}
+//  a = random();
+//  b = random();
+//  result = (double) (a - 1073741824) * 8388608.0 + (double) (b >> 8);
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -562,23 +562,23 @@ double uniformdoublerand()
 /*                                                                           */
 /*****************************************************************************/
 
-float floatrand()
-{
-  float result;
-  float expo;
-  long a, c;
-  long i;
+//float floatrand()
+//{
+//  float result;
+//  float expo;
+//  long a, c;
+//  long i;
 
-  a = random();
-  c = random();
-  result = (float) ((a - 1073741824) >> 6);
-  for (i = 512, expo = 2; i <= 16384; i *= 2, expo = expo * expo) {
-    if (c & i) {
-      result *= expo;
-    }
-  }
-  return result;
-}
+//  a = random();
+//  c = random();
+//  result = (float) ((a - 1073741824) >> 6);
+//  for (i = 512, expo = 2; i <= 16384; i *= 2, expo = expo * expo) {
+//    if (c & i) {
+//      result *= expo;
+//    }
+//  }
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -587,23 +587,23 @@ float floatrand()
 /*                                                                           */
 /*****************************************************************************/
 
-float narrowfloatrand()
-{
-  float result;
-  float expo;
-  long a, c;
-  long i;
+//float narrowfloatrand()
+//{
+//  float result;
+//  float expo;
+//  long a, c;
+//  long i;
 
-  a = random();
-  c = random();
-  result = (float) ((a - 1073741824) >> 6);
-  for (i = 512, expo = 2; i <= 2048; i *= 2, expo = expo * expo) {
-    if (c & i) {
-      result *= expo;
-    }
-  }
-  return result;
-}
+//  a = random();
+//  c = random();
+//  result = (float) ((a - 1073741824) >> 6);
+//  for (i = 512, expo = 2; i <= 2048; i *= 2, expo = expo * expo) {
+//    if (c & i) {
+//      result *= expo;
+//    }
+//  }
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
@@ -611,15 +611,15 @@ float narrowfloatrand()
 /*                                                                           */
 /*****************************************************************************/
 
-float uniformfloatrand()
-{
-  float result;
-  long a;
+//float uniformfloatrand()
+//{
+//  float result;
+//  long a;
 
-  a = random();
-  result = (float) ((a - 1073741824) >> 6);
-  return result;
-}
+//  a = random();
+//  result = (float) ((a - 1073741824) >> 6);
+//  return result;
+//}
 
 /*****************************************************************************/
 /*                                                                           */
