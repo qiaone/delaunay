@@ -1,4 +1,4 @@
-#ifndef FACE_H
+﻿#ifndef FACE_H
 #define FACE_H
 
 #include "halfedge.h"
@@ -10,7 +10,7 @@ class Face
 {
 public:
     Face();
-    std::unique_ptr<HalfEdge> adj_halfedge;
+    std::shared_ptr<HalfEdge> adj_halfedge;
 };
 
 #endif // FACE_H
