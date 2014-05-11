@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Delaunay
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     triangulation.cpp \
@@ -20,7 +19,8 @@ SOURCES += main.cpp\
     face.cpp \
     point2d.cpp \
     predicates.c \
-    ensureexception.cpp
+    ensureexception.cpp \
+    Tests/ensureexception_test.cpp
 
 HEADERS  += mainwindow.h \
     triangulation.h \
@@ -32,14 +32,10 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lOpenMeshCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lOpenMeshCored
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCored
 
-INCLUDEPATH += $$PWD
-DEPENDPATH += $$PWD
+INCLUDEPATH += $$PWD/Libs
+DEPENDPATH += $$PWD/Libs
 
 DEFINES += _USE_MATH_DEFINES
-
-OTHER_FILES += \
-    doc/Todo.txt \
-    doc/Project.txt
