@@ -1,0 +1,13 @@
+开发和编译环境：
+    # Visual Studio 2012 (vc11)
+    # Qt 5.x.x for Windows 64-bit (VS 2012, OpenGL)
+    # 可以使用 Qt Creator 或 Visual Studio 2012 作为 IDE
+        # Qt Creator 的 VS 2012 版默认不带调试器，可以：
+            # 安装 Debugging Tools for Windows
+                http://msdn.microsoft.com/en-us/library/windows/hardware/ff551063(v=vs.85).aspx
+            # 使用 VS 或 Qt MinGW 版本进行调试
+        # 项目文件为.pro，因而在 Visual Studio 中可以使用插件 Visual Studio Add-in for Qt5 打开
+
+依赖库：
+    # OpenMesh 3.1 (x64 动态链接 从源码编译)
+    # Routines for Arbitrary Precision Floating-point Arithmetic and Fast Robust Geometric Predicates (predicates.c)

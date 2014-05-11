@@ -37,3 +37,7 @@ INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
 
 DEFINES += _USE_MATH_DEFINES
+
+OTHER_FILES += \
+    doc/Todo.txt \
+    doc/Project.txt
