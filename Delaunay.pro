@@ -19,14 +19,16 @@ SOURCES += main.cpp\
     vertex.cpp \
     face.cpp \
     point2d.cpp \
-    predicates.c
+    predicates.c \
+    ensureexception.cpp
 
 HEADERS  += mainwindow.h \
     triangulation.h \
     halfedge.h \
     vertex.h \
     face.h \
-    point2d.h
+    point2d.h \
+    ensureexception.h
 
 FORMS    += mainwindow.ui
 
