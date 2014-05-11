@@ -1,5 +1,2 @@
-#include "ensureexception.h"
+﻿#include "ensureexception.h"
 
-EnsureException::EnsureException()
-{
-}
