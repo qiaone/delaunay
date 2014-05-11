@@ -29,3 +29,11 @@ HEADERS  += mainwindow.h \
     point2d.h
 
 FORMS    += mainwindow.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/lib/ -lOpenMeshCore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/lib/ -lOpenMeshCored
+
+INCLUDEPATH += $$PWD
+DEPENDPATH += $$PWD
+
+DEFINES += _USE_MATH_DEFINES
