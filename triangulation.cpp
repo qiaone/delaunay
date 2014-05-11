@@ -1,6 +1,4 @@
-#include "triangulation.h"
-
-#include <OpenMesh/Core/System/config.h>
+﻿#include "triangulation.h"
 
 Triangulation::Triangulation()
 {

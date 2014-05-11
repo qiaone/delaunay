@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
+QT       += core gui testlib
+CONFIG += testcase
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Delaunay
@@ -20,7 +20,7 @@ SOURCES += main.cpp\
     point2d.cpp \
     predicates.c \
     ensureexception.cpp \
-    Tests/ensureexception_test.cpp
+    Tests/MyFirstTest.cpp
 
 HEADERS  += mainwindow.h \
     triangulation.h \
