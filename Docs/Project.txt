@@ -1,3 +1,8 @@
+风格约定：
+    # 类名中各单词首字母大写，如 class EnsureException
+    # 所有源码文件名小写，可用下划线分割单词，如 ensure_exception.cpp
+        # 测试源码文件名使用类名+Test，如 OpenMeshTest.cpp
+
 开发和编译环境：
     # Visual Studio 2012 (vc11)
     # Qt 5.x.x for Windows 64-bit (VS 2012, OpenGL)
