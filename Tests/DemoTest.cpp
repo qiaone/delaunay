@@ -1,26 +1,11 @@
-﻿#include <QtTest/QtTest>
+#include <gtest/gtest.h>
+#include "../Halfedge/point2d.h"
 
-class DemoTest: public QObject
+TEST(Pint2DTest, Add)
 {
-    Q_OBJECT
-private slots:
-    void initTestCase()
-    {
-        qDebug("called before everything else");
-    }
-    void myFirstTest()
-    {
-        QVERIFY(1 == 1);
-    }
-    void mySecondTest()
-    {
-        QVERIFY(1 != 2);
-    }
-    void cleanupTestCase()
-    {
-        qDebug("called after myFirstTest and mySecondTest");
-    }
-};
-
-//QTEST_MAIN(DemoTest)
-#include "DemoTest.moc"
+    Point2D p1(3.0, 4.0);
+    Point2D p2(5.0, 2.0);
+    Point2D p3 = p1 + p2;
+    EXPECT_EQ(p3.x, 8.0);
+    EXPECT_EQ(p3.y, 7.0); // error
+}

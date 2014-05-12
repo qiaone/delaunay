@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     Halfedge/halfedge.cpp \
     Halfedge/point2d.cpp \
     Halfedge/vertex.cpp \
-    Tests/OpenMeshTest.cpp \
     Tests/DemoTest.cpp
 
 HEADERS  += \
@@ -38,10 +37,17 @@ FORMS    += \
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCored
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lgtest
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lgtestd
+
+win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtest.lib
+else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtestd.lib
+
 INCLUDEPATH += $$PWD/Libs
 DEPENDPATH += $$PWD/Libs
 
 DEFINES += _USE_MATH_DEFINES
+DEFINES += _VARIADIC_MAX=10
 
 OTHER_FILES += \
     Docs/wps.txt \
