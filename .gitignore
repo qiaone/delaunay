@@ -17,9 +17,15 @@
 *.exe
 *.out
 *.app
-Delaunay.pro.user
-Delaunay.sdf
-Delaunay.vcxproj.user
-Delaunay.v11.suo
-Delaunay.opensdf
+
+# VS
 x64/
+GeneratedFiles/
+debug/
+release/
+*.user
+*.sdf
+*.suo
+*.opensdf
+Delaunay.vcxproj
+Delaunay.vcxproj.filters
