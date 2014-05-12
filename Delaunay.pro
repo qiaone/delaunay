@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     Halfedge/halfedge.cpp \
     Halfedge/point2d.cpp \
     Halfedge/vertex.cpp \
-    Tests/DemoTest.cpp
+    Tests/DemoTest.cpp \
+    Tests/OpenMeshTest.cpp
 
 HEADERS  += \
     ensure_exception.h \
