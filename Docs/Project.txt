@@ -9,10 +9,12 @@
     # 可以使用 Qt Creator 或 Visual Studio 2012 作为 IDE
         # Qt Creator 的 VS 2012 版默认不带调试器，可以：
             # 安装 Debugging Tools for Windows
-                http://msdn.microsoft.com/en-us/library/windows/hardware/ff551063(v=vs.85).aspx
+                http://msdn.microsoft.com/en-us/library/indows/hardware/ff551063(v=vs.85).aspx
             # 使用 VS 或 Qt MinGW 版本进行调试
-        # 项目文件为.pro，因而在 Visual Studio 中可以使用插件 Visual Studio Add-in for Qt5 打开
+            # 项目文件为.pro，因而在 Visual Studio 中可以使用插件 Visual Studio Add-in for Qt5 打开
 
 依赖库：
+    # Google C++ Testing Framework 1.7.0 (x64 静态链接 从自带msvc工程编译)
+        # 入门文章 http://www.cnblogs.com/coderzh/archive/2009/03/31/1426758.html
     # OpenMesh 3.1 (x64 动态链接 从源码编译)
     # Routines for Arbitrary Precision Floating-point Arithmetic and Fast Robust Geometric Predicates (predicates.c)
