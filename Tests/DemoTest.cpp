@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../Halfedge/point2d.h"
 
-TEST(Pint2DTest, Add)
+TEST(Point2DTest, Add)
 {
     Point2D p1(3.0, 4.0);
     Point2D p2(5.0, 2.0);
