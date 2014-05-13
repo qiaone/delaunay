@@ -12,9 +12,17 @@
                 http://msdn.microsoft.com/en-us/library/indows/hardware/ff551063(v=vs.85).aspx
             # 使用 VS 或 Qt MinGW 版本进行调试
             # 项目文件为.pro，因而在 Visual Studio 中可以使用插件 Visual Studio Add-in for Qt5 打开
-
+    # 项目主要使用 Qt 工程文件 .pro 作配置，如果需要在 VS 中进行开发，则需要使用上述 VS Add-in for Qt5 打开
+      此时项目会自动转化为 .vcxproj，出现以下错误的解决方法：
+        # 问题：error LNK2019: 无法解析的外部符号 WinMain，该符号在函数 __tmainCRTStartup 中被引用
+        # 解决：项目属性->配置属性->链接器->输入->附加依赖项 中加入
+            $(QTDIR)\lib\qtmaind.lib (debug模式时)
+            $(QTDIR)\lib\qtmain.lib (release模式时)
+        # 问题：调试运行时弹出 无法启动此程序，因为计算机中丢失 OpenMeshCored.dll ...
+        # 解决：项目属性->(左上角配置)所有配置->配置属性->调试->环境->加入 %3b$(ProjectDir)\Libs
 依赖库：
     # Google C++ Testing Framework 1.7.0 (x64 静态链接 从自带msvc工程编译)
         # 入门文章 http://www.cnblogs.com/coderzh/archive/2009/03/31/1426758.html
+        # 也可参考 Tests/Smples 目录下的例子
     # OpenMesh 3.1 (x64 动态链接 从源码编译)
     # Routines for Arbitrary Precision Floating-point Arithmetic and Fast Robust Geometric Predicates (predicates.c)
