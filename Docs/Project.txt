@@ -3,6 +3,10 @@
     # 所有源码文件名小写，可用下划线分割单词，如 ensure_exception.cpp
         # 测试源码文件名使用类名+Test，如 OpenMeshTest.cpp
 
+版本控制：
+    # 项目使用 git 进行版本控制，并使用 github 作为中心平台
+    # 建议使用 SourceTree 作为 Windows 下客户端
+
 开发和编译环境：
     # Visual Studio 2012 (vc11)
     # Qt 5.x.x for Windows 64-bit (VS 2012, OpenGL)
@@ -20,6 +24,9 @@
             $(QTDIR)\lib\qtmain.lib (release模式时)
         # 问题：调试运行时弹出 无法启动此程序，因为计算机中丢失 OpenMeshCored.dll ...
         # 解决：项目属性->(左上角配置)所有配置->配置属性->调试->环境->加入 %3b$(ProjectDir)\Libs
+    # VS 相应的项目文件已经加入 .gitignore ，不被版本控制，即每人有独立拷贝
+        # 如上所述，统一配置由受版本控制的 .pro 文件记录，因而项目配置方面的改动（如引入新的第三方库）应首先通过 .pro 完成
+
 依赖库：
     # Google C++ Testing Framework 1.7.0 (x64 静态链接 从自带msvc工程编译)
         # 入门文章 http://www.cnblogs.com/coderzh/archive/2009/03/31/1426758.html
