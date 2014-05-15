@@ -1,5 +1,17 @@
 ﻿#include "triangulation.h"
 
-Triangulation::Triangulation()
+namespace Delaunay
 {
+
+Triangulation::Triangulation(VecPt & all_points)
+{
+    for(auto & point : all_points)
+        mesh.add_vertex(point);
+}
+
+void Triangulation::perform()
+{
+
+}
+
 }
