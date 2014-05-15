@@ -23,6 +23,7 @@ public:
     void perform();
 protected:
     TriMesh mesh;
+    void init();
 };
 
 }
