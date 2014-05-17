@@ -14,16 +14,20 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits> TriMesh;
-typedef std::vector<TriMesh::Point> VecPt;
 
 class Triangulation
 {
 public:
-    Triangulation(VecPt & all_points);
+    Triangulation(std::vector<TriMesh::Point> & all_points);
     void perform();
-protected:
     TriMesh mesh;
+protected:
+    OpenMesh::FPropHandleT<unsigned int> FaceId;
+    OpenMesh::VPropHandleT<unsigned int> VertexId;
     void init();
+    unsigned int generateId();
+private:
+    static unsigned int id;
 };
 
 }

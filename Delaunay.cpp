@@ -1,27 +1,27 @@
-#include "Delaunay.h"
+﻿#include "Delaunay.h"
 
 
-void Delaunay::delaunay_tri(VecPt & _vecPt)
+void Delaunay::delaunay_tri(Vec_Point & points)
 {
 	// add vertex
-	add_vertex(_vecPt);
+    add_vertex(points);
 
 	// initialize
 	init();
 
 	// start triangulation
-	int i, n = _vecPt.size();
+    int i, n = points.size();
 	for (i = 0; i < n; i++)
 	{
 		// get vertex_handle
 		TriMesh::VHandle vh = m_mesh.vertex_handle(i);
 
 		// this vertex is covered by face(fhandle)
-		TriMesh::FaceHandle fhandle = m_mesh.property(PFace, vh);
+        TriMesh::FaceHandle fhandle = m_mesh.property(VertexToFace, vh);
 
 		// save point_handle covered by this face
-		VecVHandle &fpts = m_mesh.property(FPoints, fhandle);
-		VecVHandle buffer(fpts.begin(), fpts.end());
+        Vec_VHandle &fpts = m_mesh.property(FaceToVertices, fhandle);
+        Vec_VHandle buffer(fpts.begin(), fpts.end());
 
 		// split face 
 		// TO DO: degeneration may happen! 
@@ -85,7 +85,7 @@ void Delaunay::draw_triangle(TriMesh::FaceHandle _fh)
 	glEnd();
 }
 
-void Delaunay::add_vertex(VecPt &_vecPt)
+void Delaunay::add_vertex(Vec_Point &_vecPt)
 {
 	// clear
 	m_mesh.clear();
@@ -101,8 +101,8 @@ void Delaunay::add_vertex(VecPt &_vecPt)
 void Delaunay::init()
 {
 	// add property
-	m_mesh.add_property(FPoints);
-	m_mesh.add_property(PFace);
+    m_mesh.add_property(FaceToVertices);
+    m_mesh.add_property(VertexToFace);
 
 	// add infinite vertex
 	TriMesh::VertexHandle vhandle[3];
@@ -117,8 +117,8 @@ void Delaunay::init()
 	TriMesh::VertexIter vIt;
 	for (vIt = m_mesh.vertices_begin(); *vIt != vhandle[0]; vIt++)
 	{
-		m_mesh.property(FPoints, fhandle).push_back(*vIt);
-		m_mesh.property(PFace, *vIt) = fhandle;
+        m_mesh.property(FaceToVertices, fhandle).push_back(*vIt);
+        m_mesh.property(VertexToFace, *vIt) = fhandle;
 	}
 }
 
@@ -176,7 +176,7 @@ bool Delaunay::in_triangle(TriMesh::Point &_p, TriMesh::FaceHandle _fh)
 	return (b1 == b2) && (b2 == b3);
 }
 
-void Delaunay::rebucket(TriMesh::VertexHandle _vH, VecVHandle &_vecVH)
+void Delaunay::rebucket(TriMesh::VertexHandle _vH, Vec_VHandle &_vecVH)
 {
 	// get incident face handle
 	std::vector<TriMesh::FaceHandle> vecFH;
@@ -192,7 +192,7 @@ void Delaunay::rebucket(TriMesh::VertexHandle _vH, VecVHandle &_vecVH)
 	m = vecFH.size();
 	n = _vecVH.size();
 	for (j = 0; j < m; j++)
-		m_mesh.property(FPoints, vecFH[j]).clear();
+        m_mesh.property(FaceToVertices, vecFH[j]).clear();
 
 	for (i = 0; i < n; i++)
 	{
@@ -200,8 +200,8 @@ void Delaunay::rebucket(TriMesh::VertexHandle _vH, VecVHandle &_vecVH)
 		{
 			if (in_triangle(m_mesh.point(_vecVH[i]), vecFH[j]))
 			{
-				m_mesh.property(FPoints, vecFH[j]).push_back(_vecVH[i]);
-				m_mesh.property(PFace, _vecVH[i]) = vecFH[j];
+                m_mesh.property(FaceToVertices, vecFH[j]).push_back(_vecVH[i]);
+                m_mesh.property(VertexToFace, _vecVH[i]) = vecFH[j];
 				break;
 			}
 		}
@@ -209,15 +209,15 @@ void Delaunay::rebucket(TriMesh::VertexHandle _vH, VecVHandle &_vecVH)
 }
 
 void Delaunay::rebucket(TriMesh::EdgeHandle _vHandle,
-	VecVHandle &_vecVHandle)
+    Vec_VHandle &_vecVHandle)
 {
 	TriMesh::HalfedgeHandle hEH = m_mesh.halfedge_handle(_vHandle, 1);
 	TriMesh::Point a = m_mesh.point(m_mesh.from_vertex_handle(hEH));
 	TriMesh::Point b = m_mesh.point(m_mesh.to_vertex_handle(hEH));
 	TriMesh::FaceHandle fH1 = m_mesh.face_handle(hEH);
 	TriMesh::FaceHandle fH2 = m_mesh.opposite_face_handle(hEH);
-	m_mesh.property(FPoints, fH1).clear();
-	m_mesh.property(FPoints, fH2).clear();
+    m_mesh.property(FaceToVertices, fH1).clear();
+    m_mesh.property(FaceToVertices, fH2).clear();
 
 	int i, n = _vecVHandle.size();
 	for (i = 0; i < n; i++)
@@ -225,13 +225,13 @@ void Delaunay::rebucket(TriMesh::EdgeHandle _vHandle,
 		TriMesh::VertexHandle vH = _vecVHandle[i];
 		if (to_left(m_mesh.point(vH), a, b))
 		{
-			m_mesh.property(FPoints, fH1).push_back(vH);
-			m_mesh.property(PFace, vH) = fH1;
+            m_mesh.property(FaceToVertices, fH1).push_back(vH);
+            m_mesh.property(VertexToFace, vH) = fH1;
 		}
 		else
 		{
-			m_mesh.property(FPoints, fH2).push_back(vH);
-			m_mesh.property(PFace, vH) = fH2;
+            m_mesh.property(FaceToVertices, fH2).push_back(vH);
+            m_mesh.property(VertexToFace, vH) = fH2;
 		}
 	}
 }
@@ -244,10 +244,10 @@ void Delaunay::legalize_edge(TriMesh::HalfedgeHandle _hEH, TriMesh::VertexHandle
 		// save point_handle covered by this face
 		TriMesh::FaceHandle fh1 = m_mesh.face_handle(_hEH);
 		TriMesh::FaceHandle fh2 = m_mesh.opposite_face_handle(_hEH);
-		VecVHandle& vecVh1 = m_mesh.property(FPoints, fh1);
-		VecVHandle& vecVh2 = m_mesh.property(FPoints, fh2);
-		VecVHandle buffer(vecVh1.size() + vecVh2.size());
-		VecVHandle::iterator vecIt = copy(vecVh1.begin(), vecVh1.end(), buffer.begin());
+        Vec_VHandle& vecVh1 = m_mesh.property(FaceToVertices, fh1);
+        Vec_VHandle& vecVh2 = m_mesh.property(FaceToVertices, fh2);
+        Vec_VHandle buffer(vecVh1.size() + vecVh2.size());
+        Vec_VHandle::iterator vecIt = copy(vecVh1.begin(), vecVh1.end(), buffer.begin());
 		copy(vecVh2.begin(), vecVh2.end(), vecIt);
 
 		// flip edge

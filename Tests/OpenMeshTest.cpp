@@ -60,6 +60,6 @@ TEST(OpenMeshTest, Cube)
     face_vhandles.push_back(vhandle[4]);
     mesh.add_face(face_vhandles);
 
-    EXPECT_FALSE(mesh.is_polymesh());
+    EXPECT_FALSE(mesh.is_trimesh());
 
 }

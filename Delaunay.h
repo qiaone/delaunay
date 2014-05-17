@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <GL/glut.h>
 #include <OpenMesh/Core/IO/MeshIO.hh>
@@ -13,8 +13,8 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  TriMesh;
-typedef std::vector<TriMesh::Point> VecPt;
-typedef std::vector<TriMesh::VHandle> VecVHandle;
+typedef std::vector<TriMesh::Point> Vec_Point;
+typedef std::vector<TriMesh::VHandle> Vec_VHandle;
 
 // TO DO: deal with infinte point
 const float INF = 1.0e5;
@@ -23,11 +23,11 @@ class Delaunay
 {
 protected:
 	TriMesh  m_mesh;
-	OpenMesh::FPropHandleT<VecVHandle> FPoints;
-	OpenMesh::VPropHandleT<TriMesh::FHandle> PFace;
+    OpenMesh::FPropHandleT<Vec_VHandle> FaceToVertices;
+    OpenMesh::VPropHandleT<TriMesh::FHandle> VertexToFace;
 
 public:
-	void delaunay_tri(VecPt & _vecPt);
+    void delaunay_tri(Vec_Point & points);
 	
 	void draw_mesh();
 
@@ -35,7 +35,7 @@ private:
 
 	void draw_triangle(TriMesh::FaceHandle _fh);
 
-	void add_vertex(VecPt &_vecPt);
+    void add_vertex(Vec_Point &_vecPt);
 
 	void init();	
 
@@ -46,9 +46,9 @@ private:
 
 	bool in_triangle(TriMesh::Point &_p, TriMesh::FaceHandle _fh);
 
-	void rebucket(TriMesh::VertexHandle _vH, VecVHandle &_vecVH);
+    void rebucket(TriMesh::VertexHandle _vH, Vec_VHandle &_vecVH);
 	
-	void rebucket(TriMesh::EdgeHandle _vHandle,	VecVHandle &_vecVHandle);
+    void rebucket(TriMesh::EdgeHandle _vHandle,	Vec_VHandle &_vecVHandle);
 
 	void legalize_edge(TriMesh::HalfedgeHandle _hEH, TriMesh::VertexHandle _vH);
 	

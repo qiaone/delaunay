@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     Halfedge/point2d.cpp \
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
-    Tests/OpenMeshTest.cpp
+    Tests/OpenMeshTest.cpp \
+    Tests/TriangulationTest.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -54,3 +55,4 @@ OTHER_FILES += \
     Docs/wps.txt \
     Docs/project.txt \
     Docs/todo.txt
+
