@@ -14,5 +14,5 @@ TEST(Triangulation, Init)
     points.push_back(p2);
     points.push_back(p3);
     Delaunay::Triangulation T(points);
-    EXPECT_EQ(points.size(), 3);
+    EXPECT_EQ(T.mesh.n_vertices(), 6);
 }
