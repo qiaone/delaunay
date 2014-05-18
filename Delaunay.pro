@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
-    Tests/TriangulationTest.cpp
+    Tests/TriangulationTest.cpp \
+    predicates.cc
 
 HEADERS  += \
     ensure_exception.h \

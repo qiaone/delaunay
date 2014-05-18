@@ -15,17 +15,26 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits> TriMesh;
-typedef std::vector<TriMesh::VHandle> VHandleVec;
+typedef TriMesh::Point Point;
+typedef std::vector<Point> PointVec;
+typedef TriMesh::VHandle VHandle;
+typedef TriMesh::FHandle FHandle;
+typedef std::vector<VHandle> VHandleVec;
+typedef std::vector<FHandle> FHandleVec;
 
 class Triangulation
 {
 public:
-    Triangulation(std::vector<TriMesh::Point> & all_points);
+    Triangulation(PointVec & all_points);
     void perform();
     TriMesh mesh;
 protected:
     OpenMesh::FPropHandleT<VHandleVec> FaceToVertices;
-    OpenMesh::VPropHandleT<TriMesh::FHandle> VertexToFace;
+    OpenMesh::VPropHandleT<FHandle> VertexToFace;
+    void rebucket(VHandle vh, VHandleVec vhvec);
+    bool isInTriangle(Point& new_point, FHandle fh);
+
+
 };
 
 }
