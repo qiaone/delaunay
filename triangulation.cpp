@@ -2471,10 +2471,22 @@ namespace Delaunay
 
 Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
 {
-    ENSURE(all_points.size() >= 3);
+    // clear
+    mesh.clear();
 
-    const float fmax = /*std::numeric_limits<float>::max();*/ 1e5;
-    const float fmin = /*std::numeric_limits<float>::min();*/ -1e5;
+    // add all vertices into the mesh
+    for (auto& point : all_points)
+    {
+        mesh.add_vertex(point);
+    }
+
+}
+
+void Triangulation::init()
+{
+
+    const float fmax = std::numeric_limits<float>::max();;
+    const float fmin = std::numeric_limits<float>::min();;
 
     mesh.add_property(FaceToVertices);
     mesh.add_property(VertexToFace);
@@ -2485,25 +2497,26 @@ Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
     vhs[1] = mesh.add_vertex(Point(fmax, fmin, 0));
     vhs[2] = mesh.add_vertex(Point(0, fmax, 0));
 
-    // add the initial triangle and its face id
+    // add the big triangle
     auto fh = mesh.add_face(vhs, 3);
 
-    // add id to each vertex, link them with the face by VtoF/FtoV
-    for(auto & point : all_points)
+    // link vertex and face
+    for(auto & vh : mesh.vertices())
     {
-        auto vh = mesh.add_vertex(point);
-        qDebug() << vh.idx();
         mesh.property(VertexToFace, vh) = fh;
         mesh.property(FaceToVertices, fh).push_back(vh);
     }
+
 }
 
 void Triangulation::perform()
 {
+
+    // add the big triangle
+    init();
+
     for (auto& new_vh : mesh.vertices())
     {
-        //auto new_vh = *vit;
-
         auto fh = mesh.property(VertexToFace, new_vh);
         
         // save before destroy

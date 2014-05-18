@@ -33,7 +33,7 @@ protected:
     OpenMesh::VPropHandleT<FHandle> VertexToFace;
     void rebucket(VHandle vh, VHandleVec vhvec);
     bool isInTriangle(Point& new_point, FHandle fh);
-
+    void init();
 
 };
 
