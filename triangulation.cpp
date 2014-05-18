@@ -5,8 +5,6 @@
 namespace Delaunay
 {
 
-unsigned int Triangulation::id = 0;
-
 Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
 {
     ENSURE(all_points.size() >= 3);
@@ -14,44 +12,38 @@ Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
     const float fmax = std::numeric_limits<float>::max();
     const float fmin = std::numeric_limits<float>::min();
 
-    mesh.add_property(VertexId);
-    mesh.add_property(FaceId);
+    mesh.add_property(FaceToVertices);
+    mesh.add_property(VertexToFace);
 
     // add 3 infinite vertices
-    TriMesh::VertexHandle vhandle[3];
-    vhandle[0] = mesh.add_vertex(TriMesh::Point(fmin, fmin, 0));
-    vhandle[1] = mesh.add_vertex(TriMesh::Point(fmax, fmin, 0));
-    vhandle[2] = mesh.add_vertex(TriMesh::Point(0, fmax, 0));
+    TriMesh::VertexHandle vhs[3];
+    vhs[0] = mesh.add_vertex(TriMesh::Point(fmin, fmin, 0));
+    vhs[1] = mesh.add_vertex(TriMesh::Point(fmax, fmin, 0));
+    vhs[2] = mesh.add_vertex(TriMesh::Point(0, fmax, 0));
 
     // add the initial triangle and its face id
-    auto fhandle = mesh.add_face(vhandle, 3);
-    auto fid = generateId();
-    mesh.property(FaceId, fhandle) = fid;
+    auto fh = mesh.add_face(vhs, 3);
 
     // add id to each vertex, link them with the face by VtoF/FtoV
     for(auto & point : all_points)
     {
-        auto vhandle = mesh.add_vertex(point);
-        auto vid = generateId();
-        mesh.property(VertexId, vhandle) = vid;
-        VertexToFace(vid, fid);
-        FaceToVertices(fid, vid);
+        auto vh = mesh.add_vertex(point);
+        mesh.property(VertexToFace, vh);
+        mesh.property(FaceToVertices, fh).push_back(vh);
     }
 }
 
 void Triangulation::perform()
 {
-    
-
-    for (int i = 0; i < mesh.n_vertices(); i++)
+    for (auto vit = mesh.vertices_begin(); vit != mesh.vertices_end(); vit++)
     {
+        auto vh = vit.handle();
+        auto fh = mesh.property(VertexToFace, vh);
+        VHandleVec& temp_vhs_in_face = mesh.property(FaceToVertices, fh);
+        //auto vid = mesh.property(VertexId, vh);
+        //auto fid = VertexToFace[vid];
 
     }
-}
-
-inline unsigned int Triangulation::generateId()
-{
-    return id++;
 }
 
 }

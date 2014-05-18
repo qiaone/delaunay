@@ -15,6 +15,7 @@ struct MyTraits : public OpenMesh::DefaultTraits
 };
 
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits> TriMesh;
+typedef std::vector<TriMesh::VHandle> VHandleVec;
 
 class Triangulation
 {
@@ -23,13 +24,8 @@ public:
     void perform();
     TriMesh mesh;
 protected:
-    OpenMesh::FPropHandleT<unsigned int> FaceId;
-    OpenMesh::VPropHandleT<unsigned int> VertexId;
-    unsigned int generateId();
-private:
-    static unsigned int id;
-    std::unordered_map<unsigned int, unsigned int> VertexToFace;
-    std::unordered_multimap<unsigned int, unsigned int> FaceToVertices;
+    OpenMesh::FPropHandleT<VHandleVec> FaceToVertices;
+    OpenMesh::VPropHandleT<TriMesh::FHandle> VertexToFace;
 };
 
 }
