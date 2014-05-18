@@ -3,6 +3,7 @@
 #include "ensure_exception.h"
 #include <limits>
 #include <QDebug>
+#include <iostream>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -138,7 +139,7 @@ namespace Delaunay
 
 #define INEXACT                          /* Nothing */
     /* #define INEXACT volatile */
-#define REAL double
+#define REAL float
     /* #define REAL double */                      /* float or double */
 #define REALPRINT doubleprint
 #define REALRAND doublerand
@@ -2502,7 +2503,12 @@ void Triangulation::init()
 
     // link vertex and face
     for(auto & vh : mesh.vertices())
+    // TODO: for i from 0 to n-3
     {
+        if (vh == vhs[0] || vh == vhs[1] || vh == vhs[2])
+        {
+            continue;
+        }
         mesh.property(VertexToFace, vh) = fh;
         mesh.property(FaceToVertices, fh).push_back(vh);
     }
@@ -2519,20 +2525,19 @@ void Triangulation::perform()
     {
         auto fh = mesh.property(VertexToFace, new_vh);
         
-        // save before destroy
+        // save vertices maped to this face
+        // coz properties will be destroyed after split
         VHandleVec& vhs_buffer_ref = mesh.property(FaceToVertices, fh);
         VHandleVec vhs_buffer(vhs_buffer_ref.begin(), vhs_buffer_ref.end());
 
         // split face and rebucket
-        bool test = new_vh.is_valid();
-
         mesh.split(fh, new_vh);
-        //rebucket(new_vh, vhs_buffer);
+        rebucket(new_vh, vhs_buffer);
 
     }
 }
 
-void Triangulation::rebucket(VHandle vh, VHandleVec vhvec)
+void Triangulation::rebucket(VHandle vh, VHandleVec& vhvec)
 {
     // get all face handles around the vertex
     FHandleVec fhvec;
@@ -2547,15 +2552,20 @@ void Triangulation::rebucket(VHandle vh, VHandleVec vhvec)
         mesh.property(FaceToVertices, fh).clear();
     }
 
-    // for every vertex, find the face it belongs
-    for(auto& vh : vhvec)
+    // for every vertex influenced, find new face it belongs to
+    for(auto& vhi : vhvec)
     {
+        if (vh == vhi)
+        {
+            continue;
+        }
+        //ENSURE(vh != vhi);
         for(auto& fh : fhvec)
         {
-            if (isInTriangle(mesh.point(vh), fh))
+            if (isInTriangle(mesh.point(vhi), fh))
             {
-                mesh.property(FaceToVertices, fh).push_back(vh);
-                mesh.property(VertexToFace, vh) = fh;
+                mesh.property(FaceToVertices, fh).push_back(vhi);
+                mesh.property(VertexToFace, vhi) = fh;
                 break;
             }
         }
@@ -2564,21 +2574,21 @@ void Triangulation::rebucket(VHandle vh, VHandleVec vhvec)
 
 bool Triangulation::isInTriangle(Point& new_point_, FHandle fh)
 {
-    PointVec points;
-    double point[3][2];
+    
+    // add 3 points of the face into point[]
+    float point[3][2];
     int i = 0;
     for(auto& fvit : mesh.fv_range(fh))
     {
-
-
         auto p = mesh.point(fvit);
-        point[i++][0] = p[0];
-        point[i++][1] = p[1];
+        point[i][0] = p[0];
+        point[i][1] = p[1];
+        i++;
     }
 
-    ENSURE(i == 4);
+    ENSURE(i == 3);
 
-    double new_point[2];
+    float new_point[2];
     new_point[0] = new_point_[0];
     new_point[1] = new_point_[1];
 
