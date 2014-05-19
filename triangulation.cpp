@@ -2545,6 +2545,10 @@ void Triangulation::perform()
         // split face and rebucket
         mesh.split(fh, new_vh);
         rebucket(new_vh, vhs_buffer);
+
+        //auto hh = mesh.halfedge_handle(new_vh);
+        
+
     }
 }
 
@@ -2583,15 +2587,26 @@ void Triangulation::rebucket(VHandle vh, VHandleVec& vhvec)
     }
 }
 
+bool Triangulation::isLeft(Point &_p, Point &_a, Point &_b)
+{
+    float rst = _p[0] * _a[1] - _p[1] * _a[0] +
+        _a[0] * _b[1] - _a[1] * _b[0] +
+        _b[0] * _p[1] - _b[1] * _p[0];
+
+    return rst > 0;
+}
+
 bool Triangulation::isInTriangle(Point& point, FHandle fh)
 {
-    
+    PointVec face_point_om;
+
     // add 3 points of the face into point[]
     float face_point[3][2];
     int i = 0;
     for(auto& fvit : mesh.fv_range(fh))
     {
         auto p = mesh.point(fvit);
+        face_point_om.push_back(p);
         face_point[i][0] = p[0];
         face_point[i][1] = p[1];
         i++;
@@ -2603,12 +2618,24 @@ bool Triangulation::isInTriangle(Point& point, FHandle fh)
     new_point[0] = point[0];
     new_point[1] = point[1];
 
-    // TODO: collinear when orient2d = 0
     int b1 = orient2d(face_point[0], face_point[1], new_point);
     int b2 = orient2d(face_point[1], face_point[2], new_point);
     int b3 = orient2d(face_point[2], face_point[0], new_point);
+    ENSURE (b1 != 0 && b2 != 0 && b3 != 0);
+    bool bc1 = b1 > 0;
+    bool bc2 = b2 > 0;
+    bool bc3 = b3 > 0;
 
-    return (b1 == b2) && (b2 == b3);
+    bool bs1 = isLeft(point, face_point_om[0], face_point_om[1]);
+    bool bs2 = isLeft(point, face_point_om[1], face_point_om[2]);
+    bool bs3 = isLeft(point, face_point_om[2], face_point_om[0]);
+
+    bool r_complex = (bc1 == bc2) && (bc2 == bc3);
+    bool r_simple = (bs1 == bs2) && (bs2 == bs3);
+
+    //ENSURE(r_complex == r_simple);
+
+    return r_simple;
 }
 
 }

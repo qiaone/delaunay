@@ -19,6 +19,7 @@ typedef TriMesh::Point Point;
 typedef std::vector<Point> PointVec;
 typedef TriMesh::VHandle VHandle;
 typedef TriMesh::FHandle FHandle;
+typedef TriMesh::HHandle HHandle;
 typedef std::vector<VHandle> VHandleVec;
 typedef std::vector<FHandle> FHandleVec;
 
@@ -34,7 +35,7 @@ protected:
     void rebucket(VHandle vh, VHandleVec& vhvec);
     bool isInTriangle(Point& new_point, FHandle fh);
     void init();
-
+    bool isLeft(Point &_p, Point &_a, Point &_b);
 };
 
 }
