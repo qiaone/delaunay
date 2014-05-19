@@ -32,13 +32,13 @@ protected:
 public:
     void perform(PointVec&  all_points);
 
-    void draw_mesh();
+    void drawMesh();
 
 private:
 
-    void draw_triangle(FHandle _fh);
+    void drawTriangle(FHandle _fh);
 
-    void add_vertices(PointVec& points);
+    void addVertices(PointVec& points);
 
     void init();
 
@@ -48,12 +48,12 @@ private:
 
     bool isInTriangle(Point& point, FHandle fh);
 
-    void rebucket(VHandle _vH, VHandleVec& _vecVH);
+    void rebucket(VHandle vh, VHandleVec& vhvec);
 
-    void rebucket(EHandle _vHandle,	VHandleVec& _vecVHandle);
+    void rebucket(EHandle eh, VHandleVec& vhvec);
 
-    void legalize_edge(HHandle _hEH, VHandle _vH);
+    void legalizeEdge(HHandle hh, VHandle vh);
 
-    void delete_vertex(int n);
+    void deleteVertices(int n);
 };
 

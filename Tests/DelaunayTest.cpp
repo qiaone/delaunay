@@ -37,7 +37,7 @@ void display(void)
 
 	//draw triangle
 	if (drawMesh)
-		delaunay.draw_mesh();
+		delaunay.drawMesh();
 
 	glFlush();
 	glutSwapBuffers();
