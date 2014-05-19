@@ -1356,88 +1356,88 @@ namespace Delaunay
         return acx * bcy - acy * bcx;
     }
 
-    REAL orient2dexact(REAL *pa, REAL *pb, REAL *pc)
-    {
-        INEXACT REAL axby1, axcy1, bxcy1, bxay1, cxay1, cxby1;
-        REAL axby0, axcy0, bxcy0, bxay0, cxay0, cxby0;
-        REAL aterms[4], bterms[4], cterms[4];
-        INEXACT REAL aterms3, bterms3, cterms3;
-        REAL v[8], w[12];
-        int vlength, wlength;
+    //REAL orient2dexact(REAL *pa, REAL *pb, REAL *pc)
+    //{
+    //    INEXACT REAL axby1, axcy1, bxcy1, bxay1, cxay1, cxby1;
+    //    REAL axby0, axcy0, bxcy0, bxay0, cxay0, cxby0;
+    //    REAL aterms[4], bterms[4], cterms[4];
+    //    INEXACT REAL aterms3, bterms3, cterms3;
+    //    REAL v[8], w[12];
+    //    int vlength, wlength;
 
-        INEXACT REAL bvirt;
-        REAL avirt, bround, around;
-        INEXACT REAL c;
-        INEXACT REAL abig;
-        REAL ahi, alo, bhi, blo;
-        REAL err1, err2, err3;
-        INEXACT REAL _i, _j;
-        REAL _0;
+    //    INEXACT REAL bvirt;
+    //    REAL avirt, bround, around;
+    //    INEXACT REAL c;
+    //    INEXACT REAL abig;
+    //    REAL ahi, alo, bhi, blo;
+    //    REAL err1, err2, err3;
+    //    INEXACT REAL _i, _j;
+    //    REAL _0;
 
-        Two_Product(pa[0], pb[1], axby1, axby0);
-        Two_Product(pa[0], pc[1], axcy1, axcy0);
-        Two_Two_Diff(axby1, axby0, axcy1, axcy0,
-            aterms3, aterms[2], aterms[1], aterms[0]);
-        aterms[3] = aterms3;
+    //    Two_Product(pa[0], pb[1], axby1, axby0);
+    //    Two_Product(pa[0], pc[1], axcy1, axcy0);
+    //    Two_Two_Diff(axby1, axby0, axcy1, axcy0,
+    //        aterms3, aterms[2], aterms[1], aterms[0]);
+    //    aterms[3] = aterms3;
 
-        Two_Product(pb[0], pc[1], bxcy1, bxcy0);
-        Two_Product(pb[0], pa[1], bxay1, bxay0);
-        Two_Two_Diff(bxcy1, bxcy0, bxay1, bxay0,
-            bterms3, bterms[2], bterms[1], bterms[0]);
-        bterms[3] = bterms3;
+    //    Two_Product(pb[0], pc[1], bxcy1, bxcy0);
+    //    Two_Product(pb[0], pa[1], bxay1, bxay0);
+    //    Two_Two_Diff(bxcy1, bxcy0, bxay1, bxay0,
+    //        bterms3, bterms[2], bterms[1], bterms[0]);
+    //    bterms[3] = bterms3;
 
-        Two_Product(pc[0], pa[1], cxay1, cxay0);
-        Two_Product(pc[0], pb[1], cxby1, cxby0);
-        Two_Two_Diff(cxay1, cxay0, cxby1, cxby0,
-            cterms3, cterms[2], cterms[1], cterms[0]);
-        cterms[3] = cterms3;
+    //    Two_Product(pc[0], pa[1], cxay1, cxay0);
+    //    Two_Product(pc[0], pb[1], cxby1, cxby0);
+    //    Two_Two_Diff(cxay1, cxay0, cxby1, cxby0,
+    //        cterms3, cterms[2], cterms[1], cterms[0]);
+    //    cterms[3] = cterms3;
 
-        vlength = fast_expansion_sum_zeroelim(4, aterms, 4, bterms, v);
-        wlength = fast_expansion_sum_zeroelim(vlength, v, 4, cterms, w);
+    //    vlength = fast_expansion_sum_zeroelim(4, aterms, 4, bterms, v);
+    //    wlength = fast_expansion_sum_zeroelim(vlength, v, 4, cterms, w);
 
-        return w[wlength - 1];
-    }
+    //    return w[wlength - 1];
+    //}
 
-    REAL orient2dslow(REAL *pa, REAL *pb, REAL *pc)
-    {
-        INEXACT REAL acx, acy, bcx, bcy;
-        REAL acxtail, acytail;
-        REAL bcxtail, bcytail;
-        REAL negate, negatetail;
-        REAL axby[8], bxay[8];
-        INEXACT REAL axby7, bxay7;
-        REAL deter[16];
-        int deterlen;
+    //REAL orient2dslow(REAL *pa, REAL *pb, REAL *pc)
+    //{
+    //    INEXACT REAL acx, acy, bcx, bcy;
+    //    REAL acxtail, acytail;
+    //    REAL bcxtail, bcytail;
+    //    REAL negate, negatetail;
+    //    REAL axby[8], bxay[8];
+    //    INEXACT REAL axby7, bxay7;
+    //    REAL deter[16];
+    //    int deterlen;
 
-        INEXACT REAL bvirt;
-        REAL avirt, bround, around;
-        INEXACT REAL c;
-        INEXACT REAL abig;
-        REAL a0hi, a0lo, a1hi, a1lo, bhi, blo;
-        REAL err1, err2, err3;
-        INEXACT REAL _i, _j, _k, _l, _m, _n;
-        REAL _0, _1, _2;
+    //    INEXACT REAL bvirt;
+    //    REAL avirt, bround, around;
+    //    INEXACT REAL c;
+    //    INEXACT REAL abig;
+    //    REAL a0hi, a0lo, a1hi, a1lo, bhi, blo;
+    //    REAL err1, err2, err3;
+    //    INEXACT REAL _i, _j, _k, _l, _m, _n;
+    //    REAL _0, _1, _2;
 
-        Two_Diff(pa[0], pc[0], acx, acxtail);
-        Two_Diff(pa[1], pc[1], acy, acytail);
-        Two_Diff(pb[0], pc[0], bcx, bcxtail);
-        Two_Diff(pb[1], pc[1], bcy, bcytail);
+    //    Two_Diff(pa[0], pc[0], acx, acxtail);
+    //    Two_Diff(pa[1], pc[1], acy, acytail);
+    //    Two_Diff(pb[0], pc[0], bcx, bcxtail);
+    //    Two_Diff(pb[1], pc[1], bcy, bcytail);
 
-        Two_Two_Product(acx, acxtail, bcy, bcytail,
-            axby7, axby[6], axby[5], axby[4],
-            axby[3], axby[2], axby[1], axby[0]);
-        axby[7] = axby7;
-        negate = -acy;
-        negatetail = -acytail;
-        Two_Two_Product(bcx, bcxtail, negate, negatetail,
-            bxay7, bxay[6], bxay[5], bxay[4],
-            bxay[3], bxay[2], bxay[1], bxay[0]);
-        bxay[7] = bxay7;
+    //    Two_Two_Product(acx, acxtail, bcy, bcytail,
+    //        axby7, axby[6], axby[5], axby[4],
+    //        axby[3], axby[2], axby[1], axby[0]);
+    //    axby[7] = axby7;
+    //    negate = -acy;
+    //    negatetail = -acytail;
+    //    Two_Two_Product(bcx, bcxtail, negate, negatetail,
+    //        bxay7, bxay[6], bxay[5], bxay[4],
+    //        bxay[3], bxay[2], bxay[1], bxay[0]);
+    //    bxay[7] = bxay7;
 
-        deterlen = fast_expansion_sum_zeroelim(8, axby, 8, bxay, deter);
+    //    deterlen = fast_expansion_sum_zeroelim(8, axby, 8, bxay, deter);
 
-        return deter[deterlen - 1];
-    }
+    //    return deter[deterlen - 1];
+    //}
 
     REAL orient2dadapt(REAL *pa, REAL *pb, REAL *pc, REAL detsum)
     {
@@ -2472,6 +2472,18 @@ namespace Delaunay
 
 Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
 {
+    //float pa[2], pb[2], pc[2];
+    //pa[0] = 0;
+    //pa[1] = 0;
+    //pb[0] = 10;
+    //pb[1] = 10;
+    //pc[0] = 100;
+    //pc[1] = 0;
+
+    //auto toleft = orient2d(pa, pb, pc);
+
+    //ENSURE(toleft);
+
     // clear
     mesh.clear();
 
@@ -2572,29 +2584,30 @@ void Triangulation::rebucket(VHandle vh, VHandleVec& vhvec)
     }
 }
 
-bool Triangulation::isInTriangle(Point& new_point_, FHandle fh)
+bool Triangulation::isInTriangle(Point& point, FHandle fh)
 {
     
     // add 3 points of the face into point[]
-    float point[3][2];
+    float face_point[3][2];
     int i = 0;
     for(auto& fvit : mesh.fv_range(fh))
     {
         auto p = mesh.point(fvit);
-        point[i][0] = p[0];
-        point[i][1] = p[1];
+        face_point[i][0] = p[0];
+        face_point[i][1] = p[1];
         i++;
     }
 
     ENSURE(i == 3);
 
     float new_point[2];
-    new_point[0] = new_point_[0];
-    new_point[1] = new_point_[1];
+    new_point[0] = point[0];
+    new_point[1] = point[1];
 
-    bool b1 = orient2d(new_point, point[0], point[1]);
-    bool b2 = orient2d(new_point, point[1], point[2]);
-    bool b3 = orient2d(new_point, point[2], point[0]);
+    // TODO: collinear when orient2d = 0
+    bool b1 = orient2d(face_point[0], face_point[1], new_point) > 0;
+    bool b2 = orient2d(face_point[1], face_point[2], new_point) > 0;
+    bool b3 = orient2d(face_point[2], face_point[0], new_point) > 0;
 
     return (b1 == b2) && (b2 == b3);
 }
