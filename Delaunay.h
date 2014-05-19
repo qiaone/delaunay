@@ -42,11 +42,11 @@ private:
 
     void init();
 
-    bool in_circle(HHandle _hEh, VHandle _vhp, VHandle _vhx);
+    bool isInCircle(HHandle _hEh, VHandle _vhp, VHandle _vhx);
 
-    bool to_left(Point& _p, Point& _a, Point& _b);
+    bool isLeft(Point& _p, Point& _a, Point& _b);
 
-    bool in_triangle(Point& _p, FHandle _fh);
+    bool isInTriangle(Point& point, FHandle fh);
 
     void rebucket(VHandle _vH, VHandleVec& _vecVH);
 

@@ -18,15 +18,15 @@ void Delaunay::perform(PointVec& all_points)
         VHandle vh = mesh.vertex_handle(i);
 
         // this vertex is covered by face(fhandle)
-        FHandle fhandle = mesh.property(VertexToFace, vh);
+        FHandle fh = mesh.property(VertexToFace, vh);
 
         // save point_handle covered by this face
-        VHandleVec& fpts = mesh.property(FaceToVertices, fhandle);
+        VHandleVec& fpts = mesh.property(FaceToVertices, fh);
         VHandleVec buffer(fpts.begin(), fpts.end());
 
         // split face
         // TO DO: degeneration may happen!
-        mesh.split(fhandle, vh);
+        mesh.split(fh, vh);
 
         // rebucket (caused by face_split)
         // TO DO: degeneration may happen!
@@ -121,7 +121,7 @@ void Delaunay::init()
 }
 
 
-bool Delaunay::in_circle(HHandle _hEh, VHandle _vhp,
+bool Delaunay::isInCircle(HHandle _hEh, VHandle _vhp,
                          VHandle _vhx)
 {
     // boundary edge
@@ -148,8 +148,7 @@ bool Delaunay::in_circle(HHandle _hEh, VHandle _vhp,
     return rst > 0;
 }
 
-bool Delaunay::to_left(Point& _p, Point& _a,
-                       Point& _b)
+bool Delaunay::isLeft(Point& _p, Point& _a, Point& _b)
 {
     float rst = _p[0] * _a[1] - _p[1] * _a[0] +
             _a[0] * _b[1] - _a[1] * _b[0] +
@@ -158,48 +157,87 @@ bool Delaunay::to_left(Point& _p, Point& _a,
     return rst > 0;
 }
 
-bool Delaunay::in_triangle(Point& _p, FHandle _fh)
+bool Delaunay::isInTriangle(Point& point, FHandle fh)
 {
-    std::vector<Point> vecPoint;
-    TriMesh::FaceVertexIter fVIt = mesh.fv_iter(_fh);
-    for (; fVIt.is_valid(); fVIt++)
+    std::vector<Point> triangle_points;
+
+    for (auto& vh : mesh.fv_range(fh))
     {
-        vecPoint.push_back(mesh.point(*fVIt));
+        triangle_points.push_back(mesh.point(vh));
     }
 
-    bool b1 = to_left(_p, vecPoint[0], vecPoint[1]);
-    bool b2 = to_left(_p, vecPoint[1], vecPoint[2]);
-    bool b3 = to_left(_p, vecPoint[2], vecPoint[0]);
+    bool b1 = isLeft(point, triangle_points[0], triangle_points[1]);
+    bool b2 = isLeft(point, triangle_points[1], triangle_points[2]);
+    bool b3 = isLeft(point, triangle_points[2], triangle_points[0]);
 
     return (b1 == b2) && (b2 == b3);
 }
 
-void Delaunay::rebucket(VHandle _vH, VHandleVec& _vecVH)
+//void Delaunay::rebucket2(VHandle _vH, VHandleVec& _vecVH)
+//{
+//    // get incident face handle
+//    std::vector<FHandle> vecFH;
+//    TriMesh::VertexFaceIter vfIt = mesh.vf_iter(_vH);
+//    while (vfIt.is_valid())
+//    {
+//        vecFH.push_back(*vfIt);
+//        vfIt++;
+//    }
+
+//    // rebucket points
+//    int i, j, m, n;
+//    m = vecFH.size();
+//    n = _vecVH.size();
+//    for (j = 0; j < m; j++)
+//        mesh.property(FaceToVertices, vecFH[j]).clear();
+
+//    for (i = 0; i < n; i++)
+//    {
+//        for (j = 0; j < m; j++)
+//        {
+//            if (isInTriangle(mesh.point(_vecVH[i]), vecFH[j]))
+//            {
+//                mesh.property(FaceToVertices, vecFH[j]).push_back(_vecVH[i]);
+//                mesh.property(VertexToFace, _vecVH[i]) = vecFH[j];
+//                break;
+//            }
+//        }
+//    }
+//}
+
+void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 {
-    // get incident face handle
-    std::vector<FHandle> vecFH;
-    TriMesh::VertexFaceIter vfIt = mesh.vf_iter(_vH);
-    while (vfIt.is_valid())
+    // get all face handles around the vertex
+    FHandleVec fhvec;
+    for(auto vfit = mesh.vf_begin(vh); vfit != mesh.vf_end(vh); vfit++)
     {
-        vecFH.push_back(*vfIt);
-        vfIt++;
+        fhvec.push_back(*vfit);
     }
 
-    // rebucket points
-    int i, j, m, n;
-    m = vecFH.size();
-    n = _vecVH.size();
-    for (j = 0; j < m; j++)
-        mesh.property(FaceToVertices, vecFH[j]).clear();
+// following code lead to compiler crash:
+//    for(auto& fhi : mesh.vf_range(vh))
+//        fhvec.push_back(fhi);
 
-    for (i = 0; i < n; i++)
+    // clear the incident faces' property
+    for(auto& fh : fhvec)
     {
-        for (j = 0; j < m; j++)
+        mesh.property(FaceToVertices, fh).clear();
+    }
+
+    // for every vertex influenced, find new face it belongs to
+    for(auto& vhi : vhvec)
+    {
+        if (vh == vhi)
         {
-            if (in_triangle(mesh.point(_vecVH[i]), vecFH[j]))
+            continue;
+        }
+        //ENSURE(vh != vhi);
+        for(auto& fh : fhvec)
+        {
+            if (isInTriangle(mesh.point(vhi), fh))
             {
-                mesh.property(FaceToVertices, vecFH[j]).push_back(_vecVH[i]);
-                mesh.property(VertexToFace, _vecVH[i]) = vecFH[j];
+                mesh.property(FaceToVertices, fh).push_back(vhi);
+                mesh.property(VertexToFace, vhi) = fh;
                 break;
             }
         }
@@ -220,7 +258,7 @@ void Delaunay::rebucket(EHandle _vHandle, VHandleVec& _vecVHandle)
     for (i = 0; i < n; i++)
     {
         VHandle vH = _vecVHandle[i];
-        if (to_left(mesh.point(vH), a, b))
+        if (isLeft(mesh.point(vH), a, b))
         {
             mesh.property(FaceToVertices, fH1).push_back(vH);
             mesh.property(VertexToFace, vH) = fH1;
@@ -236,7 +274,7 @@ void Delaunay::rebucket(EHandle _vHandle, VHandleVec& _vecVHandle)
 void Delaunay::legalize_edge(HHandle _hEH, VHandle _vH)
 {
     VHandle vhx = mesh.opposite_he_opposite_vh(_hEH);
-    if (in_circle(_hEH, _vH, vhx))
+    if (isInCircle(_hEH, _vH, vhx))
     {
         // save point_handle covered by this face
         FHandle fh1 = mesh.face_handle(_hEH);
