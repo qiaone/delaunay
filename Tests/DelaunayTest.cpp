@@ -64,7 +64,7 @@ void mouse(int button, int state, int x, int y)
 		if (state == GLUT_DOWN)
 		{			
 			drawMesh = true;
-			delaunay.delaunay_tri(vecPt);
+			delaunay.perform(vecPt);
 			glutPostRedisplay();
 		}
 		break;

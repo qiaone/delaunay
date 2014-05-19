@@ -7,51 +7,53 @@
 
 struct MyTraits : public OpenMesh::DefaultTraits
 {
-	VertexAttributes(OpenMesh::Attributes::Status);
-	FaceAttributes(OpenMesh::Attributes::Status);
-	EdgeAttributes(OpenMesh::Attributes::Status);
+    VertexAttributes(OpenMesh::Attributes::Status);
+    FaceAttributes(OpenMesh::Attributes::Status);
+    EdgeAttributes(OpenMesh::Attributes::Status);
 };
 
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  TriMesh;
-typedef std::vector<TriMesh::Point> Vec_Point;
-typedef std::vector<TriMesh::VHandle> Vec_VHandle;
-
-// TO DO: deal with infinte point
-const float INF = 1.0e5;
+typedef TriMesh::Point Point;
+typedef std::vector<Point> PointVec;
+typedef TriMesh::EHandle EHandle;
+typedef TriMesh::VHandle VHandle;
+typedef TriMesh::FHandle FHandle;
+typedef TriMesh::HHandle HHandle;
+typedef std::vector<VHandle> VHandleVec;
+typedef std::vector<FHandle> FHandleVec;
 
 class Delaunay
 {
 protected:
-	TriMesh  m_mesh;
-    OpenMesh::FPropHandleT<Vec_VHandle> FaceToVertices;
-    OpenMesh::VPropHandleT<TriMesh::FHandle> VertexToFace;
+    TriMesh  mesh;
+    OpenMesh::FPropHandleT<VHandleVec> FaceToVertices;
+    OpenMesh::VPropHandleT<FHandle> VertexToFace;
 
 public:
-    void delaunay_tri(Vec_Point & points);
-	
-	void draw_mesh();
+    void perform(PointVec&  all_points);
+
+    void draw_mesh();
 
 private:
 
-	void draw_triangle(TriMesh::FaceHandle _fh);
+    void draw_triangle(FHandle _fh);
 
-    void add_vertex(Vec_Point &_vecPt);
+    void add_vertices(PointVec& points);
 
-	void init();	
+    void init();
 
-	bool in_circle(TriMesh::HalfedgeHandle _hEh, TriMesh::VertexHandle _vhp,
-		TriMesh::VertexHandle _vhx);
+    bool in_circle(HHandle _hEh, VHandle _vhp, VHandle _vhx);
 
-	bool to_left(TriMesh::Point &_p, TriMesh::Point &_a, TriMesh::Point &_b);
+    bool to_left(Point& _p, Point& _a, Point& _b);
 
-	bool in_triangle(TriMesh::Point &_p, TriMesh::FaceHandle _fh);
+    bool in_triangle(Point& _p, FHandle _fh);
 
-    void rebucket(TriMesh::VertexHandle _vH, Vec_VHandle &_vecVH);
-	
-    void rebucket(TriMesh::EdgeHandle _vHandle,	Vec_VHandle &_vecVHandle);
+    void rebucket(VHandle _vH, VHandleVec& _vecVH);
 
-	void legalize_edge(TriMesh::HalfedgeHandle _hEH, TriMesh::VertexHandle _vH);
-	
-	void delete_vertex(int n);
+    void rebucket(EHandle _vHandle,	VHandleVec& _vecVHandle);
+
+    void legalize_edge(HHandle _hEH, VHandle _vH);
+
+    void delete_vertex(int n);
 };
 
