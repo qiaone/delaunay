@@ -10,7 +10,7 @@
 #include <math.h>
 #include <float.h>
 
-namespace Delaunay
+namespace Delaunay2
 {
 
     /*****************************************************************************/

@@ -22,6 +22,8 @@ SOURCES += main.cpp\
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
     Tests/TriangulationTest.cpp \
+    Delaunay.cpp \
+    Tests/DelaunayTest.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -30,7 +32,8 @@ HEADERS  += \
     Halfedge/face.h \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
-    Halfedge/vertex.h
+    Halfedge/vertex.h \
+    Delaunay.h
 
 FORMS    += \
     mainwindow.ui
@@ -38,11 +41,16 @@ FORMS    += \
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCored
 
+win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/Libs/OpenMeshCore.lib
+else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/Libs/OpenMeshCored.lib
+
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lgtest
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lgtestd
 
 win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtest.lib
 else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtestd.lib
+
+win32: LIBS += -L$$PWD/Libs/ -lfreeglut
 
 INCLUDEPATH += $$PWD/Libs
 DEPENDPATH += $$PWD/Libs
@@ -54,4 +62,3 @@ OTHER_FILES += \
     Docs/wps.txt \
     Docs/project.txt \
     Docs/todo.txt
-

@@ -30,3 +30,4 @@ release/
 Delaunay.vcxproj
 Delaunay.vcxproj.filters
 *.sln
+*.autosave

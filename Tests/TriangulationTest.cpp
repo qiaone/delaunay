@@ -5,7 +5,7 @@
 
 TEST(Triangulation, Init)
 {
-    using namespace Delaunay;
+    using namespace Delaunay2;
     Point p1(1, 2, 0);
     Point p2(100, 22, 0);
     Point p3(35, 27, 0);

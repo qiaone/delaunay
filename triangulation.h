@@ -6,7 +6,7 @@
 #include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
 #include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
 
-namespace Delaunay
+namespace Delaunay2
 {
 
 struct MyTraits : public OpenMesh::DefaultTraits

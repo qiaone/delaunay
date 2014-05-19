@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <GL/glut.h>
-#include <Delaunay.h>
+#include "../Delaunay.h"
 
 
 Delaunay delaunay;
@@ -93,7 +93,7 @@ void keyboard(unsigned char key, int x, int y)
 	glutPostRedisplay();
 }
 
-int main2(int argc, char** argv)
+int main(int argc, char** argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
