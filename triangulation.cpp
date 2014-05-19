@@ -2498,8 +2498,8 @@ Triangulation::Triangulation(std::vector<TriMesh::Point> & all_points)
 void Triangulation::init()
 {
 
-    const float fmax = std::numeric_limits<float>::max();;
-    const float fmin = std::numeric_limits<float>::min();;
+    const float fmax = /*std::numeric_limits<float>::max();*/1e5;
+    const float fmin = /*std::numeric_limits<float>::min();*/-1e5;
 
     mesh.add_property(FaceToVertices);
     mesh.add_property(VertexToFace);
@@ -2545,7 +2545,6 @@ void Triangulation::perform()
         // split face and rebucket
         mesh.split(fh, new_vh);
         rebucket(new_vh, vhs_buffer);
-
     }
 }
 
@@ -2605,9 +2604,9 @@ bool Triangulation::isInTriangle(Point& point, FHandle fh)
     new_point[1] = point[1];
 
     // TODO: collinear when orient2d = 0
-    bool b1 = orient2d(face_point[0], face_point[1], new_point) > 0;
-    bool b2 = orient2d(face_point[1], face_point[2], new_point) > 0;
-    bool b3 = orient2d(face_point[2], face_point[0], new_point) > 0;
+    int b1 = orient2d(face_point[0], face_point[1], new_point);
+    int b2 = orient2d(face_point[1], face_point[2], new_point);
+    int b3 = orient2d(face_point[2], face_point[0], new_point);
 
     return (b1 == b2) && (b2 == b3);
 }

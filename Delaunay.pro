@@ -12,7 +12,6 @@ TARGET = Delaunay
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    predicates.c \
     triangulation.cpp \
     mainwindow.cpp \
     ensure_exception.cpp \
@@ -23,7 +22,6 @@ SOURCES += main.cpp\
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
     Tests/TriangulationTest.cpp \
-    predicates.cc
 
 HEADERS  += \
     ensure_exception.h \
