@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui testlib
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     Tests/OpenMeshTest.cpp \
     Tests/TriangulationTest.cpp \
     Delaunay.cpp \
-    Tests/DelaunayTest.cpp
+    Tests/DelaunayTest.cpp \
+    manipulated_frame.cpp \
+    Tests/QGLTest.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -33,7 +35,8 @@ HEADERS  += \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
-    Delaunay.h
+    Delaunay.h \
+    manipulated_frame.h
 
 FORMS    += \
     mainwindow.ui
@@ -50,6 +53,9 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lgtestd
 win32:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtest.lib
 else:win32:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/Libs/gtestd.lib
 
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lQGLViewer2
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lQGLViewerd2
+
 win32: LIBS += -L$$PWD/Libs/ -lfreeglut
 
 INCLUDEPATH += $$PWD/Libs
@@ -62,3 +68,5 @@ OTHER_FILES += \
     Docs/wps.txt \
     Docs/project.txt \
     Docs/todo.txt
+
+

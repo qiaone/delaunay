@@ -9,7 +9,7 @@ void Delaunay::perform(PointVec& all_points)
     // add the big triangle and link vertices and faces
     init();
 
-    // error, don't know why:
+    // will be error if as follows, don't know why:
     //for(auto& vh : mesh.vertices())
     //for(auto vit = mesh.vertices_begin(); vit != mesh.vertices_end(); vit++)
 
