@@ -59,15 +59,14 @@ void Delaunay::drawMesh()
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
-    TriMesh::FaceIter f_it, f_end(mesh.faces_end());
-    for (f_it = mesh.faces_begin(); f_it != f_end; ++f_it)
+    for (auto fit = mesh.faces_begin(); fit != mesh.faces_end(); ++fit)
     {
-        TriMesh::FaceVertexIter fv_it = mesh.fv_iter(*f_it);
-        while (fv_it.is_valid())
+        auto fvit = mesh.fv_iter(*fit);
+        while (fvit.is_valid())
         {
-            Point p = mesh.point(*fv_it);
+            Point p = mesh.point(*fvit);
             glVertex3f(p[0], p[1], p[2]);
-            ++fv_it;
+            ++fvit;
         }
     }
     glEnd();
@@ -77,7 +76,7 @@ void Delaunay::drawTriangle(FHandle _fh)
 {
     glColor3f(0, 1, 0);
     glBegin(GL_TRIANGLES);
-    TriMesh::FaceVertexIter fv_it = mesh.fv_iter(_fh);
+    auto fv_it = mesh.fv_iter(_fh);
     while (fv_it.is_valid())
     {
         Point p = mesh.point(*fv_it);
