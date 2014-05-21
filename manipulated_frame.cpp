@@ -1,10 +1,12 @@
 ﻿#include "manipulated_frame.h"
 #include <math.h>
-
+#include <QKeyEvent>
 #include <QGLViewer/manipulatedFrame.h>
 
 using namespace qglviewer;
 using namespace std;
+
+bool isDraw = false;
 
 static void drawSpiral()
 {
@@ -29,8 +31,11 @@ static void drawSpiral()
     glEnd();
 }
 
+
 void Viewer::init()
 {
+    setShortcut(CAMERA_MODE, 0);
+
     setMouseBinding(Qt::AltModifier, Qt::LeftButton, QGLViewer::CAMERA, QGLViewer::ROTATE);
     setMouseBinding(Qt::AltModifier, Qt::RightButton, QGLViewer::CAMERA, QGLViewer::TRANSLATE);
     setMouseBinding(Qt::AltModifier, Qt::MidButton, QGLViewer::CAMERA, QGLViewer::ZOOM);
@@ -40,6 +45,10 @@ void Viewer::init()
     setMouseBinding(Qt::NoModifier, Qt::RightButton, QGLViewer::FRAME, QGLViewer::TRANSLATE);
     setMouseBinding(Qt::NoModifier, Qt::MidButton, QGLViewer::FRAME, QGLViewer::ZOOM);
     setWheelBinding(Qt::NoModifier, QGLViewer::FRAME, QGLViewer::ZOOM);
+
+    setKeyDescription(Qt::Key_Space, "Display something");
+    setKeyDescription(Qt::Key_F, "Toggles flat shading display");
+
 
 #ifdef GL_RESCALE_NORMAL  // OpenGL 1.2 Only...
     glEnable(GL_RESCALE_NORMAL);
@@ -76,11 +85,14 @@ void Viewer::draw()
     drawAxis();
 
     // Draws a frame-related spiral.
-    drawSpiral();
+    if (isDraw)
+        drawSpiral();
 
     // Restore the original (world) coordinate system
     glPopMatrix();
 }
+
+
 
 QString Viewer::helpString() const
 {
@@ -93,4 +105,29 @@ QString Viewer::helpString() const
     text += "Default key bindings have been changed in this example : press <b>Alt</b> ";
     text += "while moving the mouse to move the camera instead of the ManipulatedFrame.";
     return text;
+}
+
+void Viewer::keyPressEvent(QKeyEvent *e)
+{
+    const Qt::KeyboardModifiers modifiers = e->modifiers();
+    bool handled = false;
+    if ((e->key()==Qt::Key_Space) && (modifiers==Qt::NoButton))
+    {
+        isDraw = !isDraw;
+        updateGL();
+    }
+    else
+        if ((e->key()==Qt::Key_F) && (modifiers==Qt::NoButton))
+        {
+//            flatShading_ = !flatShading_;
+//            if (flatShading_)
+//                glShadeModel(GL_FLAT);
+//            else
+//                glShadeModel(GL_SMOOTH);
+            handled = true;
+            updateGL();
+        }
+
+    if (!handled)
+        QGLViewer::keyPressEvent(e);
 }
