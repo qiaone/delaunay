@@ -9,6 +9,7 @@ protected :
     virtual void init();
     virtual void draw();
     virtual QString helpString() const;
+    virtual void keyPressEvent(QKeyEvent *e);
 };
 
 #endif // MANIPULATED_FRAME_H
