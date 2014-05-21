@@ -33,24 +33,14 @@ void Delaunay::perform(PointVec& all_points)
         // TO DO: degeneration may happen!
         rebucket(vh, vhs_buffer);
 
-        // flip edge and rebucket
-        int m = 0;
-        HHandle heh1, heh0, hehs[4];
-        heh1 = heh0 = mesh.halfedge_handle(vh);
-        do
+        // legalize each triangle
+        for(auto& hh : mesh.voh_range(vh))
         {
-            heh1 = mesh.next_halfedge_handle(heh1);
-            hehs[m++] = heh1;
-            heh1 = mesh.next_halfedge_handle(heh1);
-            heh1 = mesh.opposite_halfedge_handle(heh1);
-        } while (heh1 != heh0);
-
-        for (int j = 0; j < m; j++)
-            // TO DO: degeneration may happen!
-            legalizeEdge(hehs[j], vh);
+            legalize(mesh.next_halfedge_handle(hh), vh);
+        }
     }
 
-    // delete infinit vertex
+    // delete infinite vertices
     deleteVertices(all_points.size());
 }
 
@@ -120,21 +110,19 @@ void Delaunay::init()
 }
 
 
-bool Delaunay::isInCircle(HHandle _hEh, VHandle _vhp, VHandle _vhx)
+bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
 {
     // boundary edge
-    if (mesh.is_boundary(_hEh) ||
-            mesh.is_boundary(mesh.opposite_halfedge_handle(_hEh)))
+    if (mesh.is_boundary(hh) ||
+            mesh.is_boundary(mesh.opposite_halfedge_handle(hh))) // ?
         return false;
 
     Point pt[4];
-    VHandle vh;
-    vh = mesh.from_vertex_handle(_hEh);
-    pt[0] = mesh.point(vh);
-    vh = mesh.to_vertex_handle(_hEh);
-    pt[1] = mesh.point(vh);
-    pt[2] = mesh.point(_vhp);
-    pt[3] = mesh.point(_vhx);
+
+    pt[0] = mesh.point(mesh.from_vertex_handle(hh));
+    pt[1] = mesh.point(mesh.to_vertex_handle(hh));
+    pt[2] = mesh.point(vh1);
+    pt[3] = mesh.point(vh2);
 
     for (int i = 0; i < 3; i++)
     {
@@ -213,17 +201,16 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 void Delaunay::rebucket(EHandle eh, VHandleVec& vhvec)
 {
     HHandle heh = mesh.halfedge_handle(eh, 1);
-    Point a = mesh.point(mesh.from_vertex_handle(heh));
-    Point b = mesh.point(mesh.to_vertex_handle(heh));
     FHandle fh1 = mesh.face_handle(heh);
     FHandle fh2 = mesh.opposite_face_handle(heh);
     mesh.property(FaceToVertices, fh1).clear();
     mesh.property(FaceToVertices, fh2).clear();
 
-    for (size_t i = 0; i < vhvec.size(); i++)
+    Point start = mesh.point(mesh.from_vertex_handle(heh));
+    Point end = mesh.point(mesh.to_vertex_handle(heh));
+    for(auto& vh : vhvec)
     {
-        VHandle vh = vhvec[i];
-        if (isLeft(mesh.point(vh), a, b))
+        if (isLeft(mesh.point(vh), start, end))
         {
             mesh.property(FaceToVertices, fh1).push_back(vh);
             mesh.property(VertexToFace, vh) = fh1;
@@ -236,10 +223,16 @@ void Delaunay::rebucket(EHandle eh, VHandleVec& vhvec)
     }
 }
 
-void Delaunay::legalizeEdge(HHandle hh, VHandle vh)
+void Delaunay::legalize(HHandle hh, VHandle vh)
 {
-    VHandle vhx = mesh.opposite_he_opposite_vh(hh);
-    if (isInCircle(hh, vh, vhx))
+    /*           ________ vh_oppo
+     *          /\      /
+     *         /  \hh  /
+     *        /    \  /
+     *    vh /___>__\/
+     */
+    VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
+    if (isInCircle(hh, vh, vh_oppo))
     {
         // save vertex handles mapped to the face
         FHandle fh1 = mesh.face_handle(hh);
@@ -274,8 +267,8 @@ void Delaunay::legalizeEdge(HHandle hh, VHandle vh)
             heh2 = mesh.prev_halfedge_handle(heh2);
         }
 
-        legalizeEdge(heh1, vh);
-        legalizeEdge(heh2, vh);
+        legalize(heh1, vh);
+        legalize(heh2, vh);
     }
 }
 

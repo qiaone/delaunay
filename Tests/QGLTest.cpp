@@ -1,7 +1,7 @@
 ﻿#include "../manipulated_frame.h"
 #include <QApplication>
 
-int main(int argc, char** argv)
+int main4(int argc, char** argv)
 {
   QApplication application(argc,argv);
 

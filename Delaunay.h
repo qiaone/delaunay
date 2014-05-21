@@ -42,7 +42,7 @@ private:
 
     void init();
 
-    bool isInCircle(HHandle _hEh, VHandle _vhp, VHandle _vhx);
+    bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
 
     bool isLeft(Point& _p, Point& _a, Point& _b);
 
@@ -52,7 +52,7 @@ private:
 
     void rebucket(EHandle eh, VHandleVec& vhvec);
 
-    void legalizeEdge(HHandle hh, VHandle vh);
+    void legalize(HHandle hh, VHandle vh);
 
     void deleteVertices(int n);
 };
