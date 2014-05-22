@@ -6,7 +6,7 @@
 
 
 Delaunay delaunay;
-std::vector<Point> points;
+PointVec points;
 GLfloat width;
 GLfloat height;
 bool drawMesh = false;
@@ -55,7 +55,7 @@ void mouse(int button, int state, int x, int y)
                 points.clear();
                 drawMesh = false;
             }
-            TriMesh::Point pt(x, height - y, 0);
+            Point pt(x, height - y, 0);
             points.push_back(pt);
         }
 
