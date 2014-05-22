@@ -33,6 +33,7 @@ public:
     void perform(PointVec&  all_points);
 
     void drawMesh();
+    void drawMeshInQt();
 
 private:
 

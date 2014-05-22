@@ -43,6 +43,31 @@ void display(void)
     glutSwapBuffers();
 }
 
+void displayInQt(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // draw points
+    glColor3f(1.0, 1.0, 1.0);
+    glBegin(GL_POINTS);
+    int i, n = points.size();
+    for (i = 0; i < n; i++)
+    {
+        glVertex3f(points[i][0], points[i][1], points[i][2]);
+    }
+    glEnd();
+
+    //draw triangle
+    if (drawMesh)
+        delaunay.drawMesh();
+
+    glFlush();
+    glutSwapBuffers();
+}
+
 void mouse(int button, int state, int x, int y)
 {
     switch (button)

@@ -62,6 +62,24 @@ void Delaunay::drawMesh()
     glEnd();
 }
 
+void Delaunay::drawMeshInQt()
+{
+    glColor3f(0, 0, 1);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBegin(GL_TRIANGLES);
+    for (auto fit = mesh.faces_begin(); fit != mesh.faces_end(); ++fit)
+    {
+        auto fvit = mesh.fv_iter(*fit);
+        while (fvit.is_valid())
+        {
+            Point p = mesh.point(*fvit);
+            glVertex3f(p[0] / 1000, p[1] / 1000, p[2]);
+            ++fvit;
+        }
+    }
+    glEnd();
+}
+
 void Delaunay::drawTriangle(FHandle _fh)
 {
     glColor3f(0, 1, 0);

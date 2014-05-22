@@ -1,4 +1,4 @@
-﻿#include "../manipulated_frame.h"
+﻿#include "../viewer.h"
 #include <QApplication>
 
 int main(int argc, char** argv)
@@ -7,7 +7,7 @@ int main(int argc, char** argv)
 
   Viewer viewer;
 
-  viewer.setWindowTitle("manipulatedFrame");
+  viewer.setWindowTitle("Delaunay Viewer");
 
   viewer.show();
 

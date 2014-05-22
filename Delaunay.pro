@@ -23,8 +23,8 @@ SOURCES += main.cpp\
     Tests/OpenMeshTest.cpp \
     Tests/TriangulationTest.cpp \
     Delaunay.cpp \
-    manipulated_frame.cpp \
-    Tests/QGLTest.cpp
+    Tests/QGLTest.cpp \
+    viewer.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -35,7 +35,7 @@ HEADERS  += \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
     Delaunay.h \
-    manipulated_frame.h
+    viewer.h
 
 FORMS    += \
     mainwindow.ui

@@ -1,5 +1,5 @@
-﻿#ifndef MANIPULATED_FRAME_H
-#define MANIPULATED_FRAME_H
+﻿#ifndef VIEWER_H
+#define VIEWER_H
 
 #include <QGLViewer/qglviewer.h>
 
@@ -11,6 +11,7 @@ protected :
     virtual QString helpString() const;
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void mousePressEvent(QMouseEvent* e);
+    void drawPoints();
 };
 
-#endif // MANIPULATED_FRAME_H
+#endif // VIEWER_H
