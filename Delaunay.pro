@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     Tests/OpenMeshTest.cpp \
     Tests/TriangulationTest.cpp \
     Delaunay.cpp \
-    Tests/DelaunayTest.cpp \
     manipulated_frame.cpp \
     Tests/QGLTest.cpp
 

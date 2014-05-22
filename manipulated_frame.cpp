@@ -1,4 +1,5 @@
 ﻿#include "manipulated_frame.h"
+#include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
 #include <QGLViewer/manipulatedFrame.h>
@@ -7,6 +8,7 @@ using namespace qglviewer;
 using namespace std;
 
 bool isDraw = false;
+PointVec points;
 
 static void drawSpiral()
 {
@@ -37,17 +39,19 @@ void Viewer::init()
     setShortcut(CAMERA_MODE, 0);
 
     setMouseBinding(Qt::AltModifier, Qt::LeftButton, QGLViewer::CAMERA, QGLViewer::ROTATE);
-    setMouseBinding(Qt::AltModifier, Qt::RightButton, QGLViewer::CAMERA, QGLViewer::TRANSLATE);
+    //    setMouseBinding(Qt::AltModifier, Qt::RightButton, QGLViewer::CAMERA, QGLViewer::TRANSLATE);
     setMouseBinding(Qt::AltModifier, Qt::MidButton, QGLViewer::CAMERA, QGLViewer::ZOOM);
     setWheelBinding(Qt::AltModifier, QGLViewer::CAMERA, QGLViewer::ZOOM);
 
     setMouseBinding(Qt::NoModifier, Qt::LeftButton, QGLViewer::FRAME, QGLViewer::ROTATE);
-    setMouseBinding(Qt::NoModifier, Qt::RightButton, QGLViewer::FRAME, QGLViewer::TRANSLATE);
+    //    setMouseBinding(Qt::NoModifier, Qt::RightButton, QGLViewer::FRAME, QGLViewer::TRANSLATE);
     setMouseBinding(Qt::NoModifier, Qt::MidButton, QGLViewer::FRAME, QGLViewer::ZOOM);
     setWheelBinding(Qt::NoModifier, QGLViewer::FRAME, QGLViewer::ZOOM);
 
     setKeyDescription(Qt::Key_Space, "Display something");
     setKeyDescription(Qt::Key_F, "Toggles flat shading display");
+
+    setMouseBindingDescription(Qt::NoModifier, Qt::RightButton, "draw points");
 
 
 #ifdef GL_RESCALE_NORMAL  // OpenGL 1.2 Only...
@@ -119,11 +123,11 @@ void Viewer::keyPressEvent(QKeyEvent *e)
     else
         if ((e->key()==Qt::Key_F) && (modifiers==Qt::NoButton))
         {
-//            flatShading_ = !flatShading_;
-//            if (flatShading_)
-//                glShadeModel(GL_FLAT);
-//            else
-//                glShadeModel(GL_SMOOTH);
+            //            flatShading_ = !flatShading_;
+            //            if (flatShading_)
+            //                glShadeModel(GL_FLAT);
+            //            else
+            //                glShadeModel(GL_SMOOTH);
             handled = true;
             updateGL();
         }
@@ -131,3 +135,48 @@ void Viewer::keyPressEvent(QKeyEvent *e)
     if (!handled)
         QGLViewer::keyPressEvent(e);
 }
+
+void Viewer::mousePressEvent(QMouseEvent* e)
+{
+    if ((e->button() == Qt::RightButton) && (e->modifiers() == Qt::NoButton))
+    {
+        int x = e->x();
+        int y = e->y();
+        Point pt(x, y, 0);
+        points.push_back(pt);
+
+//        QMenu menu( this );
+//        menu.addAction("Camera positions");
+//        menu.addSeparator();
+//        QMap<QAction*, int> menuMap;
+
+//        bool atLeastOne = false;
+//        // We only test the 20 first indexes. This is a limitation.
+//        for (unsigned short i=0; i<20; ++i)
+//            if (camera()->keyFrameInterpolator(i))
+//            {
+//                atLeastOne = true;
+//                QString text;
+//                if (camera()->keyFrameInterpolator(i)->numberOfKeyFrames() == 1)
+//                    text = "Position "+QString::number(i);
+//                else
+//                    text = "Path "+QString::number(i);
+
+//                menuMap[menu.addAction(text)] = i;
+//            }
+
+//        if (!atLeastOne)
+//        {
+//            menu.addAction("No position defined");
+//            menu.addAction("Use to Alt+Fx to define one");
+//        }
+
+//        QAction* action = menu.exec(e->globalPos());
+
+//        if (atLeastOne && action)
+//            camera()->playPath(menuMap[action]);
+    }
+    else
+        QGLViewer::mousePressEvent(e);
+}
+
