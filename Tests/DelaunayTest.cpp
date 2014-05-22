@@ -93,7 +93,7 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-int main3(int argc, char** argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
