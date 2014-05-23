@@ -3,6 +3,9 @@
 
 #include <QGLViewer/qglviewer.h>
 
+namespace DViewer
+{
+
 class Viewer : public QGLViewer
 {
 protected :
@@ -14,4 +17,5 @@ protected :
     void drawPoints();
 };
 
+}
 #endif // VIEWER_H

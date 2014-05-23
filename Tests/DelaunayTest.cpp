@@ -1,4 +1,8 @@
-﻿#include <vector>
+﻿#include "../main.cpp"
+
+#ifdef WPS
+
+#include <vector>
 #include <stdlib.h>
 #include <iostream>
 #include <GL/glut.h>
@@ -118,7 +122,7 @@ void keyboard(unsigned char key, int x, int y)
     glutPostRedisplay();
 }
 
-int main5(int argc, char** argv)
+int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -133,3 +137,5 @@ int main5(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
+
+#endif

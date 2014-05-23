@@ -12,7 +12,6 @@ TARGET = Delaunay
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    triangulation.cpp \
     mainwindow.cpp \
     ensure_exception.cpp \
     Halfedge/face.cpp \
@@ -21,15 +20,13 @@ SOURCES += main.cpp\
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
-    Tests/TriangulationTest.cpp \
     Delaunay.cpp \
-    Tests/QGLTest.cpp \
-    viewer.cpp
+    viewer.cpp \
+    Tests/DelaunayTest.cpp
 
 HEADERS  += \
     ensure_exception.h \
     mainwindow.h \
-    triangulation.h \
     Halfedge/face.h \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \

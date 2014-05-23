@@ -7,6 +7,9 @@
 using namespace qglviewer;
 using namespace std;
 
+namespace DViewer
+{
+
 Delaunay delaunay;
 bool isDraw = false;
 PointVec points;
@@ -134,3 +137,4 @@ void Viewer::mousePressEvent(QMouseEvent* e)
         QGLViewer::mousePressEvent(e);
 }
 
+}
