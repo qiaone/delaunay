@@ -73,7 +73,7 @@ void Viewer::draw()
     // Multiply matrix to get in the frame coordinate system.
     glMultMatrixd(manipulatedFrame()->matrix());
     // Scale down the drawings
-    //glScalef(0.3f, 0.3f, 0.3f);
+    glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
     drawAxis();
 
@@ -129,7 +129,7 @@ void Viewer::mousePressEvent(QMouseEvent* e)
     {
         int x = e->x();
         int y = e->y();
-        Point pt(x, y, 0);
+        Point pt(x - this->width() / 2, this->height() / 2 - y, 0);
         points.push_back(pt);
         updateGL();
     }
