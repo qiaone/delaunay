@@ -1,6 +1,6 @@
 程序入口：
     在 main.cpp 文件开头定义不同的宏转入相应的 entry point
-        目前可定义 DVIEWER / UNITEST / WPS / MW
+        目前可定义 DTV / UNITEST / WPS / MW
 
 风格约定：
     # 类名中各单词首字母大写，如 class EnsureException

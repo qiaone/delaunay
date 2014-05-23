@@ -1,6 +1,6 @@
-﻿// define DVIEWER or UNITEST or WPS or MW
+﻿// define DTV or UNITEST or WPS or MW
 // to call different entry point
-#define DV
+#define DTV
 
 #ifdef UNITTEST
     #include <gtest/gtest.h>
@@ -24,14 +24,14 @@
     }
 
 #else
-#ifdef DV
+#ifdef DTV
     #include "../viewer.h"
     #include <QApplication>
     int main(int argc, char** argv)
     {
       QApplication application(argc,argv);
       DViewer::Viewer viewer;
-      viewer.setWindowTitle("Delaunay Viewer");
+      viewer.setWindowTitle("Delaunay Triangulation Viewer");
       viewer.show();
       return application.exec();
     }
