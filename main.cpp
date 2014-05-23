@@ -1,6 +1,6 @@
 ﻿// define DVIEWER or UNITEST or WPS or MW
 // to call different entry point
-#define DVIEWER
+#define DV
 
 #ifdef UNITTEST
     #include <gtest/gtest.h>
@@ -24,13 +24,13 @@
     }
 
 #else
-#ifdef DVIEWER
+#ifdef DV
     #include "../viewer.h"
     #include <QApplication>
     int main(int argc, char** argv)
     {
       QApplication application(argc,argv);
-      Viewer viewer;
+      DViewer::Viewer viewer;
       viewer.setWindowTitle("Delaunay Viewer");
       viewer.show();
       return application.exec();
@@ -38,3 +38,5 @@
 #endif
 #endif
 #endif
+
+#include "../Tests/DelaunayTest.cpp"

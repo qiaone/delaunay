@@ -1,6 +1,4 @@
-﻿#include "../main.cpp"
-
-#ifdef WPS
+﻿#ifdef WPS
 
 #include <vector>
 #include <stdlib.h>
