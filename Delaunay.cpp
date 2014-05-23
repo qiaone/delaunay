@@ -49,14 +49,12 @@ void Delaunay::drawMesh()
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
-    for (auto fit = mesh.faces_begin(); fit != mesh.faces_end(); ++fit)
+    for (auto& fh : mesh.faces())
     {
-        auto fvit = mesh.fv_iter(*fit);
-        while (fvit.is_valid())
+        for(auto& vh : mesh.fv_range(fh))
         {
-            Point p = mesh.point(*fvit);
+            Point p = mesh.point(vh);
             glVertex3f(p[0], p[1], p[2]);
-            ++fvit;
         }
     }
     glEnd();
@@ -67,29 +65,25 @@ void Delaunay::drawMeshInQt()
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
-    for (auto fit = mesh.faces_begin(); fit != mesh.faces_end(); ++fit)
+    for (auto& fh : mesh.faces())
     {
-        auto fvit = mesh.fv_iter(*fit);
-        while (fvit.is_valid())
+        for(auto& vh : mesh.fv_range(fh))
         {
-            Point p = mesh.point(*fvit);
-            glVertex3f(p[0] / 1000, p[1] / 1000, p[2]);
-            ++fvit;
+            Point p = mesh.point(vh);
+            glVertex3f(p[0] / 1000, p[1] / 1000, p[2] / 1000);
         }
     }
     glEnd();
 }
 
-void Delaunay::drawTriangle(FHandle _fh)
+void Delaunay::drawTriangle(FHandle fh)
 {
     glColor3f(0, 1, 0);
     glBegin(GL_TRIANGLES);
-    auto fv_it = mesh.fv_iter(_fh);
-    while (fv_it.is_valid())
+    for (auto& vh : mesh.fv_range(fh))
     {
-        Point p = mesh.point(*fv_it);
+        Point p = mesh.point(vh);
         glVertex3f(p[0], p[1], p[2]);
-        ++fv_it;
     }
     glEnd();
 }

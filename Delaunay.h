@@ -37,7 +37,7 @@ public:
 
 private:
 
-    void drawTriangle(FHandle _fh);
+    void drawTriangle(FHandle fh);
 
     void addVertices(PointVec& points);
 
