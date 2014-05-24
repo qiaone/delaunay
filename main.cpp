@@ -26,15 +26,13 @@
 #else
 #ifdef DTV
     #include "../dviewer.h"
-    #include "../dcamera.h"
     #include <QApplication>
     //#include <memory>
 
     int main(int argc, char** argv)
     {
       QApplication application(argc,argv);
-      std::unique_ptr<DCamera> cam(new DCamera);
-      DT::DViewer viewer(std::move(cam));
+      DT::DViewer viewer;
       viewer.setWindowTitle("Delaunay Triangulation Viewer");
       viewer.show();
       return application.exec();

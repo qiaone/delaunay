@@ -14,7 +14,9 @@ Delaunay delaunay;
 bool isDraw = false;
 PointVec points;
 
-DViewer::DViewer(std::unique_ptr<DCamera> cam) : camera(std::move(cam)) { }
+DViewer::DViewer() {
+    camera()->setType(Camera::ORTHOGRAPHIC);
+}
 
 
 void DViewer::test()
@@ -70,6 +72,8 @@ void DViewer::draw()
     //// Multiply matrix to get in the frame coordinate system.
     //glMultMatrixd(manipulatedFrame()->matrix());
     // Scale down the drawings
+    
+    displayMessage(QString("camera->position() %1 %2 %3").arg(camera()->position().x).arg(camera()->position().y).arg(camera()->position().z));
     glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
     //drawAxis();
@@ -77,7 +81,8 @@ void DViewer::draw()
     drawPoints();
     if (isDraw)
         delaunay.drawMeshInQt();
-    displayMessage(QString("camera->position() %1 %2 %3").arg(camera->position().x).arg(camera->position().y).arg(camera->position().z));
+    
+    //displayMessage(QString("camera->position() %1 %2 %3").arg(camera->position().x).arg(camera->position().y).arg(camera->position().z));
     // Restore the original (world) coordinate system
     //glPopMatrix();
 }
