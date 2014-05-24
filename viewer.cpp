@@ -2,7 +2,6 @@
 #include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
-#include <QGLViewer/manipulatedFrame.h>
 
 using namespace qglviewer;
 using namespace std;
@@ -29,20 +28,8 @@ void Viewer::drawPoints()
 
 void Viewer::init()
 {
-    setShortcut(CAMERA_MODE, 0);
-
-    setMouseBinding(Qt::AltModifier, Qt::LeftButton, QGLViewer::CAMERA, QGLViewer::TRANSLATE);
-    setMouseBinding(Qt::AltModifier, Qt::RightButton, QGLViewer::CAMERA, QGLViewer::ROTATE);
-    //setMouseBinding(Qt::AltModifier, Qt::MidButton, QGLViewer::CAMERA, QGLViewer::ZOOM);
-    setWheelBinding(Qt::AltModifier, QGLViewer::CAMERA, QGLViewer::ZOOM);
-
-    setMouseBinding(Qt::NoModifier, Qt::LeftButton, QGLViewer::FRAME, QGLViewer::TRANSLATE);
-    setMouseBinding(Qt::NoModifier, Qt::RightButton, QGLViewer::FRAME, QGLViewer::ROTATE);
-    //setMouseBinding(Qt::NoModifier, Qt::MidButton, QGLViewer::FRAME, QGLViewer::ZOOM);
-    setWheelBinding(Qt::NoModifier, QGLViewer::FRAME, QGLViewer::ZOOM);
-
-    setKeyDescription(Qt::Key_Space, "Display something");
-    setKeyDescription(Qt::Key_F, "Toggles flat shading display");
+    setKeyDescription(Qt::Key_Space, "Perform Delaunay Triangulation");
+    //setKeyDescription(Qt::Key_F, "Toggles flat shading display");
 
     setMouseBindingDescription(Qt::NoModifier, Qt::MidButton, "draw points");
 
@@ -52,37 +39,32 @@ void Viewer::init()
 #endif
 
     // Make sure the manipulatedFrame is not easily clipped by the zNear and zFar planes
-    setSceneRadius(30);
+    setSceneRadius(1);
     camera()->fitSphere(Vec(0,0,0), 1);
 
-    // Add a manipulated frame to the viewer.
-    // If you are not "using namespace qglqglviewer", you need
-    // to specify: new qglviewer::ManipulatedFrame().
-    setManipulatedFrame(new ManipulatedFrame());
-
     help();
-    restoreStateFromFile();
+    //restoreStateFromFile();
 }
 
 void Viewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     drawAxis();
-    // Save the current model view matrix (not needed here in fact)
-    glPushMatrix();
-    // Multiply matrix to get in the frame coordinate system.
-    glMultMatrixd(manipulatedFrame()->matrix());
+    //// Save the current model view matrix (not needed here in fact)
+    //glPushMatrix();
+    //// Multiply matrix to get in the frame coordinate system.
+    //glMultMatrixd(manipulatedFrame()->matrix());
     // Scale down the drawings
-    glScalef(5.0f, 5.0f, 5.0f);
+    //glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
-    drawAxis();
+    //drawAxis();
 
     drawPoints();
     if (isDraw)
         delaunay.drawMeshInQt();
 
     // Restore the original (world) coordinate system
-    glPopMatrix();
+    //glPopMatrix();
 }
 
 
