@@ -38,7 +38,7 @@ void DViewer::drawPoints()
     for (auto& point: points)
     {
         glColor3f(1.0,0.0,0.0);
-        glVertex3f(point[0] / 1000, point[1] / 1000, point[2]);
+        glVertex3f(point[0] / width(), point[1] / height(), point[2]);
     }
     glEnd();
 }
@@ -72,15 +72,15 @@ void DViewer::draw()
     //// Multiply matrix to get in the frame coordinate system.
     //glMultMatrixd(manipulatedFrame()->matrix());
     // Scale down the drawings
-    
-    displayMessage(QString("camera->position() %1 %2 %3").arg(camera()->position().x).arg(camera()->position().y).arg(camera()->position().z));
+    displayMessage(QString("camera()->type() %1").arg(camera()->type() == Camera::PERSPECTIVE));
+    //displayMessage(QString("camera->position() %1 %2 %3").arg(camera()->position().x).arg(camera()->position().y).arg(camera()->position().z));
     glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
     //drawAxis();
     //test();
     drawPoints();
     if (isDraw)
-        delaunay.drawMeshInQt();
+        delaunay.drawMeshInQt(width(), height());
     
     //displayMessage(QString("camera->position() %1 %2 %3").arg(camera->position().x).arg(camera->position().y).arg(camera->position().z));
     // Restore the original (world) coordinate system

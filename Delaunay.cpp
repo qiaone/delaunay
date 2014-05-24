@@ -60,7 +60,7 @@ void Delaunay::drawMesh()
     glEnd();
 }
 
-void Delaunay::drawMeshInQt()
+void Delaunay::drawMeshInQt(int w, int h)
 {
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -70,7 +70,7 @@ void Delaunay::drawMeshInQt()
         for(auto& vh : mesh.fv_range(fh))
         {
             Point p = mesh.point(vh);
-            glVertex3f(p[0] / 1000, p[1] / 1000, p[2] / 1000);
+            glVertex3f(p[0] / w, p[1] / h, p[2]);
         }
     }
     glEnd();
