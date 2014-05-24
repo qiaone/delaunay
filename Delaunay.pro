@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
     Tests/DelaunayTest.cpp \
-    dcamera.cpp \
     dviewer.cpp \
     delaunay.cpp
 
@@ -32,7 +31,6 @@ HEADERS  += \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
-    dcamera.h \
     dviewer.h \
     delaunay.h
 
