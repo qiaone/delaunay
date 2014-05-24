@@ -2,6 +2,7 @@
 
 DCamera::DCamera()
 {
+    setType(ORTHOGRAPHIC);
 }
 
 float DCamera::zNear() const

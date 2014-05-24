@@ -2,6 +2,7 @@
 #include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
+#include <QDebug>
 
 using namespace qglviewer;
 using namespace std;
@@ -24,6 +25,7 @@ void DViewer::test()
     {
         glVertex3f((GLfloat)i / width(), 0.5f, 0.0);
     }
+
 }
 
 void DViewer::drawPoints()
@@ -68,14 +70,14 @@ void DViewer::draw()
     //// Multiply matrix to get in the frame coordinate system.
     //glMultMatrixd(manipulatedFrame()->matrix());
     // Scale down the drawings
-    //glScalef(5.0f, 5.0f, 5.0f);
+    glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
     //drawAxis();
-    test();
+    //test();
     drawPoints();
     if (isDraw)
         delaunay.drawMeshInQt();
-
+    displayMessage(QString("camera->position() %1 %2 %3").arg(camera->position().x).arg(camera->position().y).arg(camera->position().z));
     // Restore the original (world) coordinate system
     //glPopMatrix();
 }
