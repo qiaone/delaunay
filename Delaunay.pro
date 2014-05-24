@@ -20,9 +20,10 @@ SOURCES += main.cpp\
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
-    Delaunay.cpp \
-    viewer.cpp \
-    Tests/DelaunayTest.cpp
+    Tests/DelaunayTest.cpp \
+    dcamera.cpp \
+    dviewer.cpp \
+    delaunay.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -31,8 +32,9 @@ HEADERS  += \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
-    Delaunay.h \
-    viewer.h
+    dcamera.h \
+    dviewer.h \
+    delaunay.h
 
 FORMS    += \
     mainwindow.ui

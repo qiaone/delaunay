@@ -1,4 +1,4 @@
-﻿#include "Delaunay.h"
+﻿#include "delaunay.h"
 
 
 void Delaunay::perform(PointVec& all_points)

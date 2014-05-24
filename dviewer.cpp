@@ -1,4 +1,4 @@
-﻿#include "viewer.h"
+﻿#include "dviewer.h"
 #include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
@@ -6,14 +6,27 @@
 using namespace qglviewer;
 using namespace std;
 
-namespace DViewer
+namespace DT
 {
 
 Delaunay delaunay;
 bool isDraw = false;
 PointVec points;
 
-void Viewer::drawPoints()
+DViewer::DViewer(std::unique_ptr<DCamera> cam) : camera(std::move(cam)) { }
+
+
+void DViewer::test()
+{
+    glPointSize(4.0);
+    glBegin(GL_POINTS);
+    for(int i = 0; i < width() * 2; i++)
+    {
+        glVertex3f((GLfloat)i / width(), 0.5f, 0.0);
+    }
+}
+
+void DViewer::drawPoints()
 {
     glPointSize(4.0);
     
@@ -26,7 +39,7 @@ void Viewer::drawPoints()
     glEnd();
 }
 
-void Viewer::init()
+void DViewer::init()
 {
     setKeyDescription(Qt::Key_Space, "Perform Delaunay Triangulation");
     //setKeyDescription(Qt::Key_F, "Toggles flat shading display");
@@ -39,14 +52,14 @@ void Viewer::init()
 #endif
 
     // Make sure the manipulatedFrame is not easily clipped by the zNear and zFar planes
-    setSceneRadius(1);
-    camera()->fitSphere(Vec(0,0,0), 1);
+    //setSceneRadius(1);
+    //camera()->fitSphere(Vec(0,0,0), 1);
 
     help();
     //restoreStateFromFile();
 }
 
-void Viewer::draw()
+void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     drawAxis();
@@ -58,7 +71,7 @@ void Viewer::draw()
     //glScalef(5.0f, 5.0f, 5.0f);
     // Draw an axis using the QGLViewer static function
     //drawAxis();
-
+    test();
     drawPoints();
     if (isDraw)
         delaunay.drawMeshInQt();
@@ -69,7 +82,7 @@ void Viewer::draw()
 
 
 
-QString Viewer::helpString() const
+QString DViewer::helpString() const
 {
     QString text("<h2>M a n i p u l a t e d F r a m e</h2>");
     text += "A <i>ManipulatedFrame</i> converts mouse gestures into <i>Frame</i> displacements. ";
@@ -83,7 +96,7 @@ QString Viewer::helpString() const
     return text;
 }
 
-void Viewer::keyPressEvent(QKeyEvent *e)
+void DViewer::keyPressEvent(QKeyEvent *e)
 {
     const Qt::KeyboardModifiers modifiers = e->modifiers();
     bool handled = false;
@@ -105,7 +118,7 @@ void Viewer::keyPressEvent(QKeyEvent *e)
         QGLViewer::keyPressEvent(e);
 }
 
-void Viewer::mousePressEvent(QMouseEvent* e)
+void DViewer::mousePressEvent(QMouseEvent* e)
 {
     if ((e->button() == Qt::MidButton) && (e->modifiers() == Qt::NoButton))
     {
