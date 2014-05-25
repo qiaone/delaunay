@@ -117,3 +117,13 @@ void MainWindow::on_actionPerform_triggered()
     viewer->show();
     //viewer.exec();
 }
+
+void MainWindow::on_actionOpen_3D_Viewer_triggered()
+{
+    on_actionPerform_triggered();
+}
+
+void MainWindow::on_actionStep_by_Step_triggered()
+{
+    on_actionPerform_triggered();
+}

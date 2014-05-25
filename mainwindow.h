@@ -20,6 +20,10 @@ public:
 private slots:
     void on_actionPerform_triggered();
 
+    void on_actionOpen_3D_Viewer_triggered();
+
+    void on_actionStep_by_Step_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;
