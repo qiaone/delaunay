@@ -22,6 +22,7 @@ protected :
     void drawPoints();
 private:
     std::unique_ptr<Delaunay> mdelaunay;
+    void drawParaboloid();
 };
 
 }

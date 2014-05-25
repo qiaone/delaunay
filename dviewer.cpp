@@ -51,6 +51,7 @@ void Viewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     drawAxis();
+    drawParaboloid();
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
     //// Multiply matrix to get in the frame coordinate system.
@@ -120,4 +121,40 @@ void Viewer::keyPressEvent(QKeyEvent *e)
 ////        QGLViewer::mousePressEvent(e);
 ////}
 //
+
+#define GETX(u, v) (u * cos(v))
+#define GETY(u, v) (u * sin(v))
+
+void Viewer::drawParaboloid()
+{
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    float step_v = M_PI / 50;
+    float step_u = 0.01;
+    glEnable(GL_BLEND);
+    glEnable(GL_POLYGON_SMOOTH);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
+    glBegin(GL_TRIANGLES);
+    for (float u = 0; u < 1; u += step_u)
+    {
+        for (float v = 0; v < 2 * M_PI; v += step_v)
+        {
+            glNormal3f(2 * GETX(u, v), 2 * GETY(u, v), -1);
+            glVertex3f(GETX((u), (v)), GETY((u), (v)), u * u);
+            glVertex3f(GETX((u), (v + step_v)), GETY((u), (v + step_v)), u * u);
+            glVertex3f(GETX((u + step_u), (v + step_v)), GETY((u + step_u), (v + step_v)), (u + step_u) * (u + step_u));
+
+            glVertex3f(GETX((u), (v)), GETY((u), (v)), u * u);
+            glVertex3f(GETX((u + step_u), (v + step_v)), GETY((u + step_u), (v + step_v)), (u + step_u) * (u + step_u));
+            glVertex3f(GETX((u + step_u), (v)), GETY((u + step_u), (v)), (u + step_u) * (u + step_u));
+
+        }
+    }
+    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    glDisable(GL_BLEND);
+    glDisable(GL_POLYGON_SMOOTH);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);
+    glEnd();
+}
 }
