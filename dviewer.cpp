@@ -1,4 +1,4 @@
-﻿#include "viewer.h"
+﻿#include "dviewer.h"
 #include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>

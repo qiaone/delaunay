@@ -20,7 +20,7 @@ SOURCES += main.cpp\
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
-    viewer.cpp \
+    dviewer.cpp \
     Tests/DelaunayTest.cpp \
     delaunay.cpp
 
@@ -31,7 +31,7 @@ HEADERS  += \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
-    viewer.h \
+    dviewer.h \
     delaunay.h
 
 FORMS    += \

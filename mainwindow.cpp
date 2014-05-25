@@ -1,6 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "viewer.h"
+#include "dviewer.h"
 #include "delaunay.h"
 
 #include <memory>
