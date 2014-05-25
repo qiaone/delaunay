@@ -1,6 +1,6 @@
 ﻿// define DTV or UNITEST or WPS or MW
 // to call different entry point
-#define DTV
+#define MW
 
 #ifdef UNITTEST
     #include <gtest/gtest.h>
@@ -20,12 +20,12 @@
         MainWindow w;
         w.show();
         return a.exec();
-        return 0;
+        //return 0;
     }
 
 #else
 #ifdef DTV
-    #include "../viewer.h"
+    #include "viewer.h"
     #include <QApplication>
     int main(int argc, char** argv)
     {

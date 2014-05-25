@@ -1,5 +1,9 @@
-﻿#include "Delaunay.h"
+﻿#include "delaunay.h"
 
+Delaunay::Delaunay()
+{
+
+}
 
 void Delaunay::perform(PointVec& all_points)
 {
@@ -62,6 +66,18 @@ void Delaunay::drawMesh()
 
 void Delaunay::drawMeshInQt()
 {
+    glPointSize(4.0);
+    glColor3f(1, 0, 0);
+    glBegin(GL_POINTS);
+
+    for (auto& vh: mesh.vertices())
+    {
+        auto point = mesh.point(vh);
+        glColor3f(1.0,0.0,0.0);
+        glVertex3f(point[0] / 1000, point[1] / 1000, point[2]);
+    }
+    glEnd();
+
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
@@ -70,7 +86,7 @@ void Delaunay::drawMeshInQt()
         for(auto& vh : mesh.fv_range(fh))
         {
             Point p = mesh.point(vh);
-            glVertex3f(p[0] / 1000, p[1] / 1000, p[2] / 1000);
+            glVertex3f(p[0] / 1000, p[1] / 1000, p[2]);
         }
     }
     glEnd();
@@ -90,9 +106,14 @@ void Delaunay::drawTriangle(FHandle fh)
 
 void Delaunay::addVertices(PointVec& points)
 {
+    //mesh.clear();
+    //for(auto& p : points)
+    //    mesh.add_vertex(p);
     mesh.clear();
-    for(auto& p : points)
-        mesh.add_vertex(p);
+    for(int i = 0; i < points.size(); i++)
+    {
+        mesh.add_vertex(points[i]);
+    }
 }
 
 void Delaunay::init()

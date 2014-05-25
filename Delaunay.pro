@@ -20,9 +20,9 @@ SOURCES += main.cpp\
     Halfedge/vertex.cpp \
     Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
-    Delaunay.cpp \
     viewer.cpp \
-    Tests/DelaunayTest.cpp
+    Tests/DelaunayTest.cpp \
+    delaunay.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -31,8 +31,8 @@ HEADERS  += \
     Halfedge/halfedge.h \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
-    Delaunay.h \
-    viewer.h
+    viewer.h \
+    delaunay.h
 
 FORMS    += \
     mainwindow.ui
@@ -64,5 +64,8 @@ OTHER_FILES += \
     Docs/wps.txt \
     Docs/project.txt \
     Docs/todo.txt
+
+RESOURCES += \
+    resource.qrc
 
 

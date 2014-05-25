@@ -9,9 +9,10 @@ using namespace std;
 namespace DViewer
 {
 
-Delaunay delaunay;
-bool isDraw = false;
-PointVec points;
+//Delaunay delaunay;
+bool isDraw = true;
+
+Viewer::Viewer(std::unique_ptr<Delaunay> delaunay) : mdelaunay(std::move(delaunay)) { }
 
 void Viewer::drawPoints()
 {
@@ -31,7 +32,7 @@ void Viewer::init()
     setKeyDescription(Qt::Key_Space, "Perform Delaunay Triangulation");
     //setKeyDescription(Qt::Key_F, "Toggles flat shading display");
 
-    setMouseBindingDescription(Qt::NoModifier, Qt::MidButton, "draw points");
+    //setMouseBindingDescription(Qt::NoModifier, Qt::MidButton, "draw points");
 
 
 #ifdef GL_RESCALE_NORMAL  // OpenGL 1.2 Only...
@@ -42,7 +43,7 @@ void Viewer::init()
     setSceneRadius(1);
     camera()->fitSphere(Vec(0,0,0), 1);
 
-    help();
+    //help();
     //restoreStateFromFile();
 }
 
@@ -59,9 +60,9 @@ void Viewer::draw()
     // Draw an axis using the QGLViewer static function
     //drawAxis();
 
-    drawPoints();
+    //drawPoints();
     if (isDraw)
-        delaunay.drawMeshInQt();
+        mdelaunay->drawMeshInQt();
 
     // Restore the original (world) coordinate system
     //glPopMatrix();
@@ -69,19 +70,19 @@ void Viewer::draw()
 
 
 
-QString Viewer::helpString() const
-{
-    QString text("<h2>M a n i p u l a t e d F r a m e</h2>");
-    text += "A <i>ManipulatedFrame</i> converts mouse gestures into <i>Frame</i> displacements. ";
-    text += "In this example, such an object defines the position of the spiral that can hence be manipulated.<br><br>";
-    text += "Adding two lines of code will then allow you to move the objects of ";
-    text += "your scene using the mouse. The button bindings of the <i>ManipulatedFrame</i> ";
-    text += "are the same than for the camera. Spinning is possible.<br><br>";
-    text += "Default key bindings have been changed in this example : press <b>Alt</b> ";
-    text += "while moving the mouse to move the camera instead of the ManipulatedFrame.";
-    text += "<img src=\"http://www.baidu.com/img/bdlogo.gif\" />";
-    return text;
-}
+//QString Viewer::helpString() const
+//{
+//    QString text("<h2>M a n i p u l a t e d F r a m e</h2>");
+//    text += "A <i>ManipulatedFrame</i> converts mouse gestures into <i>Frame</i> displacements. ";
+//    text += "In this example, such an object defines the position of the spiral that can hence be manipulated.<br><br>";
+//    text += "Adding two lines of code will then allow you to move the objects of ";
+//    text += "your scene using the mouse. The button bindings of the <i>ManipulatedFrame</i> ";
+//    text += "are the same than for the camera. Spinning is possible.<br><br>";
+//    text += "Default key bindings have been changed in this example : press <b>Alt</b> ";
+//    text += "while moving the mouse to move the camera instead of the ManipulatedFrame.";
+//    text += "<img src=\"http://www.baidu.com/img/bdlogo.gif\" />";
+//    return text;
+//}
 
 void Viewer::keyPressEvent(QKeyEvent *e)
 {
@@ -90,7 +91,7 @@ void Viewer::keyPressEvent(QKeyEvent *e)
     if ((e->key()==Qt::Key_Space) && (modifiers==Qt::NoButton))
     {
         isDraw = true;
-        delaunay.perform(points);
+//        delaunay.perform(points);
         updateGL();
     }
     else
@@ -105,18 +106,18 @@ void Viewer::keyPressEvent(QKeyEvent *e)
         QGLViewer::keyPressEvent(e);
 }
 
-void Viewer::mousePressEvent(QMouseEvent* e)
-{
-    if ((e->button() == Qt::MidButton) && (e->modifiers() == Qt::NoButton))
-    {
-        int x = e->x();
-        int y = e->y();
-        Point pt(x - this->width() / 2, this->height() / 2 - y, 0);
-        points.push_back(pt);
-        updateGL();
-    }
-    else
-        QGLViewer::mousePressEvent(e);
-}
-
+//void Viewer::mousePressEvent(QMouseEvent* e)
+//{
+////    if ((e->button() == Qt::MidButton) && (e->modifiers() == Qt::NoButton))
+////    {
+////        int x = e->x();
+////        int y = e->y();
+////        Point pt(x - this->width() / 2, this->height() / 2 - y, 0);
+////        points.push_back(pt);
+////        updateGL();
+////    }
+////    else
+////        QGLViewer::mousePressEvent(e);
+////}
+//
 }
