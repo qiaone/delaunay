@@ -32,12 +32,13 @@ MainWindow::~MainWindow()
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
     pen.setColor(Qt::red);
 
     // should be configurable
-    pen.setWidth(8);
+    pen.setWidth(6);
     pen.setCapStyle(Qt::RoundCap);
     painter.setPen(pen);
     for(auto p : points)
@@ -46,7 +47,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (isDone)
     {
         pen.setColor(Qt::blue);
-        pen.setWidth(6);
+        pen.setWidth(4);
         pen.setCapStyle(Qt::RoundCap);
         painter.setPen(pen);
         for(int i = 0; i < triangles.size() / 3; i++)
@@ -76,6 +77,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
+    if (event->pos().y() < 100)
+    {
+        return;
+    }
 //    if(isMouseDraw)
 //    {
         points.append(event->pos());

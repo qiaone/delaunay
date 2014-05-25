@@ -74,7 +74,7 @@ void Delaunay::drawMeshInQt()
     {
         auto point = mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
-        glVertex3f(point[0] / 1000, point[1] / 1000, point[2]);
+        glVertex3f(point[0] / 500, point[1] / 500, point[2]);
     }
     glEnd();
 
@@ -86,7 +86,7 @@ void Delaunay::drawMeshInQt()
         for(auto& vh : mesh.fv_range(fh))
         {
             Point p = mesh.point(vh);
-            glVertex3f(p[0] / 1000, p[1] / 1000, p[2]);
+            glVertex3f(p[0] / 500, p[1] / 500, p[2]);
         }
     }
     glEnd();
