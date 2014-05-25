@@ -31,5 +31,5 @@ Delaunay.vcxproj
 Delaunay.vcxproj.filters
 *.sln
 *.autosave
-.qglviewer.xml
+.qglviewer*.xml
 Delaunay.pro.user.*
