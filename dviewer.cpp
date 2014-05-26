@@ -12,19 +12,37 @@ namespace DViewer
 //Delaunay delaunay;
 bool isDraw = true;
 
-Viewer::Viewer(std::unique_ptr<Delaunay> delaunay) : mdelaunay(std::move(delaunay)) { }
+Viewer::Viewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
+    : _delaunay(std::move(delaunay)), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
 
-void Viewer::drawPoints()
+void Viewer::drawMesh()
 {
     glPointSize(4.0);
-    
+    glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
-    for (auto& point: points)
+
+    for (auto& vh: _delaunay->mesh.vertices())
     {
+        auto point = _delaunay->mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
-        glVertex3f(point[0] / 1000, point[1] / 1000, point[2]);
+        glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
     }
     glEnd();
+
+    glColor3f(0, 0, 1);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glBegin(GL_TRIANGLES);
+    for (auto& fh : _delaunay->mesh.faces())
+    {
+        for(auto& vh : _delaunay->mesh.fv_range(fh))
+        {
+            auto point = _delaunay->mesh.point(vh);
+            glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+        }
+    }
+    glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 }
 
 void Viewer::init()
@@ -63,7 +81,7 @@ void Viewer::draw()
 
     //drawPoints();
     if (isDraw)
-        mdelaunay->drawMeshInQt();
+        drawMesh();
 
     // Restore the original (world) coordinate system
     //glPopMatrix();
@@ -129,8 +147,8 @@ void Viewer::drawParaboloid()
 {
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    const float step_v = M_PI / 50;
-    const float step_u = 0.01;
+    const float step_v = (float)(M_PI / 50.0);
+    const float step_u = 0.01f;
     glEnable(GL_BLEND);
 //    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

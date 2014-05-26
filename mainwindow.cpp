@@ -94,7 +94,7 @@ void MainWindow::on_actionPerform_triggered()
     {
         return;
     }
-    std::unique_ptr<Delaunay> delaunay(new Delaunay(this->width(), this->height()));
+    std::unique_ptr<Delaunay> delaunay(new Delaunay);
     PointVec mesh_points;
     for(auto& p : points)
     {
@@ -112,8 +112,8 @@ void MainWindow::on_actionPerform_triggered()
     }
     isDone = true;
     update();
-    DViewer::Viewer * viewer = new DViewer::Viewer(std::move(delaunay));
-    viewer->setWindowTitle("Delaunay Triangulation Viewer");
+    DViewer::Viewer * viewer = new DViewer::Viewer(std::move(delaunay), this->width(), this->height());
+    viewer->setWindowTitle("3D Viewer");
     viewer->show();
     //viewer.exec();
 }
