@@ -1,9 +1,8 @@
 ﻿#include "delaunay.h"
 
-Delaunay::Delaunay()
-{
-
-}
+Delaunay::Delaunay(int screen_width_, int screen_height_)
+    : screen_width(screen_width_), screen_height(screen_height_)
+{ }
 
 void Delaunay::perform(PointVec& all_points)
 {
@@ -74,7 +73,7 @@ void Delaunay::drawMeshInQt()
     {
         auto point = mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
-        glVertex3f(point[0] / 500, point[1] / 500, point[2]);
+        glVertex3f((point[0] - screen_width / 2) / 500, (screen_height / 2 - point[1]) / 500, point[2]);
     }
     glEnd();
 
@@ -85,11 +84,13 @@ void Delaunay::drawMeshInQt()
     {
         for(auto& vh : mesh.fv_range(fh))
         {
-            Point p = mesh.point(vh);
-            glVertex3f(p[0] / 500, p[1] / 500, p[2]);
+            auto point = mesh.point(vh);
+            glVertex3f((point[0] - screen_width / 2) / 500, (screen_height / 2 - point[1]) / 500, point[2]);
         }
     }
     glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 }
 
 void Delaunay::drawTriangle(FHandle fh)

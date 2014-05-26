@@ -94,7 +94,7 @@ void MainWindow::on_actionPerform_triggered()
     {
         return;
     }
-    std::unique_ptr<Delaunay> delaunay(new Delaunay);
+    std::unique_ptr<Delaunay> delaunay(new Delaunay(this->width(), this->height()));
     PointVec mesh_points;
     for(auto& p : points)
     {

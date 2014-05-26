@@ -29,7 +29,7 @@ protected:
     OpenMesh::VPropHandleT<FHandle> VertexToFace;
 
 public:
-    Delaunay();
+    Delaunay(int screen_width_, int screen_height_);
     void perform(PointVec& all_points);
     void drawMesh();
     void drawMeshInQt();
@@ -46,5 +46,6 @@ private:
     void rebucket(EHandle eh, VHandleVec& vhvec);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
+    int screen_width, screen_height;
 };
 

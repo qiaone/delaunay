@@ -128,13 +128,14 @@ void Viewer::keyPressEvent(QKeyEvent *e)
 void Viewer::drawParaboloid()
 {
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    float step_v = M_PI / 50;
-    float step_u = 0.01;
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    const float step_v = M_PI / 50;
+    const float step_u = 0.01;
     glEnable(GL_BLEND);
-    glEnable(GL_POLYGON_SMOOTH);
+//    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
+
     glBegin(GL_TRIANGLES);
     for (float u = 0; u < 1; u += step_u)
     {
@@ -148,13 +149,15 @@ void Viewer::drawParaboloid()
             glVertex3f(GETX((u), (v)), GETY((u), (v)), u * u);
             glVertex3f(GETX((u + step_u), (v + step_v)), GETY((u + step_u), (v + step_v)), (u + step_u) * (u + step_u));
             glVertex3f(GETX((u + step_u), (v)), GETY((u + step_u), (v)), (u + step_u) * (u + step_u));
-
         }
     }
+    glEnd();
+
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
     glDisable(GL_BLEND);
     glDisable(GL_POLYGON_SMOOTH);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);
-    glEnd();
+
 }
+
 }
