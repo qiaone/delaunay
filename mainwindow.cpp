@@ -1,9 +1,5 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dviewer.h"
-#include "delaunay.h"
-
-#include <memory>
 #include <QPainter>
 #include <QPen>
 #include <QToolTip>
@@ -18,9 +14,10 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    hasTrianglated(false),
+    viewer(nullptr)
 {
-    isDone = false;
     ui->setupUi(this);
 }
 
@@ -44,7 +41,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     for(auto p : points)
         painter.drawPoint(p);
 
-    if (isDone)
+    if (hasTrianglated)
     {
         pen.setColor(Qt::blue);
         pen.setWidth(4);
@@ -94,6 +91,9 @@ void MainWindow::on_actionPerform_triggered()
     {
         return;
     }
+
+    triangles.clear();
+
     std::unique_ptr<Delaunay> delaunay(new Delaunay);
     PointVec mesh_points;
     for(auto& p : points)
@@ -110,20 +110,12 @@ void MainWindow::on_actionPerform_triggered()
             triangles.push_back(QPoint(p[0], p[1]));
         }
     }
-    isDone = true;
+    hasTrianglated = true;
     update();
-    DViewer::Viewer * viewer = new DViewer::Viewer(std::move(delaunay), this->width(), this->height());
-    viewer->setWindowTitle("3D Viewer");
-    viewer->show();
-    //viewer.exec();
-}
-
-void MainWindow::on_actionOpen_3D_Viewer_triggered()
-{
-    on_actionPerform_triggered();
-}
-
-void MainWindow::on_actionStep_by_Step_triggered()
-{
-    on_actionPerform_triggered();
+    if (viewer == nullptr)
+    {
+        viewer = new DViewer::Viewer(std::move(delaunay), this->width(), this->height());
+        viewer->setWindowTitle("3D Viewer");
+        viewer->show();
+    }
 }

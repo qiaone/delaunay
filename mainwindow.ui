@@ -23,22 +23,24 @@
      <height>23</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuDelaunay">
+   <widget class="QMenu" name="menuPoints">
+    <property name="title">
+     <string>Points</string>
+    </property>
+    <addaction name="actionSelectManually"/>
+    <addaction name="actionRandomGeneration"/>
+   </widget>
+   <widget class="QMenu" name="menuViewer">
     <property name="title">
      <string>Delaunay</string>
     </property>
     <addaction name="actionPerform"/>
-    <addaction name="actionStep_by_Step"/>
+    <addaction name="actionStepByStep"/>
    </widget>
-   <widget class="QMenu" name="menuViewer">
-    <property name="title">
-     <string>3D Viewer</string>
-    </property>
-    <addaction name="actionOpen_3D_Viewer"/>
-   </widget>
-   <addaction name="menuDelaunay"/>
+   <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
    <property name="iconSize">
     <size>
@@ -52,42 +54,35 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionPerform"/>
-   <addaction name="actionStep_by_Step"/>
-   <addaction name="actionOpen_3D_Viewer"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionPerform">
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/Img/delaunay.png</normaloff>:/Img/delaunay.png</iconset>
+  <action name="actionSelectManually">
+   <property name="checkable">
+    <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Select Manually</string>
+   </property>
+  </action>
+  <action name="actionPerform">
    <property name="text">
     <string>Perform</string>
    </property>
   </action>
-  <action name="actionOpen_3D_Viewer">
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/Img/viewer.png</normaloff>:/Img/viewer.png</iconset>
-   </property>
+  <action name="actionRandomGeneration">
    <property name="text">
-    <string>Open 3D Viewer</string>
+    <string>Random Generation</string>
    </property>
   </action>
-  <action name="actionStep_by_Step">
-   <property name="icon">
-    <iconset resource="resource.qrc">
-     <normaloff>:/Img/step.png</normaloff>:/Img/step.png</iconset>
-   </property>
+  <action name="actionStepByStep">
    <property name="text">
     <string>Step by Step</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="resource.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
