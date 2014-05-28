@@ -2,11 +2,15 @@
 
 clear选的点，重新开始
 
-viewer加入控制控制窗口viewerwindow，下面嵌入控制按钮等
+viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
 
 把碗提升一个高度
 
-碗的光照问题，定点数组或是显示列表优化速度，inline取代define等代码优化
+碗的光照问题，顶点数组或是显示列表优化速度，inline取代define等代码优化
 
 平面三角形到空间三角形的映射，特别是flip操作前后造成的改变
+
+处理算法degenerate的情形
+
+定时演示下一步，包括界面的设计，以及鼠标中键可以改变速度等操控
 
