@@ -15,7 +15,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    hasTrianglated(false),
+    isTrianglated(false),
     viewer(nullptr)
 {
     ui->setupUi(this);
@@ -41,7 +41,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     for(auto p : points)
         painter.drawPoint(p);
 
-    if (hasTrianglated)
+    if (isTrianglated)
     {
         pen.setColor(Qt::blue);
         pen.setWidth(4);
@@ -92,6 +92,9 @@ void MainWindow::on_actionPerform_triggered()
         return;
     }
 
+    if (!ui->action2D_Viewer->isChecked())
+        this->close();
+
     triangles.clear();
 
     std::unique_ptr<Delaunay> delaunay(new Delaunay);
@@ -110,12 +113,24 @@ void MainWindow::on_actionPerform_triggered()
             triangles.push_back(QPoint(p[0], p[1]));
         }
     }
-    hasTrianglated = true;
+    isTrianglated = true;
     update();
-    if (viewer == nullptr)
+
+    if (ui->action3D_Viewer->isChecked())
     {
-        viewer = new DViewer::Viewer(std::move(delaunay), this->width(), this->height());
-        viewer->setWindowTitle("3D Viewer");
-        viewer->show();
+        if (viewer == nullptr)
+        {
+            viewer = new DViewer(std::move(delaunay), this->width(), this->height());
+            viewer->setWindowTitle("3D Viewer");
+            viewer->show();
+        }
     }
+}
+
+void MainWindow::on_actionClear_triggered()
+{
+    points.clear();
+    triangles.clear();
+    isTrianglated = false;
+    update();
 }

@@ -6,16 +6,13 @@
 using namespace qglviewer;
 using namespace std;
 
-namespace DViewer
-{
-
 //Delaunay delaunay;
 bool isDraw = true;
 
-Viewer::Viewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
+DViewer::DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
     : _delaunay(std::move(delaunay)), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
 
-void Viewer::drawMesh()
+void DViewer::drawMesh()
 {
     glPointSize(4.0);
     glColor3f(1, 0, 0);
@@ -45,7 +42,7 @@ void Viewer::drawMesh()
 
 }
 
-void Viewer::init()
+void DViewer::init()
 {
     setKeyDescription(Qt::Key_Space, "Perform Delaunay Triangulation");
     //setKeyDescription(Qt::Key_F, "Toggles flat shading display");
@@ -65,7 +62,7 @@ void Viewer::init()
     //restoreStateFromFile();
 }
 
-void Viewer::draw()
+void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     drawAxis();
@@ -103,7 +100,7 @@ void Viewer::draw()
 //    return text;
 //}
 
-void Viewer::keyPressEvent(QKeyEvent *e)
+void DViewer::keyPressEvent(QKeyEvent *e)
 {
     const Qt::KeyboardModifiers modifiers = e->modifiers();
     bool handled = false;
@@ -143,7 +140,7 @@ void Viewer::keyPressEvent(QKeyEvent *e)
 #define GETX(u, v) (u * cos(v))
 #define GETY(u, v) (u * sin(v))
 
-void Viewer::drawParaboloid()
+void DViewer::drawParaboloid()
 {
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -178,4 +175,3 @@ void Viewer::drawParaboloid()
 
 }
 
-}

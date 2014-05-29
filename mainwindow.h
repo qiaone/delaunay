@@ -21,12 +21,14 @@ public:
 private slots:
     void on_actionPerform_triggered();
 
+    void on_actionClear_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;
     QVector<QPoint> triangles;
-    bool hasTrianglated;
-    DViewer::Viewer* viewer;
+    bool isTrianglated;
+    DViewer* viewer;
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);

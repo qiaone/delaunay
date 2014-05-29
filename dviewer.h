@@ -5,14 +5,12 @@
 #include <memory>
 #include "Delaunay.h"
 
-namespace DViewer
-{
 
-class Viewer : public QGLViewer
+class DViewer : public QGLViewer
 {
 public:
     PointVec points;
-    Viewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
+    DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
 protected :
     virtual void init();
     virtual void draw();
@@ -26,5 +24,4 @@ private:
     int _mainwindow_width, _mainwindow_height;
 };
 
-}
 #endif // VIEWER_H

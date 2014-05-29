@@ -35,6 +35,19 @@
       viewer.show();
       return application.exec();
     }
+#else
+#ifdef DTVWIN
+    #include "dviewerwindow.h"
+    #include <QApplication>
+    int main(int argc, char** argv)
+    {
+      QApplication application(argc,argv);
+      DViewerWindow dvwin;
+      dvwin.setWindowTitle("Delaunay Triangulation Viewer");
+      dvwin.show();
+      return application.exec();
+    }
+#endif
 #endif
 #endif
 #endif

@@ -1,6 +1,9 @@
 ﻿随机生成点，不多于5000
 
 clear选的点，重新开始
+    done 0529
+
+3d viewer窗口关闭时需要做一些处理，析构、标志位变更等
 
 viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
 
@@ -14,3 +17,8 @@ viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
 
 定时演示下一步，包括界面的设计，以及鼠标中键可以改变速度等操控
 
+挑选主界面按钮图标
+
+viewer初始相机位置
+
+尝试animate viewer
