@@ -1,7 +1,9 @@
-#ifndef DVIEWERWINDOW_H
+﻿#ifndef DVIEWERWINDOW_H
 #define DVIEWERWINDOW_H
 
 #include <QWidget>
+#include <memory>
+#include "Delaunay.h"
 
 namespace Ui {
 class DViewerWindow;
@@ -12,7 +14,7 @@ class DViewerWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit DViewerWindow(QWidget *parent = 0);
+    explicit DViewerWindow(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height, QWidget *parent = 0);
     ~DViewerWindow();
 
 private:

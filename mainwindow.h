@@ -20,15 +20,20 @@ public:
 
 private slots:
     void on_actionPerform_triggered();
-
     void on_actionClear_triggered();
+
+    void on_actionSelectManually_triggered();
+
+    void on_actionRandomGeneration_triggered();
 
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;
     QVector<QPoint> triangles;
     bool isTrianglated;
+    bool isMouseDraw;
     DViewer* viewer;
+
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);

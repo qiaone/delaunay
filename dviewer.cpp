@@ -9,7 +9,11 @@ using namespace std;
 //Delaunay delaunay;
 bool isDraw = true;
 
-DViewer::DViewer(QWidget *) { }
+DViewer::DViewer(QWidget *parent)
+    : QGLViewer(parent)
+{
+
+}
 
 DViewer::DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
     : _delaunay(std::move(delaunay)), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }

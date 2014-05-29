@@ -1,5 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "dviewerwindow.h"
 #include <QPainter>
 #include <QPen>
 #include <QToolTip>
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     isTrianglated(false),
+    isMouseDraw(true),
     viewer(nullptr)
 {
     ui->setupUi(this);
@@ -120,9 +122,9 @@ void MainWindow::on_actionPerform_triggered()
     {
         if (viewer == nullptr)
         {
-            viewer = new DViewer(std::move(delaunay), this->width(), this->height());
-            viewer->setWindowTitle("3D Viewer");
-            viewer->show();
+            DViewerWindow* dvwin = new DViewerWindow(std::move(delaunay), this->width(), this->height());
+            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+            dvwin->show();
         }
     }
 }
@@ -133,4 +135,14 @@ void MainWindow::on_actionClear_triggered()
     triangles.clear();
     isTrianglated = false;
     update();
+}
+
+void MainWindow::on_actionSelectManually_triggered()
+{
+    ui->actionRandomGeneration->setChecked(!ui->actionRandomGeneration->isChecked());
+}
+
+void MainWindow::on_actionRandomGeneration_triggered()
+{
+    ui->actionSelectManually->setChecked(!ui->actionSelectManually->isChecked());
 }

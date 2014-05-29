@@ -1,14 +1,16 @@
 ﻿随机生成点，不多于5000
+    20% 0529
 
 clear选的点，重新开始
     done 0529
 
 为dviewer提供无参数构造函数，并提供相应填参数接口
-    almost done
+    done 0529
 
 3d viewer窗口关闭时需要做一些处理，析构、标志位变更等
 
 viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
+    60% 0529
 
 把碗提升一个高度
 

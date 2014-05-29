@@ -10,7 +10,7 @@ class DViewer : public QGLViewer
 {
 public:
     PointVec points;
-    DViewer(QWidget *);
+    DViewer(QWidget *parent);
     void setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
     DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
 protected :
