@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     Tests/OpenMeshTest.cpp \
     dviewer.cpp \
     Tests/DelaunayTest.cpp \
-    delaunay.cpp
+    delaunay.cpp \
+    dviewerwindow.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -32,10 +33,12 @@ HEADERS  += \
     Halfedge/point2d.h \
     Halfedge/vertex.h \
     dviewer.h \
-    delaunay.h
+    delaunay.h \
+    dviewerwindow.h
 
 FORMS    += \
-    mainwindow.ui
+    mainwindow.ui \
+    dviewerwindow.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCored

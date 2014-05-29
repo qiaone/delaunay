@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>DViewerWindow</class>
+ <widget class="QWidget" name="DViewerWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>DViewerWindow</string>
   </property>
-  <widget class="DViewer" name="viewer">
+  <widget class="DViewer" name="viewer" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
