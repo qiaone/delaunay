@@ -1,17 +1,19 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "dviewerwindow.h"
+#include "randompointsdialog.h"
+#include <random>
 #include <QPainter>
 #include <QPen>
 #include <QToolTip>
 #include <QMouseEvent>
 #include <QDebug>
-//#include <QTime>
+#include <QTime>
 //#include <QtAlgorithms>
 //#include <qmath.h>
 //#include <QSet>
 //#include <limits>
-//#include <random>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -58,33 +60,33 @@ void MainWindow::paintEvent(QPaintEvent *)
 
 void MainWindow::mousePressEvent(QMouseEvent * event)
 {
-//    if(isMouseDraw)
-//    {
+    if(isMouseDraw)
+    {
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
-//    }
+    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent * event)
 {
-//    if(isMouseDraw)
-//    {
+    if(isMouseDraw)
+    {
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
-//    }
+    }
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
-    if (event->pos().y() < 100)
+    if(isMouseDraw)
     {
-        return;
-    }
-//    if(isMouseDraw)
-//    {
+        if (event->pos().y() < 100)
+        {
+            return;
+        }
         points.append(event->pos());
         update();
-//    }
+    }
 }
 
 void MainWindow::on_actionPerform_triggered()
@@ -95,7 +97,7 @@ void MainWindow::on_actionPerform_triggered()
     }
 
     if (!ui->action2D_Viewer->isChecked())
-        this->close();
+        this->hide();
 
     triangles.clear();
 
@@ -139,10 +141,31 @@ void MainWindow::on_actionClear_triggered()
 
 void MainWindow::on_actionSelectManually_triggered()
 {
-    ui->actionRandomGeneration->setChecked(!ui->actionRandomGeneration->isChecked());
+    isMouseDraw = !isMouseDraw;
 }
 
 void MainWindow::on_actionRandomGeneration_triggered()
 {
-    ui->actionSelectManually->setChecked(!ui->actionSelectManually->isChecked());
+    on_actionClear_triggered();
+    isMouseDraw = false;
+
+    RandomPointsDialog * dialog = new RandomPointsDialog(this);
+    dialog->exec();
+
+    QTime t;
+    t.start();
+
+    std::random_device rd;
+    std::mt19937 gen;
+    gen.seed(rd());
+
+    for(int i = 0; i < dialog->getPointsNumber(); i++)
+    {
+        std::uniform_int_distribution<int> randx(1, this->width() - 1);
+        std::uniform_int_distribution<int> randy(150, this->height() - 1); // 150 in order to avoid paint on toolbar
+        points.append(QPoint(randx(gen), randy(gen)));
+    }
+
+    qDebug()<<"random time: "<<t.elapsed() / 1000.0;
+    update();
 }

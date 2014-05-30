@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     dviewer.cpp \
     Tests/DelaunayTest.cpp \
     delaunay.cpp \
-    dviewerwindow.cpp
+    dviewerwindow.cpp \
+    randompointsdialog.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -34,11 +35,13 @@ HEADERS  += \
     Halfedge/vertex.h \
     dviewer.h \
     delaunay.h \
-    dviewerwindow.h
+    dviewerwindow.h \
+    randompointsdialog.h
 
 FORMS    += \
     mainwindow.ui \
-    dviewerwindow.ui
+    dviewerwindow.ui \
+    randompointsdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCored

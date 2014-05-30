@@ -78,7 +78,7 @@ void DViewer::init()
 void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
-    drawAxis();
+    //drawAxis();
     drawParaboloid();
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
