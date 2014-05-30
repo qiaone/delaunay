@@ -1,4 +1,4 @@
-﻿// define DTV or UNITEST or WPS or MW
+﻿// define DTV or UNITEST or WPS or MW or DTVWIN
 // to call different entry point
 #define MW
 
