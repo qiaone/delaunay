@@ -19,10 +19,12 @@ protected :
     virtual void keyPressEvent(QKeyEvent *e);
     //virtual void mousePressEvent(QMouseEvent* e);
     void drawMesh();
-    void drawParaboloid();
+    void drawParaboloid(Point lPt, float slice, float stack);
+
 private:
     std::unique_ptr<Delaunay> _delaunay;
     int _mainwindow_width, _mainwindow_height;
+	GLuint listName; // display list name
 };
 
 #endif // VIEWER_H

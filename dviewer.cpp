@@ -73,10 +73,15 @@ void DViewer::init()
     //help();
     //restoreStateFromFile();
 
+	// auto-normalize
+	glEnable(GL_NORMALIZE);
+
+	glShadeModel(GL_SMOOTH);
+
 	// create display list
 	listName = glGenLists(1);
 	glNewList(listName, GL_COMPILE);
-	drawParaboloid();
+	drawParaboloid(Point(0, 0, 0.05), 50.0, 50.0);
 	glEndList();
 }
 
@@ -146,31 +151,43 @@ void DViewer::keyPressEvent(QKeyEvent *e)
 #define GETX(u, v) (u * cos(v))
 #define GETY(u, v) (u * sin(v))
 
-void DViewer::drawParaboloid()
+// lPt: the lowest point of the paraboloid
+// slice , stack: control the number of triangles 
+void DViewer::drawParaboloid(Point lPt, float slice, float stack )
 {
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    const float step_v = (float)(M_PI / 50.0);
-    const float step_u = 0.01f;
+    const float step_v = (float)(M_PI / slice);
+    const float step_u = 1.0/stack;
 
     glEnable(GL_BLEND);
 //    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_TRIANGLE_STRIP);
     for (float u = 0; u < 1; u += step_u)
     {
-        for (float v = 0; v < 2 * M_PI; v += step_v)
+        for (float v = 0; v < 2 * M_PI+step_v; v += step_v)
         {
-            glNormal3f(2 * GETX(u, v), 2 * GETY(u, v), -1);
-            glVertex3f(GETX((u), (v)), GETY((u), (v)), u * u);
-            glVertex3f(GETX((u), (v + step_v)), GETY((u), (v + step_v)), u * u);
-            glVertex3f(GETX((u + step_u), (v + step_v)), GETY((u + step_u), (v + step_v)), (u + step_u) * (u + step_u));
+			Point Tu, Tv, N;
 
-            glVertex3f(GETX((u), (v)), GETY((u), (v)), u * u);
-            glVertex3f(GETX((u + step_u), (v + step_v)), GETY((u + step_u), (v + step_v)), (u + step_u) * (u + step_u));
-            glVertex3f(GETX((u + step_u), (v)), GETY((u + step_u), (v)), (u + step_u) * (u + step_u));
+			// calculate Normal
+			Tu = Point(cos(v), sin(v), 2 * u);
+			Tv = Point(-sin(v), cos(v), 0);
+			N = cross(Tu, Tv); 	N.normalize();
+			glNormal3f(N[0], N[1], N[2]);
+
+			glVertex3f(GETX((u), (v)) + lPt[0], 
+				GETY((u), (v))+lPt[1], u * u + lPt[2]);
+
+			// calculate Normal
+			Tu = Point(cos(v), sin(v), 2 * (u+step_u));
+			N = cross(Tu, Tv); 	N.normalize();
+			glNormal3f(N[0], N[1], N[2]);        
+
+            glVertex3f(GETX((u + step_u), (v)) + lPt[0],
+				GETY((u + step_u), (v))+lPt[1], (u + step_u) * (u + step_u)+lPt[2]);
         }
     }
     glEnd();
