@@ -72,13 +72,23 @@ void DViewer::init()
 
     //help();
     //restoreStateFromFile();
+
+	// create display list
+	listName = glGenLists(1);
+	glNewList(listName, GL_COMPILE);
+	drawParaboloid();
+	glEndList();
 }
 
 void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     //drawAxis();
-    drawParaboloid();
+   // drawParaboloid();
+	
+	// draw paraboloid 
+	glCallList(listName); 
+	
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
     //// Multiply matrix to get in the frame coordinate system.
@@ -142,6 +152,7 @@ void DViewer::drawParaboloid()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     const float step_v = (float)(M_PI / 50.0);
     const float step_u = 0.01f;
+
     glEnable(GL_BLEND);
 //    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
