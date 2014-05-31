@@ -137,16 +137,19 @@ bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
     if (mesh.is_boundary(hh) ||
             mesh.is_boundary(mesh.opposite_halfedge_handle(hh))) 
         return false;
-	
-	// deal with infinite point
-	if (isInfinite(vh2))
-		return false;
-    
+	   
 	Point pt[4];
     pt[0] = mesh.point(mesh.from_vertex_handle(hh));
     pt[1] = mesh.point(mesh.to_vertex_handle(hh));
     pt[2] = mesh.point(vh1);
     pt[3] = mesh.point(vh2);
+
+	// deal with infinite point
+	if (isInfinite(pt[3]))
+	{
+		if (!(isInfinite(pt[0])|| isInfinite(pt[1])))
+			return false;
+	}
 
     for (int i = 0; i < 3; i++)
     {
@@ -204,10 +207,9 @@ bool Delaunay::isInTriangle(Point& point, FHandle fh)
     return (b1 == b2) && (b2 == b3);
 }
 
-bool Delaunay::isInfinite(VHandle vh)
+bool Delaunay::isInfinite(Point& pt)
 {
 	// the second coordinate is INF
-	Point& pt = mesh.point(vh);
 	return INF - abs(pt[1]) < ESP;
 }
 

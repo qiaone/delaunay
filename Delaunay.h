@@ -45,7 +45,7 @@ private:
 	bool isOverlap(VHandle vh1, VHandle vh2);
 	bool isOnEdge(Point& pt, HHandle hh);
     bool isInTriangle(Point& pt, FHandle fh);
-	bool isInfinite(VHandle vh);
+	bool isInfinite(Point& pt);
     void rebucket(VHandle vh, VHandleVec& vhvec);
     void rebucket(EHandle eh, VHandleVec& vhvec);
 	void saveVhs(FHandle fh, VHandleVec &vhs_buffer);
