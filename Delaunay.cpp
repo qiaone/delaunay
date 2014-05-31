@@ -27,7 +27,16 @@ void Delaunay::perform(PointVec& all_points)
 		HHandle hh = mesh.property(VertexToHEdge, vh);
 
 		VHandleVec vhs_buffer;
-		if (fh.is_valid())
+		
+		if (hh.is_valid())
+		{
+			// save vertices maped to the two faces 
+			saveVhs(hh, vhs_buffer);
+
+			// split edge
+			mesh.split(mesh.edge_handle(hh), vh);
+		}
+		else if (fh.is_valid())
 		{
 			// save vertices maped to this face
 			// coz properties will be destroyed after split
@@ -35,14 +44,6 @@ void Delaunay::perform(PointVec& all_points)
 
 			// split face
 			mesh.split(fh, vh);	
-		}
-		else if (hh.is_valid())
-		{
-			// save vertices maped to the two faces 
-			saveVhs(hh, vhs_buffer);
-			
-			// split edge
-			mesh.split(mesh.edge_handle(hh), vh);
 		}
 		else
 		{
@@ -240,7 +241,7 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 	for (auto& vh : vhvec)
 	{
 		mesh.property(VertexToFace, vh).invalidate();
-		mesh.property(VertexToHEdge, vh).invalidate();  // this line may be redundant
+		mesh.property(VertexToHEdge, vh).invalidate(); 
 	}
 
     // for every vertex influenced, find new Face/Edge it belongs to
@@ -278,6 +279,9 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 				if (isOnEdge(mesh.point(vhi), hh))
 				{
 					mesh.property(VertexToHEdge, vhi) = hh;
+					FHandle fh = mesh.face_handle(hh);
+					mesh.property(FaceToVertices, fh).push_back(vhi);
+					mesh.property(VertexToFace, vhi) = fh;
 					break;
 				}
 			}
@@ -296,31 +300,34 @@ void Delaunay::rebucket(EHandle eh, VHandleVec& vhvec)
     mesh.property(FaceToVertices, fh2).clear();
 
 	// reset vertex's property
-	for (auto &vh : vhvec)
+	for (auto &vhi : vhvec)
 	{
-		mesh.property(VertexToFace, vh).invalidate();
-		mesh.property(VertexToHEdge, vh).invalidate();  // this line may be redundant
+		mesh.property(VertexToFace, vhi).invalidate();
+		mesh.property(VertexToHEdge, vhi).invalidate();
 	}
 
 	// rebucket vertices
     Point start = mesh.point(mesh.from_vertex_handle(hh));
     Point end = mesh.point(mesh.to_vertex_handle(hh));
-    for(auto& vh : vhvec)
+    for(auto& vhi : vhvec)
     {
-        if (isLeft(mesh.point(vh), start, end))
+        if (isLeft(mesh.point(vhi), start, end))
         {
-            mesh.property(FaceToVertices, fh1).push_back(vh);
-            mesh.property(VertexToFace, vh) = fh1;
+            mesh.property(FaceToVertices, fh1).push_back(vhi);
+            mesh.property(VertexToFace, vhi) = fh1;
         }
-        else if (isLeft(mesh.point(vh), end, start))
+        else if (isLeft(mesh.point(vhi), end, start))
         {
-            mesh.property(FaceToVertices, fh2).push_back(vh);
-            mesh.property(VertexToFace, vh) = fh2;
+            mesh.property(FaceToVertices, fh2).push_back(vhi);
+            mesh.property(VertexToFace, vhi) = fh2;
         }
 		else 
 		{
 			// on edge
-			mesh.property(VertexToHEdge, vh) = hh;
+			mesh.property(VertexToHEdge, vhi) = hh;
+			FHandle fh = mesh.face_handle(hh);
+			mesh.property(FaceToVertices, fh).push_back(vhi);
+			mesh.property(VertexToFace, vhi) = fh;
 		}
     }
 }
