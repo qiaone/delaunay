@@ -247,11 +247,6 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
     // for every vertex influenced, find new Face/Edge it belongs to
     for(auto& vhi : vhvec)
     {
-		//if (vh == vhi)
-		//{
-		// 	continue;
-		//}
-
 		// ENSURE(vh != vhi) and deal with points OVERLAP
 		if (isOverlap(vhi, vh))
 		{
@@ -273,13 +268,24 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 		// to check whether this point is on any Edge
 		if (!mesh.property(VertexToFace, vhi).is_valid())
 		{
-			for (auto &hh : hhvec)
+			for (auto &hhi : hhvec)
 			{
 				// find new edge it belongs to. 
-				if (isOnEdge(mesh.point(vhi), hh))
+				HHandle hh_on;
+				HHandle hh_next =  mesh.next_halfedge_handle(hhi);
+				if (isOnEdge(mesh.point(vhi), hhi))
 				{
-					mesh.property(VertexToHEdge, vhi) = hh;
-					FHandle fh = mesh.face_handle(hh);
+					hh_on = hhi;
+				}
+				else if (isOnEdge(mesh.point(vhi),hh_next))
+				{
+					hh_on = hh_next;
+				}
+
+				if (hh_on.is_valid())
+				{
+					mesh.property(VertexToHEdge, vhi) = hh_on;
+					FHandle fh = mesh.face_handle(hh_on);
 					mesh.property(FaceToVertices, fh).push_back(vhi);
 					mesh.property(VertexToFace, vhi) = fh;
 					break;
