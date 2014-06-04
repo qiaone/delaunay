@@ -6,6 +6,8 @@
     # 类名中各单词首字母大写，如 class EnsureException
     # 所有源码文件名小写，可用下划线分割单词，如 ensure_exception.cpp
         # 测试源码文件名使用类名+Test，如 OpenMeshTest.cpp
+    # 类的public/private下先放置methods，然后放置varibles
+    # 缩进为4个空格（而非tab）
 
 版本控制：
     # 项目使用 git 进行版本控制，并使用 github 作为中心平台

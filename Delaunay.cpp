@@ -1,9 +1,16 @@
-﻿#include "delaunay.h"
+﻿#pragma once
+#include "delaunay.h"
+#include <Windows.h>
 
-const float INF = 1.0e5;
-const float ESP = 1.0e-6;
+const float INF = 1.0e5f;
+const float ESP = 1.0e-6f;
 
 Delaunay::Delaunay()
+{
+    isStepDemo = false;
+}
+
+Delaunay::Delaunay(bool isStepDemo_) : isStepDemo(isStepDemo_)
 { }
 
 void Delaunay::perform(PointVec& all_points)
@@ -30,7 +37,8 @@ void Delaunay::perform(PointVec& all_points)
 		
 		if (hh.is_valid())
 		{
-			// save vertices maped to the two faces 
+            // the incrementing vertex is mapped to an (half)edge
+			// save the vertices mapped to the two faces incident to the edge
 			saveVhs(hh, vhs_buffer);
 
 			// split edge
@@ -38,12 +46,12 @@ void Delaunay::perform(PointVec& all_points)
 		}
 		else if (fh.is_valid())
 		{
-			// save vertices maped to this face
+			// save vertices mapped to this face
 			// coz properties will be destroyed after split
 			saveVhs(fh, vhs_buffer);
 
 			// split face
-			mesh.split(fh, vh);	
+			mesh.split(fh, vh);
 		}
 		else
 		{
@@ -53,6 +61,9 @@ void Delaunay::perform(PointVec& all_points)
 		// rebucket (caused by face_split)
 		rebucket(vh, vhs_buffer);
 
+        // legalize accept two params:
+        //       /\ <-hh
+        // vh->*/__\
         // legalize each triangle
         for(auto& hh : mesh.voh_range(vh))
         {
@@ -217,17 +228,35 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
 {
 	// get all outgoing half_edge around the vertex
 	HHandleVec hhvec;
-	for (auto vhit = mesh.voh_begin(vh); vhit !=mesh.voh_end(vh); vhit++ )
-	{
-		hhvec.push_back(*vhit);
-	}
+ //   for (auto vhit = mesh.voh_begin(vh); vhit != mesh.voh_end(vh); vhit++ )
+	//{
+	//	hhvec.push_back(*vhit);
+	//}
+
+    for(auto& hh : mesh.voh_range(vh))
+    {
+        hhvec.push_back(hh);
+    }
+
+    //for(auto& hh : mesh)
 
     // get all face handles around the vertex
     FHandleVec fhvec;	
-    for(auto &hh : hhvec)
+    //for(auto &hh : hhvec)
+    //{
+    //    fhvec.push_back(mesh.face_handle(hh));
+    //}
+
+    //for(auto& fh : mesh.vf_range(vh))
+    //{
+    //    fhvec.push_back(fh);
+    //}
+    
+    for(auto fit = mesh.vf_begin(vh); fit != mesh.vf_end(vh); fit++)
     {
-        fhvec.push_back(mesh.face_handle(hh));
+        fhvec.push_back(*fit);
     }
+
 
     // following code lead to compiler crash:
     //for(auto& fhi : mesh.vf_range(vh))
@@ -238,6 +267,8 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
     {
         mesh.property(FaceToVertices, fh).clear();
     }
+
+    // what's the diff up and down
 
 	// reset vertex's property
 	for (auto& vh : vhvec)
@@ -264,15 +295,18 @@ void Delaunay::rebucket(VHandle vh, VHandleVec& vhvec)
                 mesh.property(VertexToFace, vhi) = fh;
                 break;
             }
+
+            // if (isOnTriangleEdges)
+
         }
 
-		// this point is in none of the triangles, so need
-		// to check whether this point is on any Edge
+		// the vertex is not IN any triangle
+        // check whether lies ON an edge of the triangles
 		if (!mesh.property(VertexToFace, vhi).is_valid())
 		{
 			for (auto &hhi : hhvec)
 			{
-				// find new edge it belongs to. 
+				// find new edge it belongs to
 				HHandle hh_on;
 				HHandle hh_next =  mesh.next_halfedge_handle(hhi);
 				if (isOnEdge(mesh.point(vhi), hhi))
@@ -366,6 +400,7 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
      *        /    \  /
      *    vh /___>__\/
      */
+
     VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
     if (isInCircle(hh, vh, vh_oppo))
     {
@@ -377,6 +412,17 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
         EHandle eh = mesh.edge_handle(hh);
         if (mesh.is_flip_ok(eh))
         {
+            // save the state before flip
+            fliprec.save(vh, vh_oppo, hh, mesh);
+            
+            if (isStepDemo)
+            {
+                emit drawBeforeFlip();
+                Sleep(2000);
+                // TODO: step by step control: pause/next
+                // send a signal to draw flip
+                // wait a second?
+            }
             mesh.flip(eh);
         }
 

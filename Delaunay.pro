@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     Tests/DelaunayTest.cpp \
     delaunay.cpp \
     dviewerwindow.cpp \
-    randompointsdialog.cpp
+    randompointsdialog.cpp \
+    fliprecord.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -36,7 +37,9 @@ HEADERS  += \
     dviewer.h \
     delaunay.h \
     dviewerwindow.h \
-    randompointsdialog.h
+    randompointsdialog.h \
+    fliprecord.h \
+    def.h
 
 FORMS    += \
     mainwindow.ui \

@@ -26,6 +26,8 @@ private slots:
 
     void on_actionRandomGeneration_triggered();
 
+    void on_actionStepByStep_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;

@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <memory>
-#include "Delaunay.h"
+#include "delaunay.h"
 
 namespace Ui {
 class DViewerWindow;

@@ -1,30 +1,18 @@
-﻿#pragma once
+﻿#ifndef DELAUNAY_H
+#define DELAUNAY_H
+
+#include <array>
 #include <vector>
+#include <QObject>
+#include <glm/glm.hpp>
 #include <GL/glut.h>
-#include <OpenMesh/Core/IO/MeshIO.hh>
-#include <OpenMesh/Core/Mesh/PolyConnectivity.hh>
-#include <OpenMesh/Core/Mesh/TriMesh_ArrayKernelT.hh>
+#include "def.h"
+#include "fliprecord.h"
 
-struct MyTraits : public OpenMesh::DefaultTraits
+class Delaunay : QObject
 {
-    VertexAttributes(OpenMesh::Attributes::Status);
-    FaceAttributes(OpenMesh::Attributes::Status);
-    EdgeAttributes(OpenMesh::Attributes::Status);
-};
+    Q_OBJECT
 
-typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  TriMesh;
-typedef TriMesh::Point Point;
-typedef std::vector<Point> PointVec;
-typedef TriMesh::EHandle EHandle;
-typedef TriMesh::VHandle VHandle;
-typedef TriMesh::FHandle FHandle;
-typedef TriMesh::HHandle HHandle;
-typedef std::vector<VHandle> VHandleVec;
-typedef std::vector<FHandle> FHandleVec;
-typedef std::vector<HHandle> HHandleVec;
-
-class Delaunay
-{
 protected:
     OpenMesh::FPropHandleT<VHandleVec> FaceToVertices;
     OpenMesh::VPropHandleT<FHandle> VertexToFace;
@@ -32,9 +20,12 @@ protected:
 
 public:
     Delaunay();
+    Delaunay(bool isStepDemo_);
     void perform(PointVec& all_points);
     void drawMesh();
     TriMesh mesh;
+    FlipRecord fliprec;
+    bool isStepDemo;
 
 private:
     void drawTriangle(FHandle fh);
@@ -52,5 +43,9 @@ private:
 	void saveVhs(HHandle hh, VHandleVec &vhs_buffer);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
+
+signals:
+    void drawBeforeFlip();
 };
 
+#endif // DELAUNAY_H

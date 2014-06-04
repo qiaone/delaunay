@@ -24,6 +24,50 @@ void DViewer::setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width,
     _mainwindow_height = mainwindow_height;
 }
 
+void DViewer::drawFlip()
+{
+//    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
+//    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+//    glEnable(GL_BLEND);
+//    //    glEnable(GL_POLYGON_SMOOTH);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
+
+//    glBegin(GL_TRIANGLE_STRIP);
+//    for (float u = 0; u < 1; u += step_u)
+//    {
+//        for (float v = 0; v < 2 * M_PI + step_v; v += step_v)
+//        {
+//            Point Tu, Tv, N;
+
+//            // calculate Normal
+//            Tu = Point(cos(v), sin(v), 2 * u);
+//            Tv = Point(-sin(v), cos(v), 0);
+//            N = cross(Tu, Tv);
+//            N.normalize();
+//            glNormal3f(N[0], N[1], N[2]);
+//            glVertex3f(getx(u, v) + lPt[0], gety(u, v) + lPt[1], u * u + lPt[2]);
+
+//            // calculate Normal
+//            Tu = Point(cos(v), sin(v), 2 * (u + step_u));
+//            N = cross(Tu, Tv);
+//            N.normalize();
+//            glNormal3f(N[0], N[1], N[2]);
+
+//            glVertex3f(getx((u + step_u), (v)) + lPt[0],
+//                    gety((u + step_u), (v)) + lPt[1],
+//                    (u + step_u) * (u + step_u) + lPt[2]);
+//        }
+//    }
+//    glEnd();
+
+//    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+//    glDisable(GL_BLEND);
+//    //glDisable(GL_POLYGON_SMOOTH);
+//    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);
+}
+
 void DViewer::drawMesh()
 {
     glPointSize(4.0);
@@ -73,27 +117,27 @@ void DViewer::init()
     //help();
     //restoreStateFromFile();
 
-	// auto-normalize
-	glEnable(GL_NORMALIZE);
+    // auto-normalize
+    glEnable(GL_NORMALIZE);
 
-	glShadeModel(GL_SMOOTH);
+    glShadeModel(GL_SMOOTH);
 
-	// create display list
-	listName = glGenLists(1);
-	glNewList(listName, GL_COMPILE);
-	drawParaboloid(Point(0, 0, 0.05), 50.0, 50.0);
-	glEndList();
+    // create display list
+    listName = glGenLists(1);
+    glNewList(listName, GL_COMPILE);
+    drawParaboloid(Point(0, 0, 0.05), 50.0, 50.0);
+    glEndList();
 }
 
 void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
-    //drawAxis();
-   // drawParaboloid();
-	
-	// draw paraboloid 
-	glCallList(listName); 
-	
+    // drawAxis();
+    // drawParaboloid();
+
+    // draw paraboloid
+    glCallList(listName);
+
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
     //// Multiply matrix to get in the frame coordinate system.
@@ -118,7 +162,7 @@ void DViewer::keyPressEvent(QKeyEvent *e)
     if ((e->key()==Qt::Key_Space) && (modifiers==Qt::NoButton))
     {
         isDraw = true;
-//        delaunay.perform(points);
+        //        delaunay.perform(points);
         updateGL();
     }
     else
@@ -148,8 +192,18 @@ void DViewer::keyPressEvent(QKeyEvent *e)
 ////}
 //
 
-#define GETX(u, v) (u * cos(v))
-#define GETY(u, v) (u * sin(v))
+//#define getx(u, v) (u * cos(v))
+//#define gety(u, v) (u * sin(v))
+
+inline float getx(float u, float v)
+{
+    return u * cos(v);
+}
+
+inline float gety(float u, float v)
+{
+    return u * sin(v);
+}
 
 // lPt: the lowest point of the paraboloid
 // slice , stack: control the number of triangles 
@@ -158,36 +212,37 @@ void DViewer::drawParaboloid(Point lPt, float slice, float stack )
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     const float step_v = (float)(M_PI / slice);
-    const float step_u = 1.0/stack;
+    const float step_u = 1.0 / stack;
 
     glEnable(GL_BLEND);
-//    glEnable(GL_POLYGON_SMOOTH);
+    //    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
 
     glBegin(GL_TRIANGLE_STRIP);
     for (float u = 0; u < 1; u += step_u)
     {
-        for (float v = 0; v < 2 * M_PI+step_v; v += step_v)
+        for (float v = 0; v < 2 * M_PI + step_v; v += step_v)
         {
-			Point Tu, Tv, N;
+            Point Tu, Tv, N;
 
-			// calculate Normal
-			Tu = Point(cos(v), sin(v), 2 * u);
-			Tv = Point(-sin(v), cos(v), 0);
-			N = cross(Tu, Tv); 	N.normalize();
-			glNormal3f(N[0], N[1], N[2]);
+            // calculate Normal
+            Tu = Point(cos(v), sin(v), 2 * u);
+            Tv = Point(-sin(v), cos(v), 0);
+            N = cross(Tu, Tv);
+            N.normalize();
+            glNormal3f(N[0], N[1], N[2]);
+            glVertex3f(getx(u, v) + lPt[0], gety(u, v) + lPt[1], u * u + lPt[2]);
 
-			glVertex3f(GETX((u), (v)) + lPt[0], 
-				GETY((u), (v))+lPt[1], u * u + lPt[2]);
+            // calculate Normal
+            Tu = Point(cos(v), sin(v), 2 * (u + step_u));
+            N = cross(Tu, Tv);
+            N.normalize();
+            glNormal3f(N[0], N[1], N[2]);
 
-			// calculate Normal
-			Tu = Point(cos(v), sin(v), 2 * (u+step_u));
-			N = cross(Tu, Tv); 	N.normalize();
-			glNormal3f(N[0], N[1], N[2]);        
-
-            glVertex3f(GETX((u + step_u), (v)) + lPt[0],
-				GETY((u + step_u), (v))+lPt[1], (u + step_u) * (u + step_u)+lPt[2]);
+            glVertex3f(getx((u + step_u), (v)) + lPt[0],
+                    gety((u + step_u), (v)) + lPt[1],
+                    (u + step_u) * (u + step_u) + lPt[2]);
         }
     }
     glEnd();

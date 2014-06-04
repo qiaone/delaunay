@@ -3,7 +3,7 @@
 
 #include <QGLViewer/qglviewer.h>
 #include <memory>
-#include "Delaunay.h"
+#include "delaunay.h"
 
 
 class DViewer : public QGLViewer
@@ -19,6 +19,7 @@ protected :
     virtual void keyPressEvent(QKeyEvent *e);
     //virtual void mousePressEvent(QMouseEvent* e);
     void drawMesh();
+    void drawFlip();
     void drawParaboloid(Point lPt, float slice, float stack);
 
 private:
