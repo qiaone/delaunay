@@ -101,7 +101,7 @@ void MainWindow::on_actionPerform_triggered()
 
     triangles.clear();
 
-    std::unique_ptr<Delaunay> delaunay(new Delaunay);
+    auto delaunay = std::make_shared<Delaunay>();
     PointVec mesh_points;
     for(auto& p : points)
     {
@@ -126,7 +126,7 @@ void MainWindow::on_actionPerform_triggered()
     {
         if (viewer == nullptr)
         {
-            DViewerWindow* dvwin = new DViewerWindow(std::move(delaunay), this->width(), this->height());
+            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
             dvwin->setWindowTitle("Delaunay Triangulation Viewer");
             dvwin->show();
         }
@@ -173,7 +173,7 @@ void MainWindow::on_actionRandomGeneration_triggered()
 }
 
 void MainWindow::on_actionStepByStep_triggered()
-{/*
+{
     if (points.size() < 3)
     {
         return;
@@ -182,27 +182,27 @@ void MainWindow::on_actionStepByStep_triggered()
     if (!ui->action2D_Viewer->isChecked())
         this->hide();
 
-    triangles.clear();
-
-    std::unique_ptr<Delaunay> delaunay(new Delaunay);
+    auto delaunay = std::make_shared<Delaunay>(true);
 
     // display 3d result
     if (ui->action3D_Viewer->isChecked())
     {
         if (viewer == nullptr)
         {
-            DViewerWindow* dvwin = new DViewerWindow(std::move(delaunay), this->width(), this->height());
+            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
             dvwin->setWindowTitle("Delaunay Triangulation Viewer");
             dvwin->show();
         }
     }
+
+    triangles.clear();
 
     PointVec mesh_points;
     for(auto& p : points)
     {
         mesh_points.push_back(Point(p.x(), p.y(), 0));
     }
-    dvwin->delaunay->perform(mesh_points);
+    delaunay->perform(mesh_points);
 
     // display 2d result
     for (auto& fh : delaunay->mesh.faces())
@@ -214,7 +214,36 @@ void MainWindow::on_actionStepByStep_triggered()
         }
     }
     isTrianglated = true;
-    update();*/
+    update();
+}
 
+void MainWindow::on_actionPerformStep_triggered()
+{
+    if (points.size() < 3)
+    {
+        return;
+    }
 
+    auto delaunay = std::make_shared<Delaunay>(true);
+
+    triangles.clear();
+
+    PointVec mesh_points;
+    for(auto& p : points)
+    {
+        mesh_points.push_back(Point(p.x(), p.y(), 0));
+    }
+    delaunay->performStepByStep(mesh_points);
+
+    // display 2d result
+    for (auto& fh : delaunay->mesh.faces())
+    {
+        for(auto& vh : delaunay->mesh.fv_range(fh))
+        {
+            Point p = delaunay->mesh.point(vh);
+            triangles.push_back(QPoint(p[0], p[1]));
+        }
+    }
+    isTrianglated = true;
+    update();
 }

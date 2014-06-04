@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "delaunay.h"
 #include <Windows.h>
+#include <QDebug>
 
 const float INF = 1.0e5f;
 const float ESP = 1.0e-6f;
@@ -8,10 +9,73 @@ const float ESP = 1.0e-6f;
 Delaunay::Delaunay()
 {
     isStepDemo = false;
+    current_point_num = 0;
 }
 
 Delaunay::Delaunay(bool isStepDemo_) : isStepDemo(isStepDemo_)
-{ }
+{
+    current_point_num = 0;
+}
+
+void Delaunay::performStepByStep(PointVec& all_points)
+{
+    // add all vertices into the mesh
+    addVertices(all_points);
+
+    // add the big triangle and link vertices and faces
+    init();
+
+    // will be error if as follows, don't know why:
+    //for(auto& vh : mesh.vertices())
+    //for(auto vit = mesh.vertices_begin(); vit != mesh.vertices_end(); vit++)
+
+    // start triangulation
+//    for(size_t i = 0; i < all_points.size(); i++)
+//    {
+        VHandle vh = mesh.vertex_handle((unsigned int)current_point_num);
+        FHandle fh = mesh.property(VertexToFace, vh);
+        HHandle hh = mesh.property(VertexToHEdge, vh);
+
+        VHandleVec vhs_buffer;
+
+        if (hh.is_valid())
+        {
+            // the incrementing vertex is mapped to an (half)edge
+            // save the vertices mapped to the two faces incident to the edge
+            saveVhs(hh, vhs_buffer);
+
+            // split edge
+            mesh.split(mesh.edge_handle(hh), vh);
+        }
+        else if (fh.is_valid())
+        {
+            // save vertices mapped to this face
+            // coz properties will be destroyed after split
+            saveVhs(fh, vhs_buffer);
+
+            // split face
+            mesh.split(fh, vh);
+        }
+
+        // rebucket (caused by face_split)
+        rebucket(vh, vhs_buffer);
+
+        // legalize accept two params:
+        //       /\ <-hh
+        // vh->*/__\
+        // legalize each triangle
+        for(auto& hh : mesh.voh_range(vh))
+        {
+            legalize(mesh.next_halfedge_handle(hh), vh);
+        }
+//    }
+
+        current_point_num++;
+
+
+    // delete infinite vertices
+    //deleteVertices(all_points.size());
+}
 
 void Delaunay::perform(PointVec& all_points)
 {
@@ -414,11 +478,12 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
         {
             // save the state before flip
             fliprec.save(vh, vh_oppo, hh, mesh);
-            
+
+            //qDebug() << "before emit";
             if (isStepDemo)
             {
                 emit drawBeforeFlip();
-                Sleep(2000);
+                //Sleep(200);
                 // TODO: step by step control: pause/next
                 // send a signal to draw flip
                 // wait a second?
@@ -457,4 +522,9 @@ void Delaunay::deleteVertices(int n)
     }
 
     mesh.garbage_collection();
+}
+
+void Delaunay::test_slot()
+{
+    qDebug() << "delaunay slot!";
 }

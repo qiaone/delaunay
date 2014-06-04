@@ -42,8 +42,15 @@
     <addaction name="actionPerform"/>
     <addaction name="actionStepByStep"/>
    </widget>
+   <widget class="QMenu" name="menuStepTest">
+    <property name="title">
+     <string>StepTest</string>
+    </property>
+    <addaction name="actionPerformStep"/>
+   </widget>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
+   <addaction name="menuStepTest"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
@@ -111,6 +118,11 @@
    </property>
    <property name="text">
     <string>3D Viewer</string>
+   </property>
+  </action>
+  <action name="actionPerformStep">
+   <property name="text">
+    <string>PerformStep</string>
    </property>
   </action>
  </widget>

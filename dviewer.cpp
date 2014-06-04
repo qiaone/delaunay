@@ -2,6 +2,7 @@
 #include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
+#include <QDebug>
 
 using namespace qglviewer;
 using namespace std;
@@ -17,12 +18,25 @@ DViewer::DViewer(QWidget *parent)
 DViewer::DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
     : _delaunay(std::move(delaunay)), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
 
+void DViewer::test()
+{
+    qDebug() << "123";
+}
+
 void DViewer::setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
 {
     _delaunay = std::move(delaunay);
     _mainwindow_width = mainwindow_width;
     _mainwindow_height = mainwindow_height;
 }
+
+void DViewer::setParam(TriMesh& mesh, int mainwindow_width, int mainwindow_height)
+{
+    _mesh = mesh;
+    _mainwindow_width = mainwindow_width;
+    _mainwindow_height = mainwindow_height;
+}
+
 
 void DViewer::drawFlip()
 {
@@ -95,7 +109,36 @@ void DViewer::drawMesh()
     }
     glEnd();
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
+void DViewer::drawMesh(bool m)
+{
+    glPointSize(4.0);
+    glColor3f(1, 0, 0);
+
+    glBegin(GL_POINTS);
+    for (auto& vh: _mesh.vertices())
+    {
+        auto point = _mesh.point(vh);
+
+        glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+    }
+    glEnd();
+
+    glColor3f(0, 0, 1);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glBegin(GL_TRIANGLES);
+    for (auto& fh : _mesh.faces())
+    {
+        for(auto& vh : _mesh.fv_range(fh))
+        {
+            auto point = _mesh.point(vh);
+            glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+        }
+    }
+    glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DViewer::init()
@@ -149,7 +192,7 @@ void DViewer::draw()
 
     //drawPoints();
     if (isDraw)
-        drawMesh();
+        drawMesh(true);
 
     // Restore the original (world) coordinate system
     //glPopMatrix();

@@ -28,6 +28,8 @@ private slots:
 
     void on_actionStepByStep_triggered();
 
+    void on_actionPerformStep_triggered();
+
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;

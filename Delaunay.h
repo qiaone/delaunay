@@ -22,6 +22,7 @@ public:
     Delaunay();
     Delaunay(bool isStepDemo_);
     void perform(PointVec& all_points);
+    void performStepByStep(PointVec& all_points);
     void drawMesh();
     TriMesh mesh;
     FlipRecord fliprec;
@@ -43,9 +44,13 @@ private:
 	void saveVhs(HHandle hh, VHandleVec &vhs_buffer);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
+    int current_point_num;
 
 signals:
     void drawBeforeFlip();
+
+public slots:
+    void test_slot();
 };
 
 #endif // DELAUNAY_H
