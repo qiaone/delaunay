@@ -36,10 +36,6 @@ private slots:
     void on_actionStepByStep_triggered();
     void on_actionPerformStep_triggered();
 
-    void on_actionThreadTest_triggered();
-
-    void on_actionDebugThread_triggered();
-
 private:
     Ui::MainWindow *ui;
     QVector<QPoint> points;
@@ -51,8 +47,6 @@ private:
 
     DViewer* viewer;
     std::shared_ptr<Delaunay> delaunay;
-    QThread* delaunay_thread;
-//    std::shared_ptr<DelaunayStepByStep> delaunay_step;
 
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent * event);

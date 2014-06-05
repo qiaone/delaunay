@@ -22,7 +22,7 @@ protected:
 
 public:
     Delaunay();
-    Delaunay(int delay_seconds_);
+    void setDemoMode(int delay_seconds_ = 2);
     void perform();
     void perform(PointVec& all_points);
     void performStepByStep();
@@ -54,7 +54,9 @@ private:
 
 signals:
     void signalBeforeSplit(FHandle);
+    void signalBeforeSplit(HHandle);
     void signalAfterSplit(FHandle);
+    void signalAfterSplit(HHandle);
     void signalBeforeFlip();
     void signalAfterFlip();
     void signalTest();

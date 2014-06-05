@@ -47,8 +47,6 @@
      <string>StepTest</string>
     </property>
     <addaction name="actionPerformStep"/>
-    <addaction name="actionThreadTest"/>
-    <addaction name="actionDebugThread"/>
    </widget>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>

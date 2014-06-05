@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     viewer(nullptr)
 {
     ui->setupUi(this);
-    delaunay = std::make_shared<Delaunay>(2);
+    delaunay = std::make_shared<Delaunay>();
 //    delaunay = std::make_shared<DelaunayStepByStep>(true);
 //    QObject::connect((QObject*)delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
 //                     this, SLOT(slotBeforeSplit(FHandle)));
@@ -265,146 +265,79 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
 void MainWindow::on_actionStepByStep_triggered()
 {
-    if (points.size() < 3)
-    {
-        return;
-    }
+//    if (points.size() < 3)
+//    {
+//        return;
+//    }
 
-    if (!ui->action2D_Viewer->isChecked())
-        this->hide();
+//    if (!ui->action2D_Viewer->isChecked())
+//        this->hide();
 
-    auto delaunay = std::make_shared<Delaunay>(true);
+//    auto delaunay = std::make_shared<Delaunay>();
 
-    // display 3d result
-    if (ui->action3D_Viewer->isChecked())
-    {
-        if (viewer == nullptr)
-        {
-            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-            dvwin->show();
-        }
-    }
+//    // display 3d result
+//    if (ui->action3D_Viewer->isChecked())
+//    {
+//        if (viewer == nullptr)
+//        {
+//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
+//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+//            dvwin->show();
+//        }
+//    }
 
-    triangles.clear();
+//    triangles.clear();
 
-    PointVec mesh_points;
-    for(auto& p : points)
-    {
-        mesh_points.push_back(Point(p.x(), p.y(), 0));
-    }
-    delaunay->perform(mesh_points);
+//    PointVec mesh_points;
+//    for(auto& p : points)
+//    {
+//        mesh_points.push_back(Point(p.x(), p.y(), 0));
+//    }
+//    delaunay->perform(mesh_points);
 
-    // display 2d result
-    for (auto& fh : delaunay->mesh.faces())
-    {
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            triangles.push_back(QPoint(p[0], p[1]));
-        }
-    }
-    isTrianglated = true;
-    update();
+//    // display 2d result
+//    for (auto& fh : delaunay->mesh.faces())
+//    {
+//        for(auto& vh : delaunay->mesh.fv_range(fh))
+//        {
+//            Point p = delaunay->mesh.point(vh);
+//            triangles.push_back(QPoint(p[0], p[1]));
+//        }
+//    }
+//    isTrianglated = true;
+//    update();
 }
 
 void MainWindow::on_actionPerformStep_triggered()
 {
-    if (points.size() < 3)
-    {
-        return;
-    }
+//    if (points.size() < 3)
+//    {
+//        return;
+//    }
 
-    triangles.clear();
+//    triangles.clear();
 
-    if (isFirstTime)
-    {
-        PointVec mesh_points;
-        for(auto& p : points)
-        {
-            mesh_points.push_back(Point(p.x(), p.y(), 0));
-        }
+//    if (isFirstTime)
+//    {
+//        PointVec mesh_points;
+//        for(auto& p : points)
+//        {
+//            mesh_points.push_back(Point(p.x(), p.y(), 0));
+//        }
 
-        delaunay->init(mesh_points);
+//        delaunay->init(mesh_points);
 
-        for (int i = 0; i < 3; i++)
-        {
-            delaunay->performStepByStep();
-        }
+//        for (int i = 0; i < 3; i++)
+//        {
+//            delaunay->performStepByStep();
+//        }
 
-        isFirstTime = false;
-    }
-    else
-    {
-        delaunay->performStepByStep();
-    }
-
-    // display 2d result
-    for (auto& fh : delaunay->mesh.faces())
-    {
-        bool isInfinite = false;
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            Point a(-INF, -INF, 0);
-            Point b(INF, -INF, 0);
-            Point c(0, INF, 0);
-            if (p == a || p == b || p == c)
-            {
-                isInfinite = true;
-                break;
-            }
-        }
-        if (!isInfinite)
-        {
-            for(auto& vh : delaunay->mesh.fv_range(fh))
-            {
-                Point p = delaunay->mesh.point(vh);
-                triangles.push_back(QPoint(p[0], p[1]));
-            }
-        }
-    }
-    isTrianglated = true;
-    update();
-    current_point_num++;
-}
-
-void MainWindow::on_actionThreadTest_triggered()
-{
-    if (points.size() < 3)
-    {
-        return;
-    }
-
-    triangles.clear();
-
-    PointVec mesh_points;
-
-    for(auto& p : points)
-    {
-        mesh_points.push_back(Point(p.x(), p.y(), 0));
-    }
-
-    delaunay_thread = new QThread();
-
-    delaunay->moveToThread(delaunay_thread);
-    connect(delaunay.get(), SIGNAL(signalTest()), this, SLOT(slotTest()));
-    delaunay_thread->start();
-    delaunay->init(mesh_points);
-    delaunay->perform();
-
-    // display 2d result
-    for (auto& fh : delaunay->mesh.faces())
-    {
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            triangles.push_back(QPoint(p[0], p[1]));
-        }
-    }
-    isTrianglated = true;
-    update();
-
+//        isFirstTime = false;
+//    }
+//    else
+//    {
+//        delaunay->performStepByStep();
+//    }
 
 //    // display 2d result
 //    for (auto& fh : delaunay->mesh.faces())
@@ -434,9 +367,4 @@ void MainWindow::on_actionThreadTest_triggered()
 //    isTrianglated = true;
 //    update();
 //    current_point_num++;
-}
-
-void MainWindow::on_actionDebugThread_triggered()
-{
-
 }
