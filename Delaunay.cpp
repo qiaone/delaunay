@@ -1,21 +1,31 @@
 ﻿#pragma once
 #include "delaunay.h"
-#include <Windows.h>
 #include <QDebug>
+#include <QTime>
+#include <QThread>
+#include <QApplication>
 
 const float INF = 1.0e5f;
 const float ESP = 1.0e-6f;
 
 Delaunay::Delaunay() :
     isStepDemo(false),
-    current_point_num(0)
+    current_point_num(0),
+    delay_seconds(0)
 {
 }
 
-Delaunay::Delaunay(bool isStepDemo_) :
-    isStepDemo(isStepDemo_),
-    current_point_num(0)
+Delaunay::Delaunay(int delay_seconds_) :
+    isStepDemo(true),
+    current_point_num(0),
+    delay_seconds(delay_seconds_)
 {
+
+}
+
+void Delaunay::setDelaySeconds(int seconds)
+{
+    delay_seconds = seconds;
 }
 
 void Delaunay::performStepByStep()
@@ -79,37 +89,40 @@ void Delaunay::performStepByStep()
 
 void Delaunay::perform(PointVec& all_points)
 {
-    // add all vertices into the mesh
     init(all_points);
+    perform();
+}
 
-    // add the big triangle and link vertices and faces
-    //init();
+void Delaunay::perform()
+{
+    // should call init(all_points) first
 
     // will be error if as follows, don't know why:
     //for(auto& vh : mesh.vertices())
     //for(auto vit = mesh.vertices_begin(); vit != mesh.vertices_end(); vit++)
 
-    // start triangulation
-    for(size_t i = 0; i < all_points.size(); i++)
-    {
+    // start triangulation    
 
-        if ( i == 4)
-        {
-            break;
-        }
+    for(size_t i = 0; i < total_points_count; i++)
+    {
+        emit signalTest();
+
+        //if ( i == 4)
+        //{
+        //    break;
+        //}
 
         VHandle vh = mesh.vertex_handle((unsigned int)i);
         FHandle fh = mesh.property(VertexToFace, vh);
 		HHandle hh = mesh.property(VertexToHEdge, vh);
 
 		VHandleVec vhs_buffer;
-		
 		if (hh.is_valid())
 		{
             // the incrementing vertex is mapped to an (half)edge
 			// save the vertices mapped to the two faces incident to the edge
 			saveVhs(hh, vhs_buffer);
-
+            emit signalBeforeSplit(fh);
 			// split edge
 			mesh.split(mesh.edge_handle(hh), vh);
 		}
@@ -118,6 +131,11 @@ void Delaunay::perform(PointVec& all_points)
 			// save vertices mapped to this face
 			// coz properties will be destroyed after split
 			saveVhs(fh, vhs_buffer);
+
+            QTime t;
+            t.start();
+            while(t.elapsed() < 2000)
+                QApplication::processEvents();
 
 			// split face
 			mesh.split(fh, vh);
@@ -186,6 +204,7 @@ void Delaunay::addVertices(PointVec& points)
 
 void Delaunay::init(PointVec& points)
 {
+    total_points_count = points.size();
     mesh.clear();
     for(int i = 0; i < points.size(); i++)
     {

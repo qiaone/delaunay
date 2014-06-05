@@ -26,10 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     viewer(nullptr)
 {
     ui->setupUi(this);
-    delaunay = std::make_shared<Delaunay>(true);
+    delaunay = std::make_shared<Delaunay>(2);
 //    delaunay = std::make_shared<DelaunayStepByStep>(true);
-    QObject::connect((QObject*)delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
-                     this, SLOT(slotBeforeSplit(FHandle)));
+//    QObject::connect((QObject*)delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
+//                     this, SLOT(slotBeforeSplit(FHandle)));
     isFirstTime = true;
 }
 
@@ -40,7 +40,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::slotBeforeSplit(FHandle fh)
 {
-    
+    qDebug() << "slotSplittingTriagnle";
     //for(auto& vh : delaunay->mesh.fv_range(fh))
     //{
     //    //auto triangle_point = delaunay->mesh.point(vh);
@@ -96,6 +96,12 @@ void MainWindow::slotBeforeFlip()
 void MainWindow::slotAfterFlip()
 {
 
+}
+
+void MainWindow::slotTest()
+{
+    qDebug() << "slotTest: " << QThread::currentThreadId;
+//    delaunay_thread->sleep(5);
 }
 
 void MainWindow::paintEvent(QPaintEvent *)
@@ -361,4 +367,76 @@ void MainWindow::on_actionPerformStep_triggered()
     isTrianglated = true;
     update();
     current_point_num++;
+}
+
+void MainWindow::on_actionThreadTest_triggered()
+{
+    if (points.size() < 3)
+    {
+        return;
+    }
+
+    triangles.clear();
+
+    PointVec mesh_points;
+
+    for(auto& p : points)
+    {
+        mesh_points.push_back(Point(p.x(), p.y(), 0));
+    }
+
+    delaunay_thread = new QThread();
+
+    delaunay->moveToThread(delaunay_thread);
+    connect(delaunay.get(), SIGNAL(signalTest()), this, SLOT(slotTest()));
+    delaunay_thread->start();
+    delaunay->init(mesh_points);
+    delaunay->perform();
+
+    // display 2d result
+    for (auto& fh : delaunay->mesh.faces())
+    {
+        for(auto& vh : delaunay->mesh.fv_range(fh))
+        {
+            Point p = delaunay->mesh.point(vh);
+            triangles.push_back(QPoint(p[0], p[1]));
+        }
+    }
+    isTrianglated = true;
+    update();
+
+
+//    // display 2d result
+//    for (auto& fh : delaunay->mesh.faces())
+//    {
+//        bool isInfinite = false;
+//        for(auto& vh : delaunay->mesh.fv_range(fh))
+//        {
+//            Point p = delaunay->mesh.point(vh);
+//            Point a(-INF, -INF, 0);
+//            Point b(INF, -INF, 0);
+//            Point c(0, INF, 0);
+//            if (p == a || p == b || p == c)
+//            {
+//                isInfinite = true;
+//                break;
+//            }
+//        }
+//        if (!isInfinite)
+//        {
+//            for(auto& vh : delaunay->mesh.fv_range(fh))
+//            {
+//                Point p = delaunay->mesh.point(vh);
+//                triangles.push_back(QPoint(p[0], p[1]));
+//            }
+//        }
+//    }
+//    isTrianglated = true;
+//    update();
+//    current_point_num++;
+}
+
+void MainWindow::on_actionDebugThread_triggered()
+{
+
 }

@@ -6,6 +6,7 @@
 //#include "delaunaystepbystep.h"
 #include "dviewer.h"
 #include <memory>
+#include <QThread>
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,7 @@ public slots:
     void slotAfterSplit(FHandle fh);
     void slotBeforeFlip();
     void slotAfterFlip();
+    void slotTest();
 
 
 private slots:
@@ -33,6 +35,10 @@ private slots:
     void on_actionRandomGeneration_triggered();
     void on_actionStepByStep_triggered();
     void on_actionPerformStep_triggered();
+
+    void on_actionThreadTest_triggered();
+
+    void on_actionDebugThread_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -45,6 +51,7 @@ private:
 
     DViewer* viewer;
     std::shared_ptr<Delaunay> delaunay;
+    QThread* delaunay_thread;
 //    std::shared_ptr<DelaunayStepByStep> delaunay_step;
 
     void paintEvent(QPaintEvent *);

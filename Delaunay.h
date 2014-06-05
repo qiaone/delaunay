@@ -9,7 +9,7 @@
 #include "def.h"
 #include "fliprecord.h"
 
-class Delaunay : QObject
+class Delaunay : public QObject
 {
     Q_OBJECT
 
@@ -18,9 +18,12 @@ protected:
     OpenMesh::VPropHandleT<FHandle> VertexToFace;
 	OpenMesh::VPropHandleT<HHandle> VertexToHEdge;
 
+//    virtual void run();
+
 public:
     Delaunay();
-    Delaunay(bool isStepDemo_);
+    Delaunay(int delay_seconds_);
+    void perform();
     void perform(PointVec& all_points);
     void performStepByStep();
     void drawMesh();
@@ -28,6 +31,7 @@ public:
     TriMesh mesh;
     FlipRecord fliprec;
     bool isStepDemo;
+    void setDelaySeconds(int seconds);
 
 private:
     void drawTriangle(FHandle fh);
@@ -45,12 +49,15 @@ private:
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
     int current_point_num;
+    int total_points_count;
+    int delay_seconds;
 
 signals:
     void signalBeforeSplit(FHandle);
     void signalAfterSplit(FHandle);
     void signalBeforeFlip();
     void signalAfterFlip();
+    void signalTest();
 
 public slots:
     void test_slot();

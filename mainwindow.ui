@@ -47,6 +47,8 @@
      <string>StepTest</string>
     </property>
     <addaction name="actionPerformStep"/>
+    <addaction name="actionThreadTest"/>
+    <addaction name="actionDebugThread"/>
    </widget>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
@@ -123,6 +125,16 @@
   <action name="actionPerformStep">
    <property name="text">
     <string>PerformStep</string>
+   </property>
+  </action>
+  <action name="actionThreadTest">
+   <property name="text">
+    <string>ThreadTest</string>
+   </property>
+  </action>
+  <action name="actionDebugThread">
+   <property name="text">
+    <string>DebugThread</string>
    </property>
   </action>
  </widget>

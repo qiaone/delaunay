@@ -13,7 +13,6 @@
 #ifdef MW
     #include "mainwindow.h"
     #include <QApplication>
-    #include "triangulation.h"
     int main(int argc, char *argv[])
     {
         QApplication a(argc, argv);
