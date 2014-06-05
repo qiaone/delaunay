@@ -6,24 +6,22 @@
 const float INF = 1.0e5f;
 const float ESP = 1.0e-6f;
 
-Delaunay::Delaunay()
+Delaunay::Delaunay() :
+    isStepDemo(false),
+    current_point_num(0)
 {
-    isStepDemo = false;
-    current_point_num = 0;
 }
 
-Delaunay::Delaunay(bool isStepDemo_) : isStepDemo(isStepDemo_)
+Delaunay::Delaunay(bool isStepDemo_) :
+    isStepDemo(isStepDemo_),
+    current_point_num(0)
 {
-    current_point_num = 0;
 }
 
-void Delaunay::performStepByStep(PointVec& all_points)
+void Delaunay::performStepByStep()
 {
-    // add all vertices into the mesh
-    addVertices(all_points);
-
     // add the big triangle and link vertices and faces
-    init();
+    //init();
 
     // will be error if as follows, don't know why:
     //for(auto& vh : mesh.vertices())
@@ -53,6 +51,8 @@ void Delaunay::performStepByStep(PointVec& all_points)
             // coz properties will be destroyed after split
             saveVhs(fh, vhs_buffer);
 
+            emit signalBeforeSplit(fh);
+
             // split face
             mesh.split(fh, vh);
         }
@@ -80,10 +80,10 @@ void Delaunay::performStepByStep(PointVec& all_points)
 void Delaunay::perform(PointVec& all_points)
 {
     // add all vertices into the mesh
-    addVertices(all_points);
+    init(all_points);
 
     // add the big triangle and link vertices and faces
-    init();
+    //init();
 
     // will be error if as follows, don't know why:
     //for(auto& vh : mesh.vertices())
@@ -92,6 +92,11 @@ void Delaunay::perform(PointVec& all_points)
     // start triangulation
     for(size_t i = 0; i < all_points.size(); i++)
     {
+
+        if ( i == 4)
+        {
+            break;
+        }
 
         VHandle vh = mesh.vertex_handle((unsigned int)i);
         FHandle fh = mesh.property(VertexToFace, vh);
@@ -136,7 +141,7 @@ void Delaunay::perform(PointVec& all_points)
     }
 
     // delete infinite vertices
-    deleteVertices(all_points.size());
+    //deleteVertices(all_points.size());
 }
 
 void Delaunay::drawMesh()
@@ -179,8 +184,14 @@ void Delaunay::addVertices(PointVec& points)
     }
 }
 
-void Delaunay::init()
+void Delaunay::init(PointVec& points)
 {
+    mesh.clear();
+    for(int i = 0; i < points.size(); i++)
+    {
+        mesh.add_vertex(points[i]);
+    }
+
     // add properties
     mesh.add_property(FaceToVertices);
     mesh.add_property(VertexToFace);
@@ -482,7 +493,7 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
             //qDebug() << "before emit";
             if (isStepDemo)
             {
-                emit drawBeforeFlip();
+                emit signalBeforeFlip();
                 //Sleep(200);
                 // TODO: step by step control: pause/next
                 // send a signal to draw flip
