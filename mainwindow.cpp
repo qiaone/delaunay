@@ -29,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     delaunay = std::make_shared<Delaunay>();
-    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
-                     this, SLOT(slotNewPoint(VHandle)));
+//    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
+//                     this, SLOT(slotNewPoint(VHandle)));
 //    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
 //                     this, SLOT(slotBeforeSplit(FHandle)));
     QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
@@ -107,6 +107,9 @@ void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
     flipping_triangles.clear();
     flipping_triangles << QPoint(x1, y1) << QPoint(x2, y2) << QPoint(x4, y4) << QPoint(x3, y3);
 
+    in_circle_point.setX(x4);
+    in_circle_point.setY(y4);
+
     double x0=((y3-y1)*(y2*y2-y1*y1)+(y3-y1)*(x2*x2-x1*x1)-(y1-y2)*(y1*y1-y3*y3)-(y1-y2)*(x1*x1-x3*x3))/(2*(y1-y2)*(x3-x1)-2*(y3-y1)*(x1-x2));
     double y0=(y3*y3-y1*y1-2*x0*(x3-x1)-x1*x1+x3*x3)/(2*(y3-y1));
     double r=sqrt((y0-y2)*(y0-y2)+(x0-x2)*(x0-x2));
@@ -146,7 +149,14 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
-    pen.setColor(Qt::black);
+    if (isSelectMannually)
+    {
+        pen.setColor(Qt::red);
+    }
+    else
+    {
+        pen.setColor(Qt::gray);
+    }
 
     // should be configurable
     pen.setWidth(6);
@@ -177,22 +187,30 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawPoint(new_point);
     }
 
+    pen.setWidth(2);
     if (isShowFlippingTriangles)
     {
+        pen.setColor(QColor(151, 193, 62));
+        painter.setPen(pen);
         painter.drawPolygon(&flipping_triangles[0], 4);
-        pen.setColor(Qt::yellow);
+        pen.setColor(QColor(224, 31, 69));
         painter.setPen(pen);
         painter.drawLine(flipping_triangles[1], flipping_triangles[3]);
+
+        pen.setColor(Qt::red);
+        pen.setWidth(6);
+        painter.setPen(pen);
+        painter.drawPoint(in_circle_point);
+
     }
 
+    pen.setWidth(2);
     if (isShowCircle)
     {
-        pen.setColor(Qt::green);
-        pen.setWidth(2);
+        pen.setColor(QColor(128, 128, 255));
         painter.setPen(pen);
         painter.drawEllipse(circle_center, circle_radius, circle_radius);
     }
-
 
     if (isShowSplitTriangle)
     {
@@ -338,6 +356,8 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
 void MainWindow::on_actionStepByStep_triggered()
 {
+    isSelectMannually = false;
+
     if (points.size() < 3)
     {
         return;

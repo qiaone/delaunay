@@ -50,10 +50,14 @@ private:
 
 // painter related
 private:
+    QPainter* painter;
+    QPen* pen;
+
     QVector<QPoint> points;
     QVector<QPoint> splitting_triangle;
     QVector<QPoint> triangles;
     QPoint new_point;
+    QPoint in_circle_point;
     QPointF circle_center;
     double circle_radius;
     QVector<QPoint> flipping_triangles;

@@ -113,12 +113,6 @@ void Delaunay::perform()
             // save the vertices mapped to the two faces incident to the edge
             saveVhs(hh, vhs_buffer);
 
-            // delay for demo
-            QTime t;
-            t.start();
-            while(t.elapsed() < delay_seconds * 1000)
-                QApplication::processEvents();
-
             // split edge
             mesh.split(mesh.edge_handle(hh), vh);
 
@@ -130,12 +124,6 @@ void Delaunay::perform()
             // save vertices mapped to this face
             // coz properties will be destroyed after split
             saveVhs(fh, vhs_buffer);
-
-            // delay for demo
-            QTime t;
-            t.start();
-            while(t.elapsed() < delay_seconds * 1000)
-                QApplication::processEvents();
 
             // split face
             mesh.split(fh, vh);
@@ -159,7 +147,7 @@ void Delaunay::perform()
     }
 
     // delete infinite vertices
-    //deleteVertices(all_points.size());
+    deleteVertices(total_points_count);
 }
 
 void Delaunay::drawMesh()
@@ -500,6 +488,12 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
     {
         emit signalBeforeFlip(hh, vh, vh_oppo);
 
+        // delay for demo
+        QTime t;
+        t.start();
+        while(t.elapsed() < delay_seconds * 1000)
+            QApplication::processEvents();
+
         // save vertex handles mapped to the face
         VHandleVec vhs_buffer;
         saveVhs(hh, vhs_buffer);
@@ -508,10 +502,8 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
         EHandle eh = mesh.edge_handle(hh);
         if (mesh.is_flip_ok(eh))
         {
-            // save the state before flip
-            fliprec.save(vh, vh_oppo, hh, mesh);
-
             mesh.flip(eh);
+            emit signalAfterFlip(mesh.halfedge_handle(eh, 0), vh, vh_oppo);
         }
 
         // rebucket
