@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowNewPoint(false),
     isShowCircle(false),
     isShowSplitTriangle(false),
+    isShowBeforeFlip(false),
+    isShowAfterFlip(false),
     viewer(nullptr)
 {
     ui->setupUi(this);
@@ -35,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent) :
 //                     this, SLOT(slotBeforeSplit(FHandle)));
     QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
                      this, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
+    QObject::connect(delaunay.get(), SIGNAL(signalAfterFlip()),
+                     this, SLOT(slotAfterFlip()));
     isFirstTime = true;
 }
 
@@ -94,15 +98,16 @@ void MainWindow::slotAfterSplit(FHandle fh)
 
 void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
 {
+    isShowAfterFlip = false;
     qDebug() << "slotBeforeFlip";
-    int x1 = delaunay->mesh.point(vh)[0];
-    int y1 = delaunay->mesh.point(vh)[1];
-    int x2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[0];
-    int y2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[1];
-    int x3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[0];
-    int y3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[1];
-    int x4 = delaunay->mesh.point(vh_oppo)[0];
-    int y4 = delaunay->mesh.point(vh_oppo)[1];
+    double x1 = delaunay->mesh.point(vh)[0];
+    double y1 = delaunay->mesh.point(vh)[1];
+    double x2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[0];
+    double y2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[1];
+    double x3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[0];
+    double y3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[1];
+    double x4 = delaunay->mesh.point(vh_oppo)[0];
+    double y4 = delaunay->mesh.point(vh_oppo)[1];
 
     flipping_triangles.clear();
     flipping_triangles << QPoint(x1, y1) << QPoint(x2, y2) << QPoint(x4, y4) << QPoint(x3, y3);
@@ -110,23 +115,26 @@ void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
     in_circle_point.setX(x4);
     in_circle_point.setY(y4);
 
-    double x0=((y3-y1)*(y2*y2-y1*y1)+(y3-y1)*(x2*x2-x1*x1)-(y1-y2)*(y1*y1-y3*y3)-(y1-y2)*(x1*x1-x3*x3))/(2*(y1-y2)*(x3-x1)-2*(y3-y1)*(x1-x2));
-    double y0=(y3*y3-y1*y1-2*x0*(x3-x1)-x1*x1+x3*x3)/(2*(y3-y1));
-    double r=sqrt((y0-y2)*(y0-y2)+(x0-x2)*(x0-x2));
+    double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
+                 (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
+                (2 * (y1 - y2) * (x3 - x1) - 2 * (y3 - y1) * (x1 - x2));
+    double y0 = (y3 * y3 - y1 * y1 - 2 * x0 * (x3 - x1) - x1 * x1 + x3 * x3) / (2 * (y3 - y1));
+    double r = sqrt((y0 - y2) * (y0 - y2) + (x0 - x2) * (x0 - x2));
 
     circle_center.setX(x0);
     circle_center.setY(y0);
     circle_radius = r;
 
     isShowCircle = true;
-    isShowFlippingTriangles = true;
+    isShowBeforeFlip = true;
 
     update();
 }
 
 void MainWindow::slotAfterFlip()
 {
-
+    isShowAfterFlip = true;
+    update();
 }
 
 void MainWindow::slotTest()
@@ -187,26 +195,40 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawPoint(new_point);
     }
 
-    pen.setWidth(2);
-    if (isShowFlippingTriangles)
+
+    if (isShowBeforeFlip)
     {
+        // two triangles
+        pen.setWidth(2);
         pen.setColor(QColor(151, 193, 62));
         painter.setPen(pen);
         painter.drawPolygon(&flipping_triangles[0], 4);
-        pen.setColor(QColor(224, 31, 69));
-        painter.setPen(pen);
-        painter.drawLine(flipping_triangles[1], flipping_triangles[3]);
 
+        // flipping edge
+        pen.setColor(QColor(224, 31, 69));
+        if(isShowAfterFlip)
+        {
+            painter.setPen(pen);
+            painter.drawLine(flipping_triangles[0], flipping_triangles[2]);
+        }
+        else
+        {
+            pen.setStyle(Qt::DotLine);
+            painter.setPen(pen);
+            painter.drawLine(flipping_triangles[1], flipping_triangles[3]);
+            pen.setStyle(Qt::SolidLine);
+        }
+
+        // in circle point
         pen.setColor(Qt::red);
-        pen.setWidth(6);
+        pen.setWidth(8);
         painter.setPen(pen);
         painter.drawPoint(in_circle_point);
-
     }
 
-    pen.setWidth(2);
     if (isShowCircle)
     {
+        pen.setWidth(2);
         pen.setColor(QColor(128, 128, 255));
         painter.setPen(pen);
         painter.drawEllipse(circle_center, circle_radius, circle_radius);

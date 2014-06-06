@@ -67,7 +67,8 @@ private:
     bool isShowNewPoint;
     bool isShowSplitTriangle;
     bool isShowCircle;
-    bool isShowFlippingTriangles;
+    bool isShowBeforeFlip;
+    bool isShowAfterFlip;
 
 };
 

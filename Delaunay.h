@@ -55,7 +55,7 @@ signals:
     void signalBeforeSplit(HHandle);
     void signalAfterSplit(HHandle);
     void signalBeforeFlip(HHandle, VHandle, VHandle);
-    void signalAfterFlip(HHandle, VHandle, VHandle);
+    void signalAfterFlip();
     void signalNewPoint(VHandle);
     void signalTest();
 

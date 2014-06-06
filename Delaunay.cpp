@@ -503,7 +503,13 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
         if (mesh.is_flip_ok(eh))
         {
             mesh.flip(eh);
-            emit signalAfterFlip(mesh.halfedge_handle(eh, 0), vh, vh_oppo);
+            emit signalAfterFlip();
+
+            // delay for demo
+            QTime t;
+            t.start();
+            while(t.elapsed() < delay_seconds * 500)
+                QApplication::processEvents();
         }
 
         // rebucket
