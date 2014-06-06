@@ -20,64 +20,6 @@ void Delaunay::setDemoMode(int delay_seconds_)
     delay_seconds = delay_seconds_;
 }
 
-//void Delaunay::performStepByStep()
-//{
-//    // add the big triangle and link vertices and faces
-//    //init();
-
-//    // will be error if as follows, don't know why:
-//    //for(auto& vh : mesh.vertices())
-//    //for(auto vit = mesh.vertices_begin(); vit != mesh.vertices_end(); vit++)
-
-//    // start triangulation
-//    //    for(size_t i = 0; i < all_points.size(); i++)
-//    //    {
-//    VHandle vh = mesh.vertex_handle((unsigned int)current_point_num);
-//    FHandle fh = mesh.property(VertexToFace, vh);
-//    HHandle hh = mesh.property(VertexToHEdge, vh);
-
-//    VHandleVec vhs_buffer;
-
-//    if (hh.is_valid())
-//    {
-//        // the incrementing vertex is mapped to an (half)edge
-//        // save the vertices mapped to the two faces incident to the edge
-//        saveVhs(hh, vhs_buffer);
-
-//        // split edge
-//        mesh.split(mesh.edge_handle(hh), vh);
-//    }
-//    else if (fh.is_valid())
-//    {
-//        // save vertices mapped to this face
-//        // coz properties will be destroyed after split
-//        saveVhs(fh, vhs_buffer);
-
-//        emit signalBeforeSplit(fh);
-
-//        // split face
-//        mesh.split(fh, vh);
-//    }
-
-//    // rebucket (caused by face_split)
-//    rebucket(vh, vhs_buffer);
-
-//    // legalize accept two params:
-//    //       /\ <-hh
-//    // vh->*/__\
-//    // legalize each triangle
-//    for(auto& hh : mesh.voh_range(vh))
-//    {
-//        legalize(mesh.next_halfedge_handle(hh), vh);
-//    }
-//    //    }
-
-
-
-//    // delete infinite vertices
-//    //deleteVertices(all_points.size());
-//}
-
 void Delaunay::perform(PointVec& all_points)
 {
     init(all_points);
@@ -136,9 +78,6 @@ void Delaunay::perform()
         // rebucket (caused by face_split)
         rebucket(vh, vhs_buffer);
 
-        // legalize accept two params:
-        //       /\ <-hh
-        // vh->*/__\
         // legalize each triangle
         for(auto& hh : mesh.voh_range(vh))
         {

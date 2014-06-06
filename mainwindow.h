@@ -25,7 +25,6 @@ public slots:
     void slotAfterSplit(FHandle fh);
     void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
     void slotAfterFlip();
-    void slotTest();
     void slotNewPoint(VHandle vh);
 
 private slots:

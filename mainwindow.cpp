@@ -137,12 +137,6 @@ void MainWindow::slotAfterFlip()
     update();
 }
 
-void MainWindow::slotTest()
-{
-    qDebug() << "slotTest: " << QThread::currentThreadId;
-//    delaunay_thread->sleep(5);
-}
-
 void MainWindow::slotNewPoint(VHandle vh)
 {
     auto p = delaunay->mesh.point(vh);

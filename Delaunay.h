@@ -17,14 +17,11 @@ protected:
     OpenMesh::VPropHandleT<FHandle> VertexToFace;
     OpenMesh::VPropHandleT<HHandle> VertexToHEdge;
 
-    //    virtual void run();
-
 public:
     Delaunay();
     void setDemoMode(int delay_seconds_ = 2);
     void perform();
     void perform(PointVec& all_points);
-    //    void performStepByStep();
     void drawMesh();
     void init(PointVec& points);
     TriMesh mesh;
