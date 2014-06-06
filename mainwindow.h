@@ -23,10 +23,10 @@ public:
 public slots:
     void slotBeforeSplit(FHandle fh);
     void slotAfterSplit(FHandle fh);
-    void slotBeforeFlip();
+    void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
     void slotAfterFlip();
     void slotTest();
-
+    void slotNewPoint(VHandle vh);
 
 private slots:
     void on_actionPerform_triggered();
@@ -38,23 +38,33 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QVector<QPoint> points;
-    QVector<QPoint> splitting_triangle;
-    QVector<QPoint> triangles;
-    bool isTrianglated;
-    bool isMouseDraw;
-    bool isShowSplitTriangle;
-
-    DViewer* viewer;
-    std::shared_ptr<Delaunay> delaunay;
-
     void paintEvent(QPaintEvent *);
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
 
+    DViewer* viewer;
+    std::shared_ptr<Delaunay> delaunay;
+
     bool isFirstTime;
-    int current_point_num;
+
+// painter related
+private:
+    QVector<QPoint> points;
+    QVector<QPoint> splitting_triangle;
+    QVector<QPoint> triangles;
+    QPoint new_point;
+    QPointF circle_center;
+    double circle_radius;
+    QVector<QPoint> flipping_triangles;
+
+    bool isTrianglated;
+    bool isSelectMannually;
+    bool isShowNewPoint;
+    bool isShowSplitTriangle;
+    bool isShowCircle;
+    bool isShowFlippingTriangles;
+
 };
 
 #endif // MAINWINDOW_H

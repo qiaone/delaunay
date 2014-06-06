@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QTime>
+#include <cmath>
 //#include <QtAlgorithms>
 //#include <qmath.h>
 //#include <QSet>
@@ -20,16 +21,20 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     isTrianglated(false),
-    isMouseDraw(true),
+    isSelectMannually(true),
+    isShowNewPoint(false),
+    isShowCircle(false),
     isShowSplitTriangle(false),
-    current_point_num(0),
     viewer(nullptr)
 {
     ui->setupUi(this);
     delaunay = std::make_shared<Delaunay>();
-//    delaunay = std::make_shared<DelaunayStepByStep>(true);
-//    QObject::connect((QObject*)delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
+    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
+                     this, SLOT(slotNewPoint(VHandle)));
+//    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
 //                     this, SLOT(slotBeforeSplit(FHandle)));
+    QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
+                     this, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
     isFirstTime = true;
 }
 
@@ -57,29 +62,28 @@ void MainWindow::slotBeforeSplit(FHandle fh)
     //}
     splitting_triangle.clear();
     bool isInfinite = false;
-    for(auto& vh : delaunay->mesh.fv_range(fh))
-    {
-        Point p = delaunay->mesh.point(vh);
-        Point a(-INF, -INF, 0);
-        Point b(INF, -INF, 0);
-        Point c(0, INF, 0);
-        if (p == a || p == b || p == c)
-        {
-            isInfinite = true;
-            break;
-        }
-    }
-    if (!isInfinite)
+//    for(auto& vh : delaunay->mesh.fv_range(fh))
+//    {
+//        Point p = delaunay->mesh.point(vh);
+//        Point a(-INF, -INF, 0);
+//        Point b(INF, -INF, 0);
+//        Point c(0, INF, 0);
+//        if (p == a || p == b || p == c)
+//        {
+//            isInfinite = true;
+//            break;
+//        }
+//    }
+//    if (!isInfinite)
     {
         for(auto& vh : delaunay->mesh.fv_range(fh))
         {
             Point p = delaunay->mesh.point(vh);
             splitting_triangle.append(QPoint(p[0], p[1]));
+            qDebug() << QPoint(p[0], p[1]);
         }
         isShowSplitTriangle = true;
     }
-    
-    qDebug() << "slotSplittingTriagnle";
     update();
 }
 
@@ -88,9 +92,33 @@ void MainWindow::slotAfterSplit(FHandle fh)
 
 }
 
-void MainWindow::slotBeforeFlip()
+void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
 {
+    qDebug() << "slotBeforeFlip";
+    int x1 = delaunay->mesh.point(vh)[0];
+    int y1 = delaunay->mesh.point(vh)[1];
+    int x2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[0];
+    int y2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[1];
+    int x3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[0];
+    int y3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[1];
+    int x4 = delaunay->mesh.point(vh_oppo)[0];
+    int y4 = delaunay->mesh.point(vh_oppo)[1];
 
+    flipping_triangles.clear();
+    flipping_triangles << QPoint(x1, y1) << QPoint(x2, y2) << QPoint(x4, y4) << QPoint(x3, y3);
+
+    double x0=((y3-y1)*(y2*y2-y1*y1)+(y3-y1)*(x2*x2-x1*x1)-(y1-y2)*(y1*y1-y3*y3)-(y1-y2)*(x1*x1-x3*x3))/(2*(y1-y2)*(x3-x1)-2*(y3-y1)*(x1-x2));
+    double y0=(y3*y3-y1*y1-2*x0*(x3-x1)-x1*x1+x3*x3)/(2*(y3-y1));
+    double r=sqrt((y0-y2)*(y0-y2)+(x0-x2)*(x0-x2));
+
+    circle_center.setX(x0);
+    circle_center.setY(y0);
+    circle_radius = r;
+
+    isShowCircle = true;
+    isShowFlippingTriangles = true;
+
+    update();
 }
 
 void MainWindow::slotAfterFlip()
@@ -104,13 +132,21 @@ void MainWindow::slotTest()
 //    delaunay_thread->sleep(5);
 }
 
+void MainWindow::slotNewPoint(VHandle vh)
+{
+    auto p = delaunay->mesh.point(vh);
+    new_point = QPoint(p[0], p[1]);
+    isShowNewPoint = true;
+}
+
+
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
-    pen.setColor(Qt::red);
+    pen.setColor(Qt::black);
 
     // should be configurable
     pen.setWidth(6);
@@ -119,14 +155,52 @@ void MainWindow::paintEvent(QPaintEvent *)
     for(auto p : points)
         painter.drawPoint(p);
 
+
+//    pen.setColor(Qt::green);
+//    pen.setWidth(4);
+//    pen.setCapStyle(Qt::RoundCap);
+//    painter.setPen(pen);
+
+//    QVector<QPoint> vp;
+//    vp << QPoint(-100000,-100000);
+//    vp << QPoint(310,214);
+//    vp << QPoint(0,100000);
+////    QBrush brush(Qt::green);
+////    painter.setBrush(brush);
+//    painter.drawPolygon(&vp[0], 3);
+
+
+    if (isShowNewPoint)
+    {
+        pen.setColor(Qt::red);
+        painter.setPen(pen);
+        painter.drawPoint(new_point);
+    }
+
+    if (isShowFlippingTriangles)
+    {
+        painter.drawPolygon(&flipping_triangles[0], 4);
+        pen.setColor(Qt::yellow);
+        painter.setPen(pen);
+        painter.drawLine(flipping_triangles[1], flipping_triangles[3]);
+    }
+
+    if (isShowCircle)
+    {
+        pen.setColor(Qt::green);
+        pen.setWidth(2);
+        painter.setPen(pen);
+        painter.drawEllipse(circle_center, circle_radius, circle_radius);
+    }
+
+
     if (isShowSplitTriangle)
     {
         pen.setColor(Qt::green);
         pen.setWidth(4);
-        pen.setCapStyle(Qt::RoundCap);
         painter.setPen(pen);
-        QBrush brush(Qt::green);
-        painter.setBrush(brush);
+//        QBrush brush(Qt::green);
+//        painter.setBrush(brush);
         if (!splitting_triangle.empty())
         {
             painter.drawPolygon(&splitting_triangle[0], 3);
@@ -151,7 +225,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
 void MainWindow::mousePressEvent(QMouseEvent * event)
 {
-    if(isMouseDraw)
+    if(isSelectMannually)
     {
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
@@ -160,7 +234,7 @@ void MainWindow::mousePressEvent(QMouseEvent * event)
 
 void MainWindow::mouseMoveEvent(QMouseEvent * event)
 {
-    if(isMouseDraw)
+    if(isSelectMannually)
     {
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
@@ -169,7 +243,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
-    if(isMouseDraw)
+    if(isSelectMannually)
     {
         if (event->pos().y() < 100)
         {
@@ -192,7 +266,6 @@ void MainWindow::on_actionPerform_triggered()
 
     triangles.clear();
 
-    auto delaunay = std::make_shared<Delaunay>();
     PointVec mesh_points;
     for(auto& p : points)
     {
@@ -234,13 +307,13 @@ void MainWindow::on_actionClear_triggered()
 
 void MainWindow::on_actionSelectManually_triggered()
 {
-    isMouseDraw = !isMouseDraw;
+    isSelectMannually = !isSelectMannually;
 }
 
 void MainWindow::on_actionRandomGeneration_triggered()
 {
     on_actionClear_triggered();
-    isMouseDraw = false;
+    isSelectMannually = false;
 
     RandomPointsDialog * dialog = new RandomPointsDialog(this);
     dialog->exec();
@@ -265,6 +338,36 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
 void MainWindow::on_actionStepByStep_triggered()
 {
+    if (points.size() < 3)
+    {
+        return;
+    }
+
+//    if (!ui->action2D_Viewer->isChecked())
+//        this->hide();
+
+    triangles.clear();
+
+    delaunay->setDemoMode();
+    PointVec mesh_points;
+    for(auto& p : points)
+    {
+        mesh_points.push_back(Point(p.x(), p.y(), 0));
+    }
+    delaunay->perform(mesh_points);
+
+    // display 2d result
+    for (auto& fh : delaunay->mesh.faces())
+    {
+        for(auto& vh : delaunay->mesh.fv_range(fh))
+        {
+            Point p = delaunay->mesh.point(vh);
+            triangles.push_back(QPoint(p[0], p[1]));
+        }
+    }
+    isTrianglated = true;
+    update();
+
 //    if (points.size() < 3)
 //    {
 //        return;

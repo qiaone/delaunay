@@ -25,13 +25,12 @@ public:
     void setDemoMode(int delay_seconds_ = 2);
     void perform();
     void perform(PointVec& all_points);
-    void performStepByStep();
+//    void performStepByStep();
     void drawMesh();
     void init(PointVec& points);
     TriMesh mesh;
     FlipRecord fliprec;
     bool isStepDemo;
-    void setDelaySeconds(int seconds);
 
 private:
     void drawTriangle(FHandle fh);
@@ -54,11 +53,12 @@ private:
 
 signals:
     void signalBeforeSplit(FHandle);
-    void signalBeforeSplit(HHandle);
     void signalAfterSplit(FHandle);
+    void signalBeforeSplit(HHandle);
     void signalAfterSplit(HHandle);
-    void signalBeforeFlip();
+    void signalBeforeFlip(HHandle, VHandle, VHandle);
     void signalAfterFlip();
+    void signalNewPoint(VHandle);
     void signalTest();
 
 public slots:
