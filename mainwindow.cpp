@@ -10,10 +10,6 @@
 #include <QDebug>
 #include <QTime>
 #include <cmath>
-//#include <QtAlgorithms>
-//#include <qmath.h>
-//#include <QSet>
-//#include <limits>
 
 const float INF = 1.0e5f;
 
@@ -32,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     delaunay = new Delaunay;
     delaunay->setParent(this);
+    delaunay_inc = new DelaunayIncremental;
+
 //    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
 //                     this, SLOT(slotNewPoint(VHandle)));
 //    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
@@ -294,6 +292,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         points.append(event->pos());
         update();
     }
+
+    auto p = event->pos();
+    delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+    // add result triangles code here
+    // void showResult()
 }
 
 void MainWindow::on_actionClear_triggered()
@@ -451,4 +454,9 @@ void MainWindow::on_actionStepByStep_triggered()
 //    }
 //    isTrianglated = true;
 //    update();
+}
+
+void MainWindow::on_actionPerformIncremental_triggered()
+{
+
 }

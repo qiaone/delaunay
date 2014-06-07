@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "delaunay.h"
+#include "delaunayincremental.h"
 #include "dviewer.h"
 #include <QThread>
 
@@ -32,6 +33,8 @@ private slots:
     void on_actionRandomGeneration_triggered();
     void on_actionStepByStep_triggered();
 
+    void on_actionPerformIncremental_triggered();
+
 private:
     Ui::MainWindow *ui;
     void paintEvent(QPaintEvent *);
@@ -42,6 +45,8 @@ private:
 
     DViewer* viewer;
     Delaunay* delaunay;
+    DelaunayIncremental* delaunay_inc;
+
 
 // painter related
 private:

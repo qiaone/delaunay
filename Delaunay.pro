@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     Tests/DelaunayTest.cpp \
     delaunay.cpp \
     dviewerwindow.cpp \
-    randompointsdialog.cpp
+    randompointsdialog.cpp \
+    delaunayincremental.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -36,7 +37,8 @@ HEADERS  += \
     delaunay.h \
     dviewerwindow.h \
     randompointsdialog.h \
-    def.h
+    def.h \
+    delaunayincremental.h
 
 FORMS    += \
     mainwindow.ui \

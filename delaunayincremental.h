@@ -1,5 +1,5 @@
-﻿#ifndef DELAUNAY_H
-#define DELAUNAY_H
+#ifndef DELAUNAYINCREMENTAL_H
+#define DELAUNAYINCREMENTAL_H
 
 #include <array>
 #include <vector>
@@ -8,7 +8,7 @@
 #include <GL/glut.h>
 #include "def.h"
 
-class Delaunay : public QObject
+class DelaunayIncremental : public QObject
 {
     Q_OBJECT
 
@@ -18,19 +18,12 @@ protected:
     OpenMesh::VPropHandleT<HHandle> VertexToHEdge;
 
 public:
-    Delaunay();
-    void setDemoMode(int delay_seconds_ = 2);
-    void perform();
-    void perform(PointVec& all_points);
-    //void
-    void drawMesh();
-    void init(PointVec& points);
+    DelaunayIncremental();
+    void performIncremental(Point point);
     TriMesh mesh;
-    bool isStepDemo;
 
 private:
-    void drawTriangle(FHandle fh);
-    void addVertices(PointVec& points);
+    FHandle big_triangle_fh;
     bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
     bool isLeft(Point& p, Point& a, Point& b);
     bool isOverlap(VHandle vh1, VHandle vh2);
@@ -54,11 +47,6 @@ signals:
     void signalAfterSplit(HHandle);
     void signalBeforeFlip(HHandle, VHandle, VHandle);
     void signalAfterFlip();
-    void signalNewPoint(VHandle);
-    void signalTest();
-
-public slots:
-    void test_slot();
 };
 
-#endif // DELAUNAY_H
+#endif // DELAUNAYINCREMENTAL_H
