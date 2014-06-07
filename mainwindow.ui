@@ -36,21 +36,13 @@
     <property name="title">
      <string>Delaunay</string>
     </property>
-    <addaction name="action2D_Viewer"/>
     <addaction name="action3D_Viewer"/>
     <addaction name="separator"/>
     <addaction name="actionPerform"/>
     <addaction name="actionStepByStep"/>
    </widget>
-   <widget class="QMenu" name="menuStepTest">
-    <property name="title">
-     <string>StepTest</string>
-    </property>
-    <addaction name="actionPerformStep"/>
-   </widget>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
-   <addaction name="menuStepTest"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
@@ -101,14 +93,6 @@
     <string>Clear</string>
    </property>
   </action>
-  <action name="action2D_Viewer">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>2D Viewer</string>
-   </property>
-  </action>
   <action name="action3D_Viewer">
    <property name="checkable">
     <bool>true</bool>
@@ -118,21 +102,6 @@
    </property>
    <property name="text">
     <string>3D Viewer</string>
-   </property>
-  </action>
-  <action name="actionPerformStep">
-   <property name="text">
-    <string>PerformStep</string>
-   </property>
-  </action>
-  <action name="actionThreadTest">
-   <property name="text">
-    <string>ThreadTest</string>
-   </property>
-  </action>
-  <action name="actionDebugThread">
-   <property name="text">
-    <string>DebugThread</string>
    </property>
   </action>
  </widget>

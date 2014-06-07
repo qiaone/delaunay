@@ -17,7 +17,10 @@ DViewerWindow::DViewerWindow(std::shared_ptr<Delaunay> delaunay, int mainwindow_
 {
     ui->setupUi(this);
     ui->viewer->setParam(delaunay->mesh, mainwindow_width, mainwindow_height);
-    //QObject::connect((QObject*)delaunay.get(), SIGNAL(drawBeforeFlip()), ui->viewer, SLOT(test()));
+    QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
+                     ui->viewer, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
+    QObject::connect(delaunay.get(), SIGNAL(signalAfterFlip()),
+                     ui->viewer, SLOT(slotAfterFlip()));
 }
 
 void DViewerWindow::test()

@@ -21,6 +21,8 @@ public:
 
 public slots:
     void test();
+    void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
+    void slotAfterFlip();
 
 protected :
     virtual void init();

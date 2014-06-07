@@ -33,7 +33,6 @@ private slots:
     void on_actionSelectManually_triggered();
     void on_actionRandomGeneration_triggered();
     void on_actionStepByStep_triggered();
-    void on_actionPerformStep_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -44,8 +43,6 @@ private:
 
     DViewer* viewer;
     std::shared_ptr<Delaunay> delaunay;
-
-    bool isFirstTime;
 
 // painter related
 private:

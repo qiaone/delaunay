@@ -23,6 +23,16 @@ void DViewer::test()
     qDebug() << "123";
 }
 
+void DViewer::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
+{
+    qDebug() << "DViewer::slotBeforeFlip";
+}
+
+void DViewer::slotAfterFlip()
+{
+    qDebug() << "DViewer::slotAfterFlip";
+}
+
 void DViewer::setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
 {
     _delaunay = std::move(delaunay);
