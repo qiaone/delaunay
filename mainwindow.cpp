@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
+    delaunay->setParent(this);
 //    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
 //                     this, SLOT(slotNewPoint(VHandle)));
 //    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
@@ -43,7 +44,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    //delete delaunay;
     delete ui;
+}
+
+void MainWindow::closeEvent(QCloseEvent *)
+{
+    //delete delaunay;
+    //send signal to delaunay to stop
+    qDebug() << "closing";
 }
 
 void MainWindow::slotBeforeSplit(FHandle fh)
