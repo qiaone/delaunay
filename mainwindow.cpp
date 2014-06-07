@@ -295,8 +295,43 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
     auto p = event->pos();
     delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-    // add result triangles code here
-    // void showResult()
+    showResult2D();
+}
+
+void MainWindow::showResult2D()
+{
+    triangles.clear();
+
+    // display 2d result
+    for (auto& fh : delaunay_inc->mesh.faces())
+    {
+        // do not show triangle with inf point
+        bool hasInfinitePoint = false;
+        for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+        {
+            Point p = delaunay_inc->mesh.point(vh);
+            Point a(-INF, -INF, 0);
+            Point b(INF, -INF, 0);
+            Point c(0, INF, 0);
+            if (p == a || p == b || p == c)
+            {
+                hasInfinitePoint = true;
+                break;
+            }
+        }
+
+        if (!hasInfinitePoint)
+        {
+            for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+            {
+                Point p = delaunay_inc->mesh.point(vh);
+                triangles.push_back(QPoint(p[0], p[1]));
+            }
+        }
+    }
+
+    isTrianglated = true;
+    update();
 }
 
 void MainWindow::on_actionClear_triggered()

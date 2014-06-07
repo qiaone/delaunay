@@ -42,6 +42,7 @@ private:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
+    void showResult2D();
 
     DViewer* viewer;
     Delaunay* delaunay;
