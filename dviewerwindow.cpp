@@ -11,21 +11,16 @@
 //}
 
 
-DViewerWindow::DViewerWindow(std::shared_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height, QWidget *parent) :
+DViewerWindow::DViewerWindow(Delaunay* delaunay, int mainwindow_width, int mainwindow_height, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DViewerWindow)
 {
     ui->setupUi(this);
-    ui->viewer->setParam(delaunay->mesh, mainwindow_width, mainwindow_height);
-    QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
+    ui->viewer->setParam(delaunay, mainwindow_width, mainwindow_height);
+    QObject::connect(delaunay, SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
                      ui->viewer, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
-    QObject::connect(delaunay.get(), SIGNAL(signalAfterFlip()),
+    QObject::connect(delaunay, SIGNAL(signalAfterFlip()),
                      ui->viewer, SLOT(slotAfterFlip()));
-}
-
-void DViewerWindow::test()
-{
-    qDebug() << "DViewerWindow slot test";
 }
 
 DViewerWindow::~DViewerWindow()

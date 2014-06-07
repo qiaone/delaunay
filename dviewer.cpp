@@ -15,13 +15,8 @@ DViewer::DViewer(QWidget *parent)
 
 }
 
-DViewer::DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
-    : _delaunay(std::move(delaunay)), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
-
-void DViewer::test()
-{
-    qDebug() << "123";
-}
+DViewer::DViewer(Delaunay* delaunay, int mainwindow_width, int mainwindow_height)
+    : _delaunay(delaunay), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
 
 void DViewer::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
 {
@@ -33,20 +28,12 @@ void DViewer::slotAfterFlip()
     qDebug() << "DViewer::slotAfterFlip";
 }
 
-void DViewer::setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height)
+void DViewer::setParam(Delaunay* delaunay, int mainwindow_width, int mainwindow_height)
 {
-    _delaunay = std::move(delaunay);
+    _delaunay = delaunay;
     _mainwindow_width = mainwindow_width;
     _mainwindow_height = mainwindow_height;
 }
-
-void DViewer::setParam(TriMesh& mesh, int mainwindow_width, int mainwindow_height)
-{
-    _mesh = mesh;
-    _mainwindow_width = mainwindow_width;
-    _mainwindow_height = mainwindow_height;
-}
-
 
 void DViewer::drawFlip()
 {

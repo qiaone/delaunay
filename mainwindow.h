@@ -3,9 +3,7 @@
 
 #include <QMainWindow>
 #include "delaunay.h"
-//#include "delaunaystepbystep.h"
 #include "dviewer.h"
-#include <memory>
 #include <QThread>
 
 namespace Ui {
@@ -42,7 +40,7 @@ private:
     void mouseReleaseEvent(QMouseEvent * event);
 
     DViewer* viewer;
-    std::shared_ptr<Delaunay> delaunay;
+    Delaunay* delaunay;
 
 // painter related
 private:

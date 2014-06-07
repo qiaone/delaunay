@@ -30,14 +30,14 @@ MainWindow::MainWindow(QWidget *parent) :
     viewer(nullptr)
 {
     ui->setupUi(this);
-    delaunay = std::make_shared<Delaunay>();
+    delaunay = new Delaunay;
 //    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
 //                     this, SLOT(slotNewPoint(VHandle)));
 //    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
 //                     this, SLOT(slotBeforeSplit(FHandle)));
-    QObject::connect(delaunay.get(), SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
+    QObject::connect(delaunay, SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
                      this, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
-    QObject::connect(delaunay.get(), SIGNAL(signalAfterFlip()),
+    QObject::connect(delaunay, SIGNAL(signalAfterFlip()),
                      this, SLOT(slotAfterFlip()));
 }
 
@@ -287,46 +287,6 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
     }
 }
 
-void MainWindow::on_actionPerform_triggered()
-{
-    if (points.size() < 3)
-    {
-        return;
-    }
-
-    triangles.clear();
-
-    PointVec mesh_points;
-    for(auto& p : points)
-    {
-        mesh_points.push_back(Point(p.x(), p.y(), 0));
-    }
-    delaunay->perform(mesh_points);
-
-    // display 2d result
-    for (auto& fh : delaunay->mesh.faces())
-    {
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            triangles.push_back(QPoint(p[0], p[1]));
-        }
-    }
-    isTrianglated = true;
-    update();
-
-    // display 3d result
-    if(ui->action3D_Viewer->isChecked())
-    {
-        if (viewer == nullptr)
-        {
-            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-            dvwin->show();
-        }
-    }
-}
-
 void MainWindow::on_actionClear_triggered()
 {
     points.clear();
@@ -366,18 +326,16 @@ void MainWindow::on_actionRandomGeneration_triggered()
     update();
 }
 
-void MainWindow::on_actionStepByStep_triggered()
+void MainWindow::on_actionPerform_triggered()
 {
-    isSelectMannually = false;
-
     if (points.size() < 3)
     {
         return;
     }
 
+    isSelectMannually = false;
     triangles.clear();
 
-    delaunay->setDemoMode();
     PointVec mesh_points;
     for(auto& p : points)
     {
@@ -397,13 +355,59 @@ void MainWindow::on_actionStepByStep_triggered()
     isTrianglated = true;
     update();
 
-//    if (points.size() < 3)
-//    {
-//        return;
-//    }
+    // display 3d result
+    if(ui->action3D_Viewer->isChecked())
+    {
+        if (viewer == nullptr)
+        {
+            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
+            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+            dvwin->show();
+        }
+    }
+}
 
-//    if (!ui->action2D_Viewer->isChecked())
-//        this->hide();
+void MainWindow::on_actionStepByStep_triggered()
+{
+    if (points.size() < 3)
+    {
+        return;
+    }
+
+    isSelectMannually = false;
+    triangles.clear();
+
+    delaunay->setDemoMode();
+    PointVec mesh_points;
+    for(auto& p : points)
+    {
+        mesh_points.push_back(Point(p.x(), p.y(), 0));
+    }
+
+    // display 2d result
+    for (auto& fh : delaunay->mesh.faces())
+    {
+        for(auto& vh : delaunay->mesh.fv_range(fh))
+        {
+            Point p = delaunay->mesh.point(vh);
+            triangles.push_back(QPoint(p[0], p[1]));
+        }
+    }
+    isTrianglated = true;
+    update();
+
+    // display 3d result
+    if(ui->action3D_Viewer->isChecked())
+    {
+        if (viewer == nullptr)
+        {
+            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
+            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+            dvwin->show();
+        }
+    }
+
+    delaunay->perform(mesh_points);
 
 //    auto delaunay = std::make_shared<Delaunay>();
 

@@ -13,7 +13,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    ensure_exception.cpp \
     Halfedge/face.cpp \
     Halfedge/halfedge.cpp \
     Halfedge/point2d.cpp \

@@ -15,12 +15,10 @@ class DViewer : public QGLViewer
 public:
     PointVec points;
     DViewer(QWidget *parent);
-    void setParam(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
-    void setParam(TriMesh& mesh, int mainwindow_width, int mainwindow_height);
-    DViewer(std::unique_ptr<Delaunay> delaunay, int mainwindow_width, int mainwindow_height);
+    DViewer(Delaunay* delaunay, int mainwindow_width, int mainwindow_height);
+    void setParam(Delaunay* delaunay, int mainwindow_width, int mainwindow_height);
 
 public slots:
-    void test();
     void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
     void slotAfterFlip();
 
@@ -35,7 +33,7 @@ protected :
     void drawParaboloid(Point lPt, float slice, float stack);
 
 private:
-    std::unique_ptr<Delaunay> _delaunay;
+    Delaunay* _delaunay;
     TriMesh _mesh;
     int _mainwindow_width, _mainwindow_height;
 	GLuint listName; // display list name
