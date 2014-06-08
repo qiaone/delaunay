@@ -29,11 +29,28 @@ DelaunayIncremental::DelaunayIncremental() :
     big_triangle_fh = mesh.add_face(vhs, 3);
 }
 
+void DelaunayIncremental::pointLocation(VHandle& vh)
+{
+    for(auto& fh : mesh.faces())
+    {
+        if (isInTriangle(mesh.point(vh), fh))
+        {
+            mesh.property(FaceToVertices, fh).push_back(vh);
+            mesh.property(VertexToFace, vh) = fh;
+            break;
+        }
+        // if (isOnTriangleEdges)
+    }
+}
+
 void DelaunayIncremental::performIncremental(Point point)
 {
     auto vh = mesh.add_vertex(point);
-    mesh.property(FaceToVertices, big_triangle_fh).push_back(vh);
-    mesh.property(VertexToFace, vh) = big_triangle_fh;
+
+    pointLocation(vh);
+
+    //mesh.property(FaceToVertices, big_triangle_fh).push_back(vh);
+    //mesh.property(VertexToFace, vh) = big_triangle_fh;
 
     FHandle fh = mesh.property(VertexToFace, vh);
     HHandle hh = mesh.property(VertexToHEdge, vh);

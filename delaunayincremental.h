@@ -39,6 +39,7 @@ private:
     int current_point_num;
     int total_points_count;
     int delay_seconds;
+    void pointLocation(VHandle& vh);
 
 signals:
     void signalBeforeSplit(FHandle);

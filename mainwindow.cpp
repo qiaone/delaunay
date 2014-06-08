@@ -305,22 +305,22 @@ void MainWindow::showResult2D()
     // display 2d result
     for (auto& fh : delaunay_inc->mesh.faces())
     {
-        // do not show triangle with inf point
-        bool hasInfinitePoint = false;
-        for(auto& vh : delaunay_inc->mesh.fv_range(fh))
-        {
-            Point p = delaunay_inc->mesh.point(vh);
-            Point a(-INF, -INF, 0);
-            Point b(INF, -INF, 0);
-            Point c(0, INF, 0);
-            if (p == a || p == b || p == c)
-            {
-                hasInfinitePoint = true;
-                break;
-            }
-        }
-
-        if (!hasInfinitePoint)
+         // do not show triangle with inf point
+         bool hasInfinitePoint = false;
+         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+         {
+             Point p = delaunay_inc->mesh.point(vh);
+             Point a(-INF, -INF, 0);
+             Point b(INF, -INF, 0);
+             Point c(0, INF, 0);
+             if (p == a || p == b || p == c)
+             {
+                 hasInfinitePoint = true;
+                 break;
+             }
+         }
+ 
+         if (!hasInfinitePoint)
         {
             for(auto& vh : delaunay_inc->mesh.fv_range(fh))
             {
