@@ -43,8 +43,7 @@ private:
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void showResult2D();
-    void legalizeVisualAll();
-    void legalizeVisual(HHandle& hh);
+    void showFlips2D();
 
     DViewer* viewer;
     Delaunay* delaunay;
@@ -72,7 +71,6 @@ private:
     bool isShowCircle;
     bool isShowBeforeFlip;
     bool isShowAfterFlip;
-
 };
 
 #endif // MAINWINDOW_H

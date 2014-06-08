@@ -150,63 +150,10 @@ void MainWindow::slotNewPoint(VHandle vh)
     isShowNewPoint = true;
 }
 
-void MainWindow::legalizeVisualAll()
-{
-    // legalize each triangle
-    for(auto& hh : delaunay_inc->mesh.voh_range(delaunay_inc->new_vh))
-    {
-        delaunay_inc->legalize_queue.push(delaunay_inc->mesh.next_halfedge_handle(hh));
-    }
-
-    while (!delaunay_inc->legalize_queue.empty())
-    {
-        legalizeVisual(delaunay_inc->legalize_queue.front());
-        delaunay_inc->legalize_queue.pop();
-    }
-}
-
-void MainWindow::legalizeVisual(HHandle& hh)
-{
-    /*           ________ vh_oppo
-     *          /\      /
-     *         /  \hh  /
-     *        /    \  /
-     *    vh /___>__\/
-     */
-
-    VHandle vh_oppo = delaunay_inc->mesh.opposite_he_opposite_vh(hh);
-    if (delaunay_inc->isInCircle(hh, delaunay_inc->new_vh, vh_oppo))
-    {
-        // flip edge
-        EHandle eh = delaunay_inc->mesh.edge_handle(hh);
-        if (delaunay_inc->mesh.is_flip_ok(eh))
-        {
-            delaunay_inc->mesh.flip(eh);
-
-            // iterative
-            HHandle heh1, heh2;
-            heh1 = delaunay_inc->mesh.halfedge_handle(eh, 0);
-            heh2 = delaunay_inc->mesh.halfedge_handle(eh, 1);
-            if (delaunay_inc->mesh.to_vertex_handle(heh1) == delaunay_inc->new_vh)
-            {
-                heh1 = delaunay_inc->mesh.prev_halfedge_handle(heh1);
-                heh2 = delaunay_inc->mesh.next_halfedge_handle(heh2);
-            }
-            else
-            {
-                heh1 = delaunay_inc->mesh.next_halfedge_handle(heh1);
-                heh2 = delaunay_inc->mesh.prev_halfedge_handle(heh2);
-            }
-
-            delaunay_inc->legalize_queue.push(heh1);
-            delaunay_inc->legalize_queue.push(heh2);
-        }
-    }
-}
-
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
+    //painter.setCompositionMode(QPainter::CompositionMode_DestinationAtop);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
@@ -241,6 +188,21 @@ void MainWindow::paintEvent(QPaintEvent *)
 //    painter.drawPolygon(&vp[0], 3);
 
 
+    if (isTrianglated)
+    {
+        pen.setColor(QColor(0, 196, 0));
+        pen.setWidth(2);
+        pen.setCapStyle(Qt::RoundCap);
+        painter.setPen(pen);
+        if (!triangles.empty())
+        {
+            for(int i = 0; i < triangles.size() / 3; i++)
+            {
+                painter.drawPolygon(&triangles[i * 3], 3);
+            }
+        }
+    }
+
     if (isShowNewPoint)
     {
         pen.setColor(Qt::red);
@@ -252,8 +214,9 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (isShowBeforeFlip)
     {
         // two triangles
-        pen.setWidth(2);
-        pen.setColor(QColor(151, 193, 62));
+        pen.setWidth(4);
+        pen.setColor(QColor(187, 0, 187));
+        //pen.setBrush(QBrush::);
         painter.setPen(pen);
         painter.drawPolygon(&flipping_triangles[0], 4);
 
@@ -276,7 +239,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         pen.setColor(Qt::red);
         pen.setWidth(8);
         painter.setPen(pen);
-        painter.drawPoint(in_circle_point);
+        //painter.drawPoint(in_circle_point);
     }
 
     if (isShowCircle)
@@ -300,20 +263,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
 
-    if (isTrianglated)
-    {
-        pen.setColor(Qt::blue);
-        pen.setWidth(2);
-        pen.setCapStyle(Qt::RoundCap);
-        painter.setPen(pen);
-        if (!triangles.empty())
-        {
-            for(int i = 0; i < triangles.size() / 3; i++)
-            {
-                painter.drawPolygon(&triangles[i * 3], 3);
-            }
-        }
-    }
+
 }
 
 void MainWindow::mousePressEvent(QMouseEvent * event)
@@ -347,15 +297,35 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-        legalizeVisualAll();
+        showFlips2D();
         showResult2D();
     }
+}
+
+void MainWindow::showFlips2D()
+{
+    for (auto& flip : delaunay_inc->flip_records)
+    {
+        flipping_triangles.clear();
+        flipping_triangles
+            << QPoint(flip[0][0],flip[0][1])
+            << QPoint(flip[1][0],flip[1][1])
+            << QPoint(flip[2][0],flip[2][1])
+            << QPoint(flip[3][0],flip[3][1]);
+        isShowBeforeFlip = true;
+        update();
+        QTime t;
+        t.start();
+        while(t.elapsed()<1000)
+            QCoreApplication::processEvents();
+    }
+    isShowBeforeFlip = false;
+    update();
 }
 
 void MainWindow::showResult2D()
 {
     triangles.clear();
-
     // display 2d result
     for (auto& fh : delaunay_inc->mesh.faces())
     {

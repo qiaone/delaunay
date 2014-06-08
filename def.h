@@ -1,4 +1,4 @@
-#ifndef DEF_H
+﻿#ifndef DEF_H
 #define DEF_H
 
 #include <OpenMesh/Core/IO/MeshIO.hh>

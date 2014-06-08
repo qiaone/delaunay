@@ -2,7 +2,6 @@
 #include "delaunayincremental.h"
 #include <QDebug>
 #include <QTime>
-#include <QThread>
 #include <QApplication>
 
 const float INF = 1.0e5f;
@@ -68,17 +67,18 @@ void DelaunayIncremental::performIncremental(Point new_point)
         mesh.split(fh, new_vh);
     }
 
-    //// legalize each triangle
-    //for(auto& hh : mesh.voh_range(new_vh))
-    //{
-    //    legalize_queue.push(mesh.next_halfedge_handle(hh));
-    //}
+    flip_records.clear();
+    // legalize each triangle
+    for(auto& hh : mesh.voh_range(new_vh))
+    {
+        legalize_queue.push(mesh.next_halfedge_handle(hh));
+    }
 
-    //while (!legalize_queue.empty())
-    //{
-    //    legalize(legalize_queue.front());
-    //    legalize_queue.pop();
-    //}
+    while (!legalize_queue.empty())
+    {
+        legalize(legalize_queue.front());
+        legalize_queue.pop();
+    }
     // delete infinite vertices
     //deleteVertices(total_points_count);
 
@@ -181,6 +181,10 @@ void DelaunayIncremental::legalize(HHandle hh)
      */
 
     VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
+    
+    isFlipped = false;
+
+
     if (isInCircle(hh, new_vh, vh_oppo))
     {
         emit signalBeforeFlip(hh, new_vh, vh_oppo);
@@ -189,6 +193,14 @@ void DelaunayIncremental::legalize(HHandle hh)
         EHandle eh = mesh.edge_handle(hh);
         if (mesh.is_flip_ok(eh))
         {
+            std::array<Point, 4> flip_record;
+            flip_record[0] = mesh.point(new_vh);
+            flip_record[1] = mesh.point(mesh.from_vertex_handle(hh));
+            flip_record[2] = mesh.point(vh_oppo);
+            flip_record[3] = mesh.point(mesh.to_vertex_handle(hh));
+            flip_records.push_back(flip_record);
+
+            isFlipped = true;
             mesh.flip(eh);
             emit signalAfterFlip();
 

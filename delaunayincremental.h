@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <GL/glut.h>
 #include "def.h"
+#include <array>
 
 class DelaunayIncremental : public QObject
 {
@@ -24,6 +25,8 @@ public:
     std::queue<HHandle> legalize_queue;
     VHandle new_vh;
     bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
+    std::vector<std::array<Point, 4>> flip_records;
+    bool isFlipped;
 
 private:
     bool isLeft(Point& p, Point& a, Point& b);
