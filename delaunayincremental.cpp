@@ -43,21 +43,21 @@ void DelaunayIncremental::pointLocation(VHandle& vh)
     }
 }
 
-void DelaunayIncremental::performIncremental(Point point)
+void DelaunayIncremental::performIncremental(Point new_point)
 {
-    auto vh = mesh.add_vertex(point);
+    new_vh = mesh.add_vertex(new_point);
 
-    pointLocation(vh);
+    pointLocation(new_vh);
 
-    FHandle fh = mesh.property(VertexToFace, vh);
-    HHandle hh = mesh.property(VertexToHEdge, vh);
+    FHandle fh = mesh.property(VertexToFace, new_vh);
+    HHandle hh = mesh.property(VertexToHEdge, new_vh);
 
     if (hh.is_valid())
     {
         emit signalBeforeSplit(hh);
 
         // split edge
-        mesh.split(mesh.edge_handle(hh), vh);
+        mesh.split(mesh.edge_handle(hh), new_vh);
 
     }
     else if (fh.is_valid())
@@ -65,15 +65,21 @@ void DelaunayIncremental::performIncremental(Point point)
         emit signalBeforeSplit(fh);
 
         // split face
-        mesh.split(fh, vh);
+        mesh.split(fh, new_vh);
     }
 
     // legalize each triangle
-    for(auto& hh : mesh.voh_range(vh))
+    for(auto& hh : mesh.voh_range(new_vh))
     {
-        legalize(mesh.next_halfedge_handle(hh), vh);
+        //legalize(mesh.next_halfedge_handle(hh));
+        legalize_queue.push(mesh.next_halfedge_handle(hh));
     }
 
+    while (!legalize_queue.empty())
+    {
+        legalize(legalize_queue.front());
+        legalize_queue.pop();
+    }
     // delete infinite vertices
     //deleteVertices(total_points_count);
 
@@ -166,7 +172,7 @@ bool DelaunayIncremental::isInfinite(Point& pt)
     return INF - abs(pt[1]) < ESP;
 }
 
-void DelaunayIncremental::legalize(HHandle hh, VHandle vh)
+void DelaunayIncremental::legalize(HHandle hh)
 {
     /*           ________ vh_oppo
      *          /\      /
@@ -176,9 +182,9 @@ void DelaunayIncremental::legalize(HHandle hh, VHandle vh)
      */
 
     VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
-    if (isInCircle(hh, vh, vh_oppo))
+    if (isInCircle(hh, new_vh, vh_oppo))
     {
-        emit signalBeforeFlip(hh, vh, vh_oppo);
+        emit signalBeforeFlip(hh, new_vh, vh_oppo);
 
         // flip edge
         EHandle eh = mesh.edge_handle(hh);
@@ -191,18 +197,21 @@ void DelaunayIncremental::legalize(HHandle hh, VHandle vh)
             HHandle heh1, heh2;
             heh1 = mesh.halfedge_handle(eh, 0);
             heh2 = mesh.halfedge_handle(eh, 1);
-            if (mesh.to_vertex_handle(heh1) == vh)
+            if (mesh.to_vertex_handle(heh1) == new_vh)
             {
                 heh1 = mesh.prev_halfedge_handle(heh1);
                 heh2 = mesh.next_halfedge_handle(heh2);
             }
-            else{
+            else
+            {
                 heh1 = mesh.next_halfedge_handle(heh1);
                 heh2 = mesh.prev_halfedge_handle(heh2);
             }
 
-            legalize(heh1, vh);
-            legalize(heh2, vh);
+//            legalize(heh1);
+//            legalize(heh2);
+            legalize_queue.push(heh1);
+            legalize_queue.push(heh2);
         }
     }
 }

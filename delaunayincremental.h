@@ -1,8 +1,8 @@
 ﻿#ifndef DELAUNAYINCREMENTAL_H
 #define DELAUNAYINCREMENTAL_H
 
-#include <array>
 #include <vector>
+#include <queue>
 #include <QObject>
 #include <glm/glm.hpp>
 #include <GL/glut.h>
@@ -19,7 +19,7 @@ protected:
 
 public:
     DelaunayIncremental();
-    void performIncremental(Point point);
+    void performIncremental(Point new_point);
     TriMesh mesh;
 
 private:
@@ -29,12 +29,15 @@ private:
     bool isOnEdge(Point& pt, HHandle hh);
     bool isInTriangle(Point& pt, FHandle fh);
     bool isInfinite(Point& pt);
-    void legalize(HHandle hh, VHandle vh);
+    void legalize(HHandle hh);
     void deleteVertices(int n);
     int current_point_num;
     int total_points_count;
     int delay_seconds;
     void pointLocation(VHandle& vh);
+    std::queue<HHandle> legalize_queue;
+
+    VHandle new_vh;
 
 signals:
     void signalBeforeSplit(FHandle);
