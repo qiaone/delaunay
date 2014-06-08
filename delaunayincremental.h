@@ -1,4 +1,4 @@
-#ifndef DELAUNAYINCREMENTAL_H
+﻿#ifndef DELAUNAYINCREMENTAL_H
 #define DELAUNAYINCREMENTAL_H
 
 #include <array>
@@ -23,17 +23,12 @@ public:
     TriMesh mesh;
 
 private:
-    FHandle big_triangle_fh;
     bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
     bool isLeft(Point& p, Point& a, Point& b);
     bool isOverlap(VHandle vh1, VHandle vh2);
     bool isOnEdge(Point& pt, HHandle hh);
     bool isInTriangle(Point& pt, FHandle fh);
     bool isInfinite(Point& pt);
-    void rebucket(VHandle vh, VHandleVec& vhvec);
-    void rebucket(EHandle eh, VHandleVec& vhvec);
-    void saveVhs(FHandle fh, VHandleVec &vhs_buffer);
-    void saveVhs(HHandle hh, VHandleVec &vhs_buffer);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
     int current_point_num;

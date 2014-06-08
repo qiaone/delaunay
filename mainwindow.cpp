@@ -250,7 +250,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (isTrianglated)
     {
         pen.setColor(Qt::blue);
-        pen.setWidth(4);
+        pen.setWidth(2);
         pen.setCapStyle(Qt::RoundCap);
         painter.setPen(pen);
         if (!triangles.empty())
@@ -291,11 +291,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         }
         points.append(event->pos());
         update();
-    }
 
-    auto p = event->pos();
-    delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-    showResult2D();
+        auto p = event->pos();
+        delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+        showResult2D();
+    }
 }
 
 void MainWindow::showResult2D()
