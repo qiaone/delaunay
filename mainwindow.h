@@ -43,6 +43,8 @@ private:
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void showResult2D();
+    void legalizeVisualAll();
+    void legalizeVisual(HHandle& hh);
 
     DViewer* viewer;
     Delaunay* delaunay;

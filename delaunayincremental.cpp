@@ -68,18 +68,17 @@ void DelaunayIncremental::performIncremental(Point new_point)
         mesh.split(fh, new_vh);
     }
 
-    // legalize each triangle
-    for(auto& hh : mesh.voh_range(new_vh))
-    {
-        //legalize(mesh.next_halfedge_handle(hh));
-        legalize_queue.push(mesh.next_halfedge_handle(hh));
-    }
+    //// legalize each triangle
+    //for(auto& hh : mesh.voh_range(new_vh))
+    //{
+    //    legalize_queue.push(mesh.next_halfedge_handle(hh));
+    //}
 
-    while (!legalize_queue.empty())
-    {
-        legalize(legalize_queue.front());
-        legalize_queue.pop();
-    }
+    //while (!legalize_queue.empty())
+    //{
+    //    legalize(legalize_queue.front());
+    //    legalize_queue.pop();
+    //}
     // delete infinite vertices
     //deleteVertices(total_points_count);
 
@@ -193,7 +192,7 @@ void DelaunayIncremental::legalize(HHandle hh)
             mesh.flip(eh);
             emit signalAfterFlip();
 
-            // recursive
+            // iterative
             HHandle heh1, heh2;
             heh1 = mesh.halfedge_handle(eh, 0);
             heh2 = mesh.halfedge_handle(eh, 1);
@@ -208,8 +207,6 @@ void DelaunayIncremental::legalize(HHandle hh)
                 heh2 = mesh.prev_halfedge_handle(heh2);
             }
 
-//            legalize(heh1);
-//            legalize(heh2);
             legalize_queue.push(heh1);
             legalize_queue.push(heh2);
         }

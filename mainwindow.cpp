@@ -150,6 +150,59 @@ void MainWindow::slotNewPoint(VHandle vh)
     isShowNewPoint = true;
 }
 
+void MainWindow::legalizeVisualAll()
+{
+    // legalize each triangle
+    for(auto& hh : delaunay_inc->mesh.voh_range(delaunay_inc->new_vh))
+    {
+        delaunay_inc->legalize_queue.push(delaunay_inc->mesh.next_halfedge_handle(hh));
+    }
+
+    while (!delaunay_inc->legalize_queue.empty())
+    {
+        legalizeVisual(delaunay_inc->legalize_queue.front());
+        delaunay_inc->legalize_queue.pop();
+    }
+}
+
+void MainWindow::legalizeVisual(HHandle& hh)
+{
+    /*           ________ vh_oppo
+     *          /\      /
+     *         /  \hh  /
+     *        /    \  /
+     *    vh /___>__\/
+     */
+
+    VHandle vh_oppo = delaunay_inc->mesh.opposite_he_opposite_vh(hh);
+    if (delaunay_inc->isInCircle(hh, delaunay_inc->new_vh, vh_oppo))
+    {
+        // flip edge
+        EHandle eh = delaunay_inc->mesh.edge_handle(hh);
+        if (delaunay_inc->mesh.is_flip_ok(eh))
+        {
+            delaunay_inc->mesh.flip(eh);
+
+            // iterative
+            HHandle heh1, heh2;
+            heh1 = delaunay_inc->mesh.halfedge_handle(eh, 0);
+            heh2 = delaunay_inc->mesh.halfedge_handle(eh, 1);
+            if (delaunay_inc->mesh.to_vertex_handle(heh1) == delaunay_inc->new_vh)
+            {
+                heh1 = delaunay_inc->mesh.prev_halfedge_handle(heh1);
+                heh2 = delaunay_inc->mesh.next_halfedge_handle(heh2);
+            }
+            else
+            {
+                heh1 = delaunay_inc->mesh.next_halfedge_handle(heh1);
+                heh2 = delaunay_inc->mesh.prev_halfedge_handle(heh2);
+            }
+
+            delaunay_inc->legalize_queue.push(heh1);
+            delaunay_inc->legalize_queue.push(heh2);
+        }
+    }
+}
 
 void MainWindow::paintEvent(QPaintEvent *)
 {
@@ -294,6 +347,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+        legalizeVisualAll();
         showResult2D();
     }
 }

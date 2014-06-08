@@ -21,9 +21,11 @@ public:
     DelaunayIncremental();
     void performIncremental(Point new_point);
     TriMesh mesh;
+    std::queue<HHandle> legalize_queue;
+    VHandle new_vh;
+    bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
 
 private:
-    bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
     bool isLeft(Point& p, Point& a, Point& b);
     bool isOverlap(VHandle vh1, VHandle vh2);
     bool isOnEdge(Point& pt, HHandle hh);
@@ -35,9 +37,6 @@ private:
     int total_points_count;
     int delay_seconds;
     void pointLocation(VHandle& vh);
-    std::queue<HHandle> legalize_queue;
-
-    VHandle new_vh;
 
 signals:
     void signalBeforeSplit(FHandle);
