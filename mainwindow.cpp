@@ -137,6 +137,31 @@ void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
     update();
 }
 
+void MainWindow::showCircle2D()
+{
+    double x1 = flipping_triangles[0].x();
+    double y1 = flipping_triangles[0].y();
+    double x2 = flipping_triangles[1].x();
+    double y2 = flipping_triangles[1].y();
+    double x3 = flipping_triangles[3].x();
+    double y3 = flipping_triangles[3].y();
+
+    in_circle_point.setX(flipping_triangles[2].x());
+    in_circle_point.setY(flipping_triangles[2].y());
+
+    double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
+                 (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
+                (2 * (y1 - y2) * (x3 - x1) - 2 * (y3 - y1) * (x1 - x2));
+    double y0 = (y3 * y3 - y1 * y1 - 2 * x0 * (x3 - x1) - x1 * x1 + x3 * x3) / (2 * (y3 - y1));
+    double r = sqrt((y0 - y2) * (y0 - y2) + (x0 - x2) * (x0 - x2));
+
+    circle_center.setX(x0);
+    circle_center.setY(y0);
+    circle_radius = r;
+
+    isShowCircle = true;
+}
+
 void MainWindow::slotAfterFlip()
 {
     isShowAfterFlip = true;
@@ -239,7 +264,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         pen.setColor(Qt::red);
         pen.setWidth(8);
         painter.setPen(pen);
-        //painter.drawPoint(in_circle_point);
+        painter.drawPoint(in_circle_point);
     }
 
     if (isShowCircle)
@@ -306,6 +331,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
 void MainWindow::showFlips2D( )
 {
+    // show all flips during a new point added
     for (auto& flip : delaunay_inc->flip_records)
     {
         flipping_triangles.clear();
@@ -314,6 +340,8 @@ void MainWindow::showFlips2D( )
             << QPoint(flip[1][0],flip[1][1])
             << QPoint(flip[2][0],flip[2][1])
             << QPoint(flip[3][0],flip[3][1]);
+        showCircle2D();
+        isShowCircle = true;
         isShowBeforeFlip = true;
         update();
 
@@ -331,6 +359,7 @@ void MainWindow::showFlips2D( )
 
         isShowAfterFlip = false;
     }
+    isShowCircle = false;
     isShowBeforeFlip = false;
     update();
 }

@@ -43,6 +43,7 @@ private:
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
     void showResult2D();
+    void showCircle2D();
     void showFlips2D();
 
     DViewer* viewer;
