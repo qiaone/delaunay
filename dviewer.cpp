@@ -15,27 +15,17 @@ DViewer::DViewer(QWidget *parent)
 
 }
 
-DViewer::DViewer(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height)
-    : _delaunay_inc(delaunay_inc), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
+DViewer::DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
+    : delaunay_inc(delaunay_inc_), mainwindow_width(mainwindow_width_), mainwindow_height(mainwindow_height_) { }
 
-void DViewer::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
+void DViewer::setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
 {
-    qDebug() << "DViewer::slotBeforeFlip";
+    delaunay_inc = delaunay_inc_;
+    mainwindow_width = mainwindow_width_;
+    mainwindow_height = mainwindow_height_;
 }
 
-void DViewer::slotAfterFlip()
-{
-    qDebug() << "DViewer::slotAfterFlip";
-}
-
-void DViewer::setParam(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height)
-{
-    _delaunay_inc = delaunay_inc;
-    _mainwindow_width = mainwindow_width;
-    _mainwindow_height = mainwindow_height;
-}
-
-void DViewer::drawFlip()
+void DViewer::showFlips3D()
 {
 //    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
 //    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -85,23 +75,23 @@ void DViewer::drawMesh()
     glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
 
-    for (auto& vh: _delaunay_inc->mesh.vertices())
+    for (auto& vh: delaunay_inc->mesh.vertices())
     {
-        auto point = _delaunay_inc->mesh.point(vh);
+        auto point = delaunay_inc->mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
-        glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+        glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
     }
     glEnd();
 
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
-    for (auto& fh : _delaunay_inc->mesh.faces())
+    for (auto& fh : delaunay_inc->mesh.faces())
     {
-        for(auto& vh : _delaunay_inc->mesh.fv_range(fh))
+        for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
-            auto point = _delaunay_inc->mesh.point(vh);
-            glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+            auto point = delaunay_inc->mesh.point(vh);
+            glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
         }
     }
     glEnd();
@@ -118,7 +108,7 @@ void DViewer::drawMesh(bool m)
     {
         auto point = _mesh.point(vh);
 
-        glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+        glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
     }
     glEnd();
 
@@ -131,7 +121,7 @@ void DViewer::drawMesh(bool m)
         for(auto& vh : _mesh.fv_range(fh))
         {
             auto point = _mesh.point(vh);
-            glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
+            glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
         }
     }
     glEnd();

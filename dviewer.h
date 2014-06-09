@@ -15,12 +15,8 @@ class DViewer : public QGLViewer
 public:
     PointVec points;
     DViewer(QWidget *parent);
-    DViewer(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height);
-    void setParam(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height);
-
-public slots:
-    void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
-    void slotAfterFlip();
+    DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
+    void setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
 
 protected :
     virtual void init();
@@ -29,13 +25,13 @@ protected :
     //virtual void mousePressEvent(QMouseEvent* e);
     void drawMesh();
     void drawMesh(bool m);
-    void drawFlip();
+    void showFlips3D();
     void drawParaboloid(Point lPt, float slice, float stack);
 
 private:
-    DelaunayIncremental* _delaunay_inc;
+    DelaunayIncremental* delaunay_inc;
     TriMesh _mesh;
-    int _mainwindow_width, _mainwindow_height;
+    int mainwindow_width, mainwindow_height;
 	GLuint listName; // display list name
 };
 

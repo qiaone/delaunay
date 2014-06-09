@@ -157,7 +157,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
-        if (event->pos().y() < 100)
+        if (event->pos().x() > 600 || event->pos().y() > 600)
         {
             return;
         }
@@ -168,6 +168,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+        //ui->viewer->showFlips3D();
         showFlips2D();
         showResult2D();
         isSelectMannually = true;
