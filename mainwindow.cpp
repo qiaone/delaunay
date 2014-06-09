@@ -258,7 +258,17 @@ void MainWindow::on_actionClear_triggered()
 {
     points.clear();
     triangles.clear();
+    flipping_triangles.clear();
+
     isTrianglated = false;
+    isSelectMannually = true;
+    isShowCircle = false;
+    isShowBeforeFlip = false;
+    isShowAfterFlip = false;
+    delayMSeconds = 700;
+
+    delaunay_inc->mesh.clear();
+
     update();
 }
 
