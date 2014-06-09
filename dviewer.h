@@ -17,21 +17,21 @@ public:
     DViewer(QWidget *parent);
     DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
     void setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
-    bool isDrawResult;
+    void showResult3D();
+
 
 protected :
     virtual void init();
     virtual void draw();
-    virtual void keyPressEvent(QKeyEvent *e);
-    //virtual void mousePressEvent(QMouseEvent* e);
     void drawMesh();
     void showFlips3D();
-    void drawParaboloid(Point lPt, float slice, float stack);
+    void drawParaboloid(Point bottom_point, float slice, float stack);
 
 private:
     DelaunayIncremental* delaunay_inc;
     int mainwindow_width, mainwindow_height;
-	GLuint listName; // display list name
+    GLuint listName; // display list name
+    bool isDrawResult;
 };
 
 #endif // VIEWER_H

@@ -149,6 +149,39 @@ bool DelaunayIncremental::isOnEdge(Point& p, HHandle hh)
     return abs(rst) <= ESP;
 }
 
+bool DelaunayIncremental::hasInfinitePoint(const FHandle& fh)
+{
+    Point a(-INF, -INF, 0);
+    Point b(INF, -INF, 0);
+    Point c(0, INF, 0);
+
+    for(auto& vh : mesh.fv_range(fh))
+    {
+        Point p = mesh.point(vh);
+        if (p == a || p == b || p == c)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool DelaunayIncremental::hasInfinitePoint(const std::array<Point, 4>& points)
+{
+    Point a(-INF, -INF, 0);
+    Point b(INF, -INF, 0);
+    Point c(0, INF, 0);
+
+    for(auto& p : points)
+    {
+        if (p == a || p == b || p == c)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool DelaunayIncremental::isInTriangle(Point& point, FHandle fh)
 {
     PointVec triangle_points;

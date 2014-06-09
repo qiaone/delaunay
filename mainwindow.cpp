@@ -169,7 +169,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-        ui->viewer->isDrawResult = true;
+        ui->viewer->showResult3D();
         showFlips2D();
         showResult2D();
         isSelectMannually = true;
@@ -181,7 +181,7 @@ void MainWindow::showFlips2D( )
     // show all flips during a new point added
     for (auto& flip : delaunay_inc->flip_records)
     {
-        if (hasInfinitePoint(flip))
+        if (delaunay_inc->hasInfinitePoint(flip))
         {
             continue;
         }
@@ -215,38 +215,38 @@ void MainWindow::showFlips2D( )
     update();
 }
 
-bool MainWindow::hasInfinitePoint(const FHandle& fh)
-{
-    Point a(-INF, -INF, 0);
-    Point b(INF, -INF, 0);
-    Point c(0, INF, 0);
+//bool MainWindow::hasInfinitePoint(const FHandle& fh)
+//{
+//    Point a(-INF, -INF, 0);
+//    Point b(INF, -INF, 0);
+//    Point c(0, INF, 0);
 
-    for(auto& vh : delaunay_inc->mesh.fv_range(fh))
-    {
-        Point p = delaunay_inc->mesh.point(vh);
-        if (p == a || p == b || p == c)
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//    for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+//    {
+//        Point p = delaunay_inc->mesh.point(vh);
+//        if (p == a || p == b || p == c)
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
-bool MainWindow::hasInfinitePoint(const std::array<Point, 4>& points)
-{
-    Point a(-INF, -INF, 0);
-    Point b(INF, -INF, 0);
-    Point c(0, INF, 0);
+//bool MainWindow::hasInfinitePoint(const std::array<Point, 4>& points)
+//{
+//    Point a(-INF, -INF, 0);
+//    Point b(INF, -INF, 0);
+//    Point c(0, INF, 0);
 
-    for(auto& p : points)
-    {
-        if (p == a || p == b || p == c)
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//    for(auto& p : points)
+//    {
+//        if (p == a || p == b || p == c)
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 
 void MainWindow::showResult2D()
@@ -256,7 +256,7 @@ void MainWindow::showResult2D()
     for (auto& fh : delaunay_inc->mesh.faces())
     {
          // do not show triangle with inf point
-        if (!hasInfinitePoint(fh))
+        if (!delaunay_inc->hasInfinitePoint(fh))
         {
             for(auto& vh : delaunay_inc->mesh.fv_range(fh))
             {
