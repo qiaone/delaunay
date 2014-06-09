@@ -7,10 +7,8 @@
 using namespace qglviewer;
 using namespace std;
 
-bool isDraw = true;
-
 DViewer::DViewer(QWidget *parent)
-    : QGLViewer(parent)
+    : QGLViewer(parent), isDrawResult(false)
 {
 
 }
@@ -81,6 +79,7 @@ void DViewer::drawMesh()
         glColor3f(1.0,0.0,0.0);
         glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
     }
+
     glEnd();
 
     glColor3f(0, 0, 1);
@@ -91,36 +90,6 @@ void DViewer::drawMesh()
         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
             auto point = delaunay_inc->mesh.point(vh);
-            glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
-        }
-    }
-    glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-void DViewer::drawMesh(bool m)
-{
-    glPointSize(4.0);
-    glColor3f(1, 0, 0);
-
-    glBegin(GL_POINTS);
-    for (auto& vh: _mesh.vertices())
-    {
-        auto point = _mesh.point(vh);
-
-        glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
-    }
-    glEnd();
-
-    glColor3f(0, 0, 1);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glBegin(GL_TRIANGLES);
-    for (auto& fh : _mesh.faces())
-    {
-        for(auto& vh : _mesh.fv_range(fh))
-        {
-            auto point = _mesh.point(vh);
             glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
         }
     }
@@ -178,8 +147,8 @@ void DViewer::draw()
     //drawAxis();
 
     //drawPoints();
-    if (isDraw)
-        drawMesh(true);
+    if (isDrawResult)
+        drawMesh();
 
     // Restore the original (world) coordinate system
     //glPopMatrix();
@@ -191,7 +160,7 @@ void DViewer::keyPressEvent(QKeyEvent *e)
     bool handled = false;
     if ((e->key()==Qt::Key_Space) && (modifiers==Qt::NoButton))
     {
-        isDraw = true;
+        isDrawResult = true;
         //        delaunay.perform(points);
         updateGL();
     }

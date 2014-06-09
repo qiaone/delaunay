@@ -17,6 +17,7 @@ public:
     DViewer(QWidget *parent);
     DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
     void setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
+    bool isDrawResult;
 
 protected :
     virtual void init();
@@ -24,13 +25,11 @@ protected :
     virtual void keyPressEvent(QKeyEvent *e);
     //virtual void mousePressEvent(QMouseEvent* e);
     void drawMesh();
-    void drawMesh(bool m);
     void showFlips3D();
     void drawParaboloid(Point lPt, float slice, float stack);
 
 private:
     DelaunayIncremental* delaunay_inc;
-    TriMesh _mesh;
     int mainwindow_width, mainwindow_height;
 	GLuint listName; // display list name
 };

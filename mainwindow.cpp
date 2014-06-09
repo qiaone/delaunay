@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     delaunay = new Delaunay;
     delaunay_inc = new DelaunayIncremental;
+    ui->viewer->setParam(delaunay_inc, this->width(), this->height());
 }
 
 MainWindow::~MainWindow()
@@ -168,7 +169,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-        //ui->viewer->showFlips3D();
+        ui->viewer->isDrawResult = true;
         showFlips2D();
         showResult2D();
         isSelectMannually = true;
@@ -264,7 +265,6 @@ void MainWindow::showResult2D()
             }
         }
     }
-
     isTrianglated = true;
     update();
 }
