@@ -29,6 +29,7 @@ private:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
+    void wheelEvent(QWheelEvent * event);
     void showResult2D();
     void showCircle2D();
     void showFlips2D();
@@ -53,6 +54,8 @@ private:
     bool isShowCircle;
     bool isShowBeforeFlip;
     bool isShowAfterFlip;
+
+    int delayMSeconds;
 };
 
 #endif // MAINWINDOW_H

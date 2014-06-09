@@ -6,6 +6,7 @@
 #include <QPen>
 #include <QToolTip>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QDebug>
 #include <QTime>
 #include <cmath>
@@ -19,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isSelectMannually(true),
     isShowCircle(false),
     isShowBeforeFlip(false),
-    isShowAfterFlip(false)
+    isShowAfterFlip(false),
+    delayMSeconds(700)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
@@ -105,7 +107,6 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawPolygon(&flipping_triangles[0], 4);
 
         // flipping edge
-
         if(isShowAfterFlip)
         {
             pen.setColor(QColor(0, 128, 0));
@@ -154,6 +155,24 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event)
     }
 }
 
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    if (event->angleDelta().y() > 0)
+    {
+        delayMSeconds += 100;
+    }
+    else
+    {
+        delayMSeconds -= 100;
+        if (delayMSeconds < 0)
+        {
+            delayMSeconds = 0;
+        }
+    }
+    QString delay = QString("Delay between steps: %1 ms").arg(delayMSeconds);
+    QToolTip::showText(event->globalPos(), delay, this);
+}
+
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
@@ -198,14 +217,14 @@ void MainWindow::showFlips2D( )
 
         QTime t;
         t.start();
-        while(t.elapsed() < 500)
+        while(t.elapsed() < delayMSeconds)
             QCoreApplication::processEvents();
 
         isShowAfterFlip = true;
         update();
 
         t.start();
-        while(t.elapsed() < 500)
+        while(t.elapsed() < delayMSeconds)
             QCoreApplication::processEvents();
 
         isShowAfterFlip = false;

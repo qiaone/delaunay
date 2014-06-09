@@ -36,7 +36,6 @@ private:
     bool isInfinite(Point& pt);
     void legalize(HHandle hh);
     void deleteVertices(int n);
-    int current_point_num;
     int total_points_count;
     int delay_seconds;
     void pointLocation(VHandle& vh);
