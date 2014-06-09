@@ -71,6 +71,7 @@ void DViewer::drawMesh()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor3f(0, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay_inc->mesh.faces())
     {
@@ -85,7 +86,7 @@ void DViewer::drawMesh()
             float x = (point[0] - 300) / 400;
             float y = (300 - point[1]) / 400;
             glVertex3f(x, y, x * x + y * y + 0.1);
-            glNormal3f(2 * x, 2 * y, 1);
+            glNormal3f(2 * x, 2 * y, -1);
         }
     }
     glEnd();
@@ -122,8 +123,6 @@ void DViewer::draw()
     // Here we are in the world coordinate system. Draw unit size axis.
     // drawAxis();
 
-    // draw paraboloid
-    glCallList(paraboloidListId);
 
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
@@ -138,8 +137,15 @@ void DViewer::draw()
     if (isDrawResult)
         drawMesh();
 
+
+    glDepthMask(GL_FALSE); //将深度缓存设置为只读状态
+    // draw paraboloid
+    glCallList(paraboloidListId);
+    glDepthMask(GL_TRUE); //深度缓存设置为正常状态
     // Restore the original (world) coordinate system
     //glPopMatrix();
+
+
 }
 
 inline float getx(float u, float v)
