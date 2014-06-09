@@ -13,36 +13,24 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    Halfedge/face.cpp \
-    Halfedge/halfedge.cpp \
-    Halfedge/point2d.cpp \
-    Halfedge/vertex.cpp \
-    Tests/DemoTest.cpp \
     Tests/OpenMeshTest.cpp \
     dviewer.cpp \
     Tests/DelaunayTest.cpp \
     delaunay.cpp \
-    dviewerwindow.cpp \
     randompointsdialog.cpp \
     delaunayincremental.cpp
 
 HEADERS  += \
     ensure_exception.h \
     mainwindow.h \
-    Halfedge/face.h \
-    Halfedge/halfedge.h \
-    Halfedge/point2d.h \
-    Halfedge/vertex.h \
     dviewer.h \
     delaunay.h \
-    dviewerwindow.h \
     randompointsdialog.h \
     def.h \
     delaunayincremental.h
 
 FORMS    += \
     mainwindow.ui \
-    dviewerwindow.ui \
     randompointsdialog.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/Libs/ -lOpenMeshCore

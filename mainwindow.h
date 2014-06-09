@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include "delaunay.h"
 #include "delaunayincremental.h"
-#include "dviewer.h"
-#include <QThread>
 
 namespace Ui {
 class MainWindow;
@@ -37,10 +35,8 @@ private:
     bool hasInfinitePoint(const FHandle& fh);
     bool hasInfinitePoint(const std::array<Point, 4>& points);
 
-    DViewer* viewer;
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
-
 
 // painter related
 private:

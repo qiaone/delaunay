@@ -15,8 +15,8 @@ DViewer::DViewer(QWidget *parent)
 
 }
 
-DViewer::DViewer(Delaunay* delaunay, int mainwindow_width, int mainwindow_height)
-    : _delaunay(delaunay), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
+DViewer::DViewer(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height)
+    : _delaunay_inc(delaunay_inc), _mainwindow_width(mainwindow_width), _mainwindow_height(mainwindow_height) { }
 
 void DViewer::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
 {
@@ -28,9 +28,9 @@ void DViewer::slotAfterFlip()
     qDebug() << "DViewer::slotAfterFlip";
 }
 
-void DViewer::setParam(Delaunay* delaunay, int mainwindow_width, int mainwindow_height)
+void DViewer::setParam(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height)
 {
-    _delaunay = delaunay;
+    _delaunay_inc = delaunay_inc;
     _mainwindow_width = mainwindow_width;
     _mainwindow_height = mainwindow_height;
 }
@@ -85,9 +85,9 @@ void DViewer::drawMesh()
     glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
 
-    for (auto& vh: _delaunay->mesh.vertices())
+    for (auto& vh: _delaunay_inc->mesh.vertices())
     {
-        auto point = _delaunay->mesh.point(vh);
+        auto point = _delaunay_inc->mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
         glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
     }
@@ -96,11 +96,11 @@ void DViewer::drawMesh()
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
-    for (auto& fh : _delaunay->mesh.faces())
+    for (auto& fh : _delaunay_inc->mesh.faces())
     {
-        for(auto& vh : _delaunay->mesh.fv_range(fh))
+        for(auto& vh : _delaunay_inc->mesh.fv_range(fh))
         {
-            auto point = _delaunay->mesh.point(vh);
+            auto point = _delaunay_inc->mesh.point(vh);
             glVertex3f((point[0] - _mainwindow_width / 2) / 400, (_mainwindow_height / 2 - point[1]) / 400, point[2]);
         }
     }

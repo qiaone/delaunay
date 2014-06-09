@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <QObject>
-#include "delaunay.h"
+#include "delaunayincremental.h"
 
 
 class DViewer : public QGLViewer
@@ -15,8 +15,8 @@ class DViewer : public QGLViewer
 public:
     PointVec points;
     DViewer(QWidget *parent);
-    DViewer(Delaunay* delaunay, int mainwindow_width, int mainwindow_height);
-    void setParam(Delaunay* delaunay, int mainwindow_width, int mainwindow_height);
+    DViewer(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height);
+    void setParam(DelaunayIncremental* delaunay_inc, int mainwindow_width, int mainwindow_height);
 
 public slots:
     void slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo);
@@ -33,7 +33,7 @@ protected :
     void drawParaboloid(Point lPt, float slice, float stack);
 
 private:
-    Delaunay* _delaunay;
+    DelaunayIncremental* _delaunay_inc;
     TriMesh _mesh;
     int _mainwindow_width, _mainwindow_height;
 	GLuint listName; // display list name

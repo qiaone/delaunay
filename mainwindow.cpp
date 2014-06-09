@@ -1,6 +1,5 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "dviewerwindow.h"
 #include "randompointsdialog.h"
 #include <random>
 #include <QPainter>
@@ -20,8 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isSelectMannually(true),
     isShowCircle(false),
     isShowBeforeFlip(false),
-    isShowAfterFlip(false),
-    viewer(nullptr)
+    isShowAfterFlip(false)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
@@ -99,7 +97,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (isShowBeforeFlip)
     {
         // two triangles
-        pen.setWidth(4);
+        pen.setWidth(3);
         pen.setColor(QColor(255, 0, 128));
         //pen.setBrush(QBrush::);
         painter.setPen(pen);
@@ -159,11 +157,12 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
-        isSelectMannually = false;
         if (event->pos().y() < 100)
         {
             return;
         }
+
+        isSelectMannually = false;
         points.append(event->pos());
         update();
 
@@ -337,16 +336,16 @@ void MainWindow::on_actionPerform_triggered()
     isTrianglated = true;
     update();
 
-    // display 3d result
-    if(ui->action3D_Viewer->isChecked())
-    {
-        if (viewer == nullptr)
-        {
-            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-            dvwin->show();
-        }
-    }
+//    // display 3d result
+//    if(ui->action3D_Viewer->isChecked())
+//    {
+//        if (viewer == nullptr)
+//        {
+//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
+//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+//            dvwin->show();
+//        }
+//    }
 }
 
 //void MainWindow::on_actionStepByStep_triggered()
