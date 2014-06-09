@@ -288,6 +288,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
+        isSelectMannually = false;
         if (event->pos().y() < 100)
         {
             return;
@@ -299,10 +300,11 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
         showFlips2D();
         showResult2D();
+        isSelectMannually = true;
     }
 }
 
-void MainWindow::showFlips2D()
+void MainWindow::showFlips2D( )
 {
     for (auto& flip : delaunay_inc->flip_records)
     {
@@ -314,10 +316,20 @@ void MainWindow::showFlips2D()
             << QPoint(flip[3][0],flip[3][1]);
         isShowBeforeFlip = true;
         update();
+
         QTime t;
         t.start();
         while(t.elapsed()<1000)
             QCoreApplication::processEvents();
+
+        isShowAfterFlip = true;
+        update();
+
+        t.start();
+        while(t.elapsed()<1000)
+            QCoreApplication::processEvents();
+
+        isShowAfterFlip = false;
     }
     isShowBeforeFlip = false;
     update();
