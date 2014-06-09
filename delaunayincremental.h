@@ -4,8 +4,6 @@
 #include <vector>
 #include <queue>
 #include <QObject>
-#include <glm/glm.hpp>
-#include <GL/glut.h>
 #include "def.h"
 #include <array>
 

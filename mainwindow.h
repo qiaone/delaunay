@@ -40,7 +40,6 @@ private:
 private:
     QPainter* painter;
     QPen* pen;
-
     QVector<QPoint> points;
     QVector<QPoint> triangles;
     QPoint in_circle_point;

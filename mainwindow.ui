@@ -52,10 +52,8 @@
     <property name="title">
      <string>Delaunay</string>
     </property>
-    <addaction name="action3D_Viewer"/>
     <addaction name="separator"/>
     <addaction name="actionPerform"/>
-    <addaction name="actionStepByStep"/>
    </widget>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
@@ -98,25 +96,9 @@
     <string>Random Generation</string>
    </property>
   </action>
-  <action name="actionStepByStep">
-   <property name="text">
-    <string>Step by Step</string>
-   </property>
-  </action>
   <action name="actionClear">
    <property name="text">
     <string>Clear</string>
-   </property>
-  </action>
-  <action name="action3D_Viewer">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>3D Viewer</string>
    </property>
   </action>
  </widget>

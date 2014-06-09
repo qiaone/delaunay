@@ -4,8 +4,6 @@
 #include <array>
 #include <vector>
 #include <QObject>
-#include <glm/glm.hpp>
-#include <GL/glut.h>
 #include "def.h"
 
 class Delaunay : public QObject

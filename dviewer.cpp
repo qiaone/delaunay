@@ -22,12 +22,46 @@ void DViewer::setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_
     mainwindow_height = mainwindow_height_;
 }
 
-void DViewer::showFlips3D()
+void DViewer::showFlips3D( )
 {
+    // show all flips during a new point added
+    for (auto& flip : delaunay_inc->flip_records)
+    {
+        if (delaunay_inc->hasInfinitePoint(flip))
+        {
+            continue;
+        }
+//        flipping_triangles.clear();
+//        flipping_triangles
+//            << QPoint(flip[0][0],flip[0][1])
+//            << QPoint(flip[1][0],flip[1][1])
+//            << QPoint(flip[2][0],flip[2][1])
+//            << QPoint(flip[3][0],flip[3][1]);
+//        showCircle2D();
+//        isShowCircle = true;
+//        isShowBeforeFlip = true;
+//        update();
 
+//        QTime t;
+//        t.start();
+//        while(t.elapsed() < 500)
+//            QCoreApplication::processEvents();
+
+//        isShowAfterFlip = true;
+//        update();
+
+//        t.start();
+//        while(t.elapsed() < 500)
+//            QCoreApplication::processEvents();
+
+//        isShowAfterFlip = false;
+    }
+//    isShowCircle = false;
+//    isShowBeforeFlip = false;
+//    update();
 }
 
-void DViewer::showResult3D()
+    void DViewer::showResult3D()
 {
     isDrawResult = true;
     update();
@@ -35,6 +69,8 @@ void DViewer::showResult3D()
 
 void DViewer::drawMesh()
 {
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
     glPointSize(4.0);
     glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
@@ -63,6 +99,7 @@ void DViewer::drawMesh()
             float x = (point[0] - 300) / 400;
             float y = (300 - point[1]) / 400;
             glVertex3f(x, y, 0);
+            glNormal3f(1, 1, 0);
         }
     }
     glEnd();
@@ -85,7 +122,7 @@ void DViewer::drawMesh()
             float x = (point[0] - 300) / 400;
             float y = (300 - point[1]) / 400;
             glVertex3f(x, y, x * x + y * y + 0.1);
-            glNormal3f(2 * x, 2 * y, 1);
+            glNormal3f(2 * x, 2 * y, -1);
         }
     }
     glEnd();
@@ -98,6 +135,9 @@ void DViewer::init()
     glEnable(GL_RESCALE_NORMAL);
 #endif
 
+    setMouseBinding(Qt::NoModifier, Qt::LeftButton, CAMERA, TRANSLATE);
+    setMouseBinding(Qt::NoModifier, Qt::RightButton, CAMERA, ROTATE);
+
     // Make sure the manipulatedFrame is not easily clipped by the zNear and zFar planes
     setSceneRadius(2);
     camera()->fitSphere(Vec(0, 0, 0), 1);
@@ -107,13 +147,12 @@ void DViewer::init()
 
     // auto-normalize
     glEnable(GL_NORMALIZE);
-
     glShadeModel(GL_SMOOTH);
 
     // create display list
     paraboloidListId = glGenLists(1);
     glNewList(paraboloidListId, GL_COMPILE);
-    drawParaboloid(Point(0, 0, 0.1), 50.0, 50.0);
+    drawParaboloid(Point(0.0f, 0.0f, 0.1f), 50.0f, 50.0f);
     glEndList();
 }
 

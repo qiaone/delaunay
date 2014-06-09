@@ -2,7 +2,6 @@
 #include "delaunay.h"
 #include <QDebug>
 #include <QTime>
-#include <QThread>
 #include <QApplication>
 
 const float INF = 1.0e5f;
@@ -115,7 +114,7 @@ void Delaunay::addVertices(PointVec& points)
 
 void Delaunay::init(PointVec& points)
 {
-    total_points_count = points.size();
+    total_points_count = (int)points.size();
     mesh.clear();
     for(int i = 0; i < points.size(); i++)
     {
