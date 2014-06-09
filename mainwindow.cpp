@@ -198,14 +198,14 @@ void MainWindow::showFlips2D( )
 
         QTime t;
         t.start();
-        while(t.elapsed()<1000)
+        while(t.elapsed() < 500)
             QCoreApplication::processEvents();
 
         isShowAfterFlip = true;
         update();
 
         t.start();
-        while(t.elapsed()<1000)
+        while(t.elapsed() < 500)
             QCoreApplication::processEvents();
 
         isShowAfterFlip = false;
@@ -214,40 +214,6 @@ void MainWindow::showFlips2D( )
     isShowBeforeFlip = false;
     update();
 }
-
-//bool MainWindow::hasInfinitePoint(const FHandle& fh)
-//{
-//    Point a(-INF, -INF, 0);
-//    Point b(INF, -INF, 0);
-//    Point c(0, INF, 0);
-
-//    for(auto& vh : delaunay_inc->mesh.fv_range(fh))
-//    {
-//        Point p = delaunay_inc->mesh.point(vh);
-//        if (p == a || p == b || p == c)
-//        {
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-
-//bool MainWindow::hasInfinitePoint(const std::array<Point, 4>& points)
-//{
-//    Point a(-INF, -INF, 0);
-//    Point b(INF, -INF, 0);
-//    Point c(0, INF, 0);
-
-//    for(auto& p : points)
-//    {
-//        if (p == a || p == b || p == c)
-//        {
-//            return true;
-//        }
-//    }
-//    return false;
-//}
-
 
 void MainWindow::showResult2D()
 {
@@ -349,45 +315,3 @@ void MainWindow::on_actionPerform_triggered()
 //    }
 }
 
-//void MainWindow::on_actionStepByStep_triggered()
-//{
-//    if (points.size() < 3)
-//    {
-//        return;
-//    }
-
-//    isSelectMannually = false;
-//    triangles.clear();
-
-//    delaunay->setDemoMode();
-//    PointVec mesh_points;
-//    for(auto& p : points)
-//    {
-//        mesh_points.push_back(Point(p.x(), p.y(), 0));
-//    }
-
-//    // display 2d result
-//    for (auto& fh : delaunay->mesh.faces())
-//    {
-//        for(auto& vh : delaunay->mesh.fv_range(fh))
-//        {
-//            Point p = delaunay->mesh.point(vh);
-//            triangles.push_back(QPoint(p[0], p[1]));
-//        }
-//    }
-//    isTrianglated = true;
-//    update();
-
-//    // display 3d result
-//    if(ui->action3D_Viewer->isChecked())
-//    {
-//        if (viewer == nullptr)
-//        {
-//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-//            dvwin->show();
-//        }
-//    }
-
-//    delaunay->perform(mesh_points);
-//}

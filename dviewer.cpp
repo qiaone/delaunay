@@ -1,5 +1,4 @@
 ﻿#include "dviewer.h"
-#include "../Delaunay.h"
 #include <math.h>
 #include <QKeyEvent>
 #include <QDebug>
@@ -43,7 +42,8 @@ void DViewer::drawMesh()
     {
         auto point = delaunay_inc->mesh.point(vh);
         glColor3f(1.0,0.0,0.0);
-        glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
+        glVertex3f((point[0] - 300) / 400, (300 - point[1]) / 400, 0);
+        //glVertex3f(point[0] / 400, -point[1] / 400, 0);
     }
     glEnd();
 
@@ -60,29 +60,47 @@ void DViewer::drawMesh()
         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
             auto point = delaunay_inc->mesh.point(vh);
-            glVertex3f((point[0] - mainwindow_width / 2) / 400, (mainwindow_height / 2 - point[1]) / 400, point[2]);
+            float x = (point[0] - 300) / 400;
+            float y = (300 - point[1]) / 400;
+            glVertex3f(x, y, 0);
         }
     }
     glEnd();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor3f(0, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glBegin(GL_TRIANGLES);
+    for (auto& fh : delaunay_inc->mesh.faces())
+    {
+        if (delaunay_inc->hasInfinitePoint(fh))
+        {
+            continue;
+        }
+
+        for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+        {
+            auto point = delaunay_inc->mesh.point(vh);
+            float x = (point[0] - 300) / 400;
+            float y = (300 - point[1]) / 400;
+            glVertex3f(x, y, x * x + y * y + 0.1);
+            glNormal3f(2 * x, 2 * y, 1);
+        }
+    }
+    glEnd();
+    glDisable(GL_BLEND);
 }
 
 void DViewer::init()
 {
-    //setKeyDescription(Qt::Key_Space, "Perform Delaunay Triangulation");
-    //setKeyDescription(Qt::Key_F, "Toggles flat shading display");
-
-    //setMouseBindingDescription(Qt::NoModifier, Qt::MidButton, "draw points");
-
-
 #ifdef GL_RESCALE_NORMAL  // OpenGL 1.2 Only...
     glEnable(GL_RESCALE_NORMAL);
 #endif
 
     // Make sure the manipulatedFrame is not easily clipped by the zNear and zFar planes
-    setSceneRadius(1);
-    camera()->fitSphere(Vec(0,0,0), 1);
+    setSceneRadius(2);
+    camera()->fitSphere(Vec(0, 0, 0), 1);
 
     //help();
     //restoreStateFromFile();
@@ -93,9 +111,9 @@ void DViewer::init()
     glShadeModel(GL_SMOOTH);
 
     // create display list
-    listName = glGenLists(1);
-    glNewList(listName, GL_COMPILE);
-    drawParaboloid(Point(0, 0, 0.05), 50.0, 50.0);
+    paraboloidListId = glGenLists(1);
+    glNewList(paraboloidListId, GL_COMPILE);
+    drawParaboloid(Point(0, 0, 0.1), 50.0, 50.0);
     glEndList();
 }
 
@@ -103,10 +121,9 @@ void DViewer::draw()
 {
     // Here we are in the world coordinate system. Draw unit size axis.
     // drawAxis();
-    // drawParaboloid();
 
     // draw paraboloid
-    glCallList(listName);
+    glCallList(paraboloidListId);
 
     //// Save the current model view matrix (not needed here in fact)
     //glPushMatrix();
@@ -137,15 +154,14 @@ inline float gety(float u, float v)
 
 // bottom_point: the lowest point of the paraboloid
 // slice , stack: control the number of triangles 
-void DViewer::drawParaboloid(Point bottom_point, float slice, float stack )
+void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 {
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
     const float step_v = (float)(M_PI / slice);
     const float step_u = 1.0 / stack;
 
     glEnable(GL_BLEND);
-    //    glEnable(GL_POLYGON_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
 

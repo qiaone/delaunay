@@ -30,7 +30,7 @@ protected :
 private:
     DelaunayIncremental* delaunay_inc;
     int mainwindow_width, mainwindow_height;
-    GLuint listName; // display list name
+    GLuint paraboloidListId; // display list name
     bool isDrawResult;
 };
 

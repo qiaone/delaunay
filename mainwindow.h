@@ -32,8 +32,6 @@ private:
     void showResult2D();
     void showCircle2D();
     void showFlips2D();
-//    bool hasInfinitePoint(const FHandle& fh);
-//    bool hasInfinitePoint(const std::array<Point, 4>& points);
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
