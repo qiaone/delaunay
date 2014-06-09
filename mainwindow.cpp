@@ -18,123 +18,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     isTrianglated(false),
     isSelectMannually(true),
-    isShowNewPoint(false),
     isShowCircle(false),
-    isShowSplitTriangle(false),
     isShowBeforeFlip(false),
     isShowAfterFlip(false),
     viewer(nullptr)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
-    delaunay->setParent(this);
     delaunay_inc = new DelaunayIncremental;
-
-//    QObject::connect(delaunay.get(), SIGNAL(signalNewPoint(VHandle)),
-//                     this, SLOT(slotNewPoint(VHandle)));
-//    QObject::connect(delaunay.get(), SIGNAL(signalBeforeSplit(FHandle)),
-//                     this, SLOT(slotBeforeSplit(FHandle)));
-    QObject::connect(delaunay, SIGNAL(signalBeforeFlip(HHandle,VHandle,VHandle)),
-                     this, SLOT(slotBeforeFlip(HHandle,VHandle,VHandle)));
-    QObject::connect(delaunay, SIGNAL(signalAfterFlip()),
-                     this, SLOT(slotAfterFlip()));
 }
 
 MainWindow::~MainWindow()
 {
     //delete delaunay;
     delete ui;
-}
-
-void MainWindow::closeEvent(QCloseEvent *)
-{
-    //delete delaunay;
-    //send signal to delaunay to stop
-    qDebug() << "closing";
-}
-
-void MainWindow::slotBeforeSplit(FHandle fh)
-{
-    qDebug() << "slotSplittingTriagnle";
-    //for(auto& vh : delaunay->mesh.fv_range(fh))
-    //{
-    //    //auto triangle_point = delaunay->mesh.point(vh);
-    //    Point p = delaunay->mesh.point(vh);
-    //    Point a(-INF, -INF, 0);
-    //    Point b(INF, -INF, 0);
-    //    Point c(0, INF, 0);
-    //    if (p == a || p == b || p == c)
-    //    {
-    //        return;
-    //    }
-    //    splitting_triangle.append(QPoint(p[0], p[1]));
-    //    isShowSplittingTriangle = true;
-    //}
-    splitting_triangle.clear();
-    bool isInfinite = false;
-//    for(auto& vh : delaunay->mesh.fv_range(fh))
-//    {
-//        Point p = delaunay->mesh.point(vh);
-//        Point a(-INF, -INF, 0);
-//        Point b(INF, -INF, 0);
-//        Point c(0, INF, 0);
-//        if (p == a || p == b || p == c)
-//        {
-//            isInfinite = true;
-//            break;
-//        }
-//    }
-//    if (!isInfinite)
-    {
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            splitting_triangle.append(QPoint(p[0], p[1]));
-            qDebug() << QPoint(p[0], p[1]);
-        }
-        isShowSplitTriangle = true;
-    }
-    update();
-}
-
-void MainWindow::slotAfterSplit(FHandle fh)
-{
-
-}
-
-void MainWindow::slotBeforeFlip(HHandle hh, VHandle vh, VHandle vh_oppo)
-{
-    isShowAfterFlip = false;
-    //qDebug() << "slotBeforeFlip";
-    double x1 = delaunay->mesh.point(vh)[0];
-    double y1 = delaunay->mesh.point(vh)[1];
-    double x2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[0];
-    double y2 = delaunay->mesh.point(delaunay->mesh.from_vertex_handle(hh))[1];
-    double x3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[0];
-    double y3 = delaunay->mesh.point(delaunay->mesh.to_vertex_handle(hh))[1];
-    double x4 = delaunay->mesh.point(vh_oppo)[0];
-    double y4 = delaunay->mesh.point(vh_oppo)[1];
-
-    flipping_triangles.clear();
-    flipping_triangles << QPoint(x1, y1) << QPoint(x2, y2) << QPoint(x4, y4) << QPoint(x3, y3);
-
-    in_circle_point.setX(x4);
-    in_circle_point.setY(y4);
-
-    double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
-                 (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
-                (2 * (y1 - y2) * (x3 - x1) - 2 * (y3 - y1) * (x1 - x2));
-    double y0 = (y3 * y3 - y1 * y1 - 2 * x0 * (x3 - x1) - x1 * x1 + x3 * x3) / (2 * (y3 - y1));
-    double r = sqrt((y0 - y2) * (y0 - y2) + (x0 - x2) * (x0 - x2));
-
-    circle_center.setX(x0);
-    circle_center.setY(y0);
-    circle_radius = r;
-
-    isShowCircle = true;
-    isShowBeforeFlip = true;
-
-    update();
 }
 
 void MainWindow::showCircle2D()
@@ -162,23 +59,9 @@ void MainWindow::showCircle2D()
     isShowCircle = true;
 }
 
-void MainWindow::slotAfterFlip()
-{
-    isShowAfterFlip = true;
-    update();
-}
-
-void MainWindow::slotNewPoint(VHandle vh)
-{
-    auto p = delaunay->mesh.point(vh);
-    new_point = QPoint(p[0], p[1]);
-    isShowNewPoint = true;
-}
-
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    //painter.setCompositionMode(QPainter::CompositionMode_DestinationAtop);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
@@ -198,21 +81,6 @@ void MainWindow::paintEvent(QPaintEvent *)
     for(auto p : points)
         painter.drawPoint(p);
 
-
-//    pen.setColor(Qt::green);
-//    pen.setWidth(4);
-//    pen.setCapStyle(Qt::RoundCap);
-//    painter.setPen(pen);
-
-//    QVector<QPoint> vp;
-//    vp << QPoint(-100000,-100000);
-//    vp << QPoint(310,214);
-//    vp << QPoint(0,100000);
-////    QBrush brush(Qt::green);
-////    painter.setBrush(brush);
-//    painter.drawPolygon(&vp[0], 3);
-
-
     if (isTrianglated)
     {
         pen.setColor(QColor(0, 196, 0));
@@ -227,14 +95,6 @@ void MainWindow::paintEvent(QPaintEvent *)
             }
         }
     }
-
-    if (isShowNewPoint)
-    {
-        pen.setColor(Qt::red);
-        painter.setPen(pen);
-        painter.drawPoint(new_point);
-    }
-
 
     if (isShowBeforeFlip)
     {
@@ -274,21 +134,6 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.setPen(pen);
         painter.drawEllipse(circle_center, circle_radius, circle_radius);
     }
-
-    if (isShowSplitTriangle)
-    {
-        pen.setColor(Qt::green);
-        pen.setWidth(4);
-        painter.setPen(pen);
-//        QBrush brush(Qt::green);
-//        painter.setBrush(brush);
-        if (!splitting_triangle.empty())
-        {
-            painter.drawPolygon(&splitting_triangle[0], 3);
-        }
-    }
-
-
 }
 
 void MainWindow::mousePressEvent(QMouseEvent * event)
@@ -520,40 +365,6 @@ void MainWindow::on_actionStepByStep_triggered()
     }
 
     delaunay->perform(mesh_points);
-
-//    auto delaunay = std::make_shared<Delaunay>();
-
-//    // display 3d result
-//    if (ui->action3D_Viewer->isChecked())
-//    {
-//        if (viewer == nullptr)
-//        {
-//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-//            dvwin->show();
-//        }
-//    }
-
-//    triangles.clear();
-
-//    PointVec mesh_points;
-//    for(auto& p : points)
-//    {
-//        mesh_points.push_back(Point(p.x(), p.y(), 0));
-//    }
-//    delaunay->perform(mesh_points);
-
-//    // display 2d result
-//    for (auto& fh : delaunay->mesh.faces())
-//    {
-//        for(auto& vh : delaunay->mesh.fv_range(fh))
-//        {
-//            Point p = delaunay->mesh.point(vh);
-//            triangles.push_back(QPoint(p[0], p[1]));
-//        }
-//    }
-//    isTrianglated = true;
-//    update();
 }
 
 void MainWindow::on_actionPerformIncremental_triggered()
