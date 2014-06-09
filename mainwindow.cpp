@@ -83,7 +83,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     if (isTrianglated)
     {
-        pen.setColor(QColor(0, 196, 0));
+        pen.setColor(QColor(63, 72, 204));
         pen.setWidth(2);
         pen.setCapStyle(Qt::RoundCap);
         painter.setPen(pen);
@@ -100,15 +100,16 @@ void MainWindow::paintEvent(QPaintEvent *)
     {
         // two triangles
         pen.setWidth(4);
-        pen.setColor(QColor(187, 0, 187));
+        pen.setColor(QColor(255, 0, 128));
         //pen.setBrush(QBrush::);
         painter.setPen(pen);
         painter.drawPolygon(&flipping_triangles[0], 4);
 
         // flipping edge
-        pen.setColor(QColor(224, 31, 69));
+
         if(isShowAfterFlip)
         {
+            pen.setColor(QColor(0, 128, 0));
             painter.setPen(pen);
             painter.drawLine(flipping_triangles[0], flipping_triangles[2]);
         }
@@ -121,7 +122,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
 
         // in circle point
-        pen.setColor(Qt::red);
+        pen.setColor(Qt::black);
         pen.setWidth(8);
         painter.setPen(pen);
         painter.drawPoint(in_circle_point);
@@ -130,7 +131,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     if (isShowCircle)
     {
         pen.setWidth(2);
-        pen.setColor(QColor(128, 128, 255));
+        pen.setColor(QColor(255, 128, 39));
         painter.setPen(pen);
         painter.drawEllipse(circle_center, circle_radius, circle_radius);
     }
@@ -179,6 +180,10 @@ void MainWindow::showFlips2D( )
     // show all flips during a new point added
     for (auto& flip : delaunay_inc->flip_records)
     {
+        if (hasInfinitePoint(flip))
+        {
+            continue;
+        }
         flipping_triangles.clear();
         flipping_triangles
             << QPoint(flip[0][0],flip[0][1])
@@ -209,6 +214,40 @@ void MainWindow::showFlips2D( )
     update();
 }
 
+bool MainWindow::hasInfinitePoint(const FHandle& fh)
+{
+    Point a(-INF, -INF, 0);
+    Point b(INF, -INF, 0);
+    Point c(0, INF, 0);
+
+    for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+    {
+        Point p = delaunay_inc->mesh.point(vh);
+        if (p == a || p == b || p == c)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool MainWindow::hasInfinitePoint(const std::array<Point, 4>& points)
+{
+    Point a(-INF, -INF, 0);
+    Point b(INF, -INF, 0);
+    Point c(0, INF, 0);
+
+    for(auto& p : points)
+    {
+        if (p == a || p == b || p == c)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 void MainWindow::showResult2D()
 {
     triangles.clear();
@@ -216,21 +255,7 @@ void MainWindow::showResult2D()
     for (auto& fh : delaunay_inc->mesh.faces())
     {
          // do not show triangle with inf point
-         bool hasInfinitePoint = false;
-         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
-         {
-             Point p = delaunay_inc->mesh.point(vh);
-             Point a(-INF, -INF, 0);
-             Point b(INF, -INF, 0);
-             Point c(0, INF, 0);
-             if (p == a || p == b || p == c)
-             {
-                 hasInfinitePoint = true;
-                 break;
-             }
-         }
- 
-         if (!hasInfinitePoint)
+        if (!hasInfinitePoint(fh))
         {
             for(auto& vh : delaunay_inc->mesh.fv_range(fh))
             {
@@ -324,50 +349,45 @@ void MainWindow::on_actionPerform_triggered()
     }
 }
 
-void MainWindow::on_actionStepByStep_triggered()
-{
-    if (points.size() < 3)
-    {
-        return;
-    }
+//void MainWindow::on_actionStepByStep_triggered()
+//{
+//    if (points.size() < 3)
+//    {
+//        return;
+//    }
 
-    isSelectMannually = false;
-    triangles.clear();
+//    isSelectMannually = false;
+//    triangles.clear();
 
-    delaunay->setDemoMode();
-    PointVec mesh_points;
-    for(auto& p : points)
-    {
-        mesh_points.push_back(Point(p.x(), p.y(), 0));
-    }
+//    delaunay->setDemoMode();
+//    PointVec mesh_points;
+//    for(auto& p : points)
+//    {
+//        mesh_points.push_back(Point(p.x(), p.y(), 0));
+//    }
 
-    // display 2d result
-    for (auto& fh : delaunay->mesh.faces())
-    {
-        for(auto& vh : delaunay->mesh.fv_range(fh))
-        {
-            Point p = delaunay->mesh.point(vh);
-            triangles.push_back(QPoint(p[0], p[1]));
-        }
-    }
-    isTrianglated = true;
-    update();
+//    // display 2d result
+//    for (auto& fh : delaunay->mesh.faces())
+//    {
+//        for(auto& vh : delaunay->mesh.fv_range(fh))
+//        {
+//            Point p = delaunay->mesh.point(vh);
+//            triangles.push_back(QPoint(p[0], p[1]));
+//        }
+//    }
+//    isTrianglated = true;
+//    update();
 
-    // display 3d result
-    if(ui->action3D_Viewer->isChecked())
-    {
-        if (viewer == nullptr)
-        {
-            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-            dvwin->show();
-        }
-    }
+//    // display 3d result
+//    if(ui->action3D_Viewer->isChecked())
+//    {
+//        if (viewer == nullptr)
+//        {
+//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
+//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
+//            dvwin->show();
+//        }
+//    }
 
-    delaunay->perform(mesh_points);
-}
-
-void MainWindow::on_actionPerformIncremental_triggered()
-{
-
-}
+//    delaunay->perform(mesh_points);
+//}

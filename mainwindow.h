@@ -24,8 +24,6 @@ private slots:
     void on_actionClear_triggered();
     void on_actionSelectManually_triggered();
     void on_actionRandomGeneration_triggered();
-    void on_actionStepByStep_triggered();
-    void on_actionPerformIncremental_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -36,6 +34,8 @@ private:
     void showResult2D();
     void showCircle2D();
     void showFlips2D();
+    bool hasInfinitePoint(const FHandle& fh);
+    bool hasInfinitePoint(const std::array<Point, 4>& points);
 
     DViewer* viewer;
     Delaunay* delaunay;
