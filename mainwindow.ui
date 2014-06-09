@@ -29,8 +29,6 @@
      </item>
     </layout>
    </widget>
-   <zorder>gridLayoutWidget</zorder>
-   <zorder>viewer</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -62,7 +60,6 @@
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
    <property name="iconSize">
     <size>

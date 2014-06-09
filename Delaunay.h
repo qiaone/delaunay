@@ -19,14 +19,12 @@ protected:
 
 public:
     Delaunay();
-    void setDemoMode(int delay_seconds_ = 2);
     void perform();
     void perform(PointVec& all_points);
-    //void
     void drawMesh();
     void init(PointVec& points);
     TriMesh mesh;
-    bool isStepDemo;
+    int total_points_count;
 
 private:
     void drawTriangle(FHandle fh);
@@ -43,22 +41,6 @@ private:
     void saveVhs(HHandle hh, VHandleVec &vhs_buffer);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
-    int current_point_num;
-    int total_points_count;
-    int delay_seconds;
-
-signals:
-    void signalBeforeSplit(FHandle);
-    void signalAfterSplit(FHandle);
-    void signalBeforeSplit(HHandle);
-    void signalAfterSplit(HHandle);
-    void signalBeforeFlip(HHandle, VHandle, VHandle);
-    void signalAfterFlip();
-    void signalNewPoint(VHandle);
-    void signalTest();
-
-public slots:
-    void test_slot();
 };
 
 #endif // DELAUNAY_H

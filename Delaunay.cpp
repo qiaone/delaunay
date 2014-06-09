@@ -8,16 +8,8 @@
 const float INF = 1.0e5f;
 const float ESP = 1.0e-6f;
 
-Delaunay::Delaunay() :
-    isStepDemo(false),
-    delay_seconds(0)
+Delaunay::Delaunay()
 {
-}
-
-void Delaunay::setDemoMode(int delay_seconds_)
-{
-    isStepDemo = true;
-    delay_seconds = delay_seconds_;
 }
 
 void Delaunay::perform(PointVec& all_points)
@@ -38,19 +30,13 @@ void Delaunay::perform()
 
     for(size_t i = 0; i < total_points_count; i++)
     {
-        emit signalTest();
-
         VHandle vh = mesh.vertex_handle((unsigned int)i);
         FHandle fh = mesh.property(VertexToFace, vh);
         HHandle hh = mesh.property(VertexToHEdge, vh);
 
-        emit signalNewPoint(vh);
-
         VHandleVec vhs_buffer;
         if (hh.is_valid())
         {
-            emit signalBeforeSplit(hh);
-
             // the incrementing vertex is mapped to an (half)edge
             // save the vertices mapped to the two faces incident to the edge
             saveVhs(hh, vhs_buffer);
@@ -61,8 +47,6 @@ void Delaunay::perform()
         }
         else if (fh.is_valid())
         {
-            emit signalBeforeSplit(fh);
-
             // save vertices mapped to this face
             // coz properties will be destroyed after split
             saveVhs(fh, vhs_buffer);
@@ -425,14 +409,6 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
     VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
     if (isInCircle(hh, vh, vh_oppo))
     {
-        emit signalBeforeFlip(hh, vh, vh_oppo);
-
-        // delay for demo
-        QTime t;
-        t.start();
-        while(t.elapsed() < delay_seconds * 1000)
-            QApplication::processEvents();
-
         // save vertex handles mapped to the face
         VHandleVec vhs_buffer;
         saveVhs(hh, vhs_buffer);
@@ -442,13 +418,6 @@ void Delaunay::legalize(HHandle hh, VHandle vh)
         if (mesh.is_flip_ok(eh))
         {
             mesh.flip(eh);
-            emit signalAfterFlip();
-
-            // delay for demo
-            QTime t;
-            t.start();
-            while(t.elapsed() < delay_seconds * 500)
-                QApplication::processEvents();
         }
 
         // rebucket
@@ -482,9 +451,4 @@ void Delaunay::deleteVertices(int n)
     }
 
     mesh.garbage_collection();
-}
-
-void Delaunay::test_slot()
-{
-    qDebug() << "delaunay slot!";
 }
