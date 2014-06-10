@@ -46,7 +46,7 @@ private:
     QPointF in_circle_point;
     QPointF circle_center;
     double circle_radius;
-    QVector<QPoint> flipping_triangles;
+    QVector<QPoint> flip_rec_4_points;
     QVector<QPoint> flipped_edges;
 
     bool isTrianglated;

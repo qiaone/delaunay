@@ -76,14 +76,11 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
 
         // flipped edges
-        //if (isShowBeforeFlip)
+        pen.setColor(QColor(0, 128, 0));
+        painter.setPen(pen);
+        for(int i = 0; i < flipped_edges.size(); i += 2)
         {
-            pen.setColor(QColor(0, 128, 0));
-            painter.setPen(pen);
-            for(int i = 0; i < flipped_edges.size(); i += 2)
-            {
-                painter.drawLine(flipped_edges[i], flipped_edges[i + 1]);
-            }
+            painter.drawLine(flipped_edges[i], flipped_edges[i + 1]);
         }
     }
 
@@ -106,20 +103,20 @@ void MainWindow::paintEvent(QPaintEvent *)
         pen.setColor(QColor(255, 0, 128));
         //pen.setBrush(QBrush::);
         painter.setPen(pen);
-        painter.drawPolygon(&flipping_triangles[0], 4);
+        painter.drawPolygon(&flip_rec_4_points[0], 4);
 
         // flipping edge
         if(isShowAfterFlip)
         {
             pen.setColor(QColor(0, 128, 0));
             painter.setPen(pen);
-            painter.drawLine(flipping_triangles[0], flipping_triangles[2]);
+            painter.drawLine(flip_rec_4_points[0], flip_rec_4_points[2]);
         }
         else
         {
             pen.setStyle(Qt::DotLine);
             painter.setPen(pen);
-            painter.drawLine(flipping_triangles[1], flipping_triangles[3]);
+            painter.drawLine(flip_rec_4_points[1], flip_rec_4_points[3]);
             pen.setStyle(Qt::SolidLine);
         }
 
@@ -201,22 +198,22 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
 void MainWindow::initFlip(std::array<Point, 4>& flip)
 {
-    flipping_triangles.clear();
-    flipping_triangles
+    flip_rec_4_points.clear();
+    flip_rec_4_points
         << QPoint(flip[0][0],flip[0][1])
         << QPoint(flip[1][0],flip[1][1])
         << QPoint(flip[2][0],flip[2][1])
         << QPoint(flip[3][0],flip[3][1]);
 
-    double x1 = flipping_triangles[0].x();
-    double y1 = flipping_triangles[0].y();
-    double x2 = flipping_triangles[1].x();
-    double y2 = flipping_triangles[1].y();
-    double x3 = flipping_triangles[3].x();
-    double y3 = flipping_triangles[3].y();
+    double x1 = flip_rec_4_points[0].x();
+    double y1 = flip_rec_4_points[0].y();
+    double x2 = flip_rec_4_points[1].x();
+    double y2 = flip_rec_4_points[1].y();
+    double x3 = flip_rec_4_points[3].x();
+    double y3 = flip_rec_4_points[3].y();
 
-    in_circle_point.setX(flipping_triangles[2].x());
-    in_circle_point.setY(flipping_triangles[2].y());
+    in_circle_point.setX(flip_rec_4_points[2].x());
+    in_circle_point.setY(flip_rec_4_points[2].y());
 
     double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
                  (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
@@ -241,12 +238,12 @@ void MainWindow::showFlips()
 {
     flipped_edges.clear();
     // show all flips during a new point added
+
+    isShowBeforeFlip = true;
     for (auto& flip : delaunay_inc->flip_records)
     {
         initFlip(flip);
-
         isShowCircle = true;
-        isShowBeforeFlip = true;
         update();
 
         delay(delay_mseconds);
@@ -256,15 +253,12 @@ void MainWindow::showFlips()
 
         delay(delay_mseconds);
 
-        flipped_edges << flipping_triangles[0] << flipping_triangles[2];
-
+        flipped_edges << flip_rec_4_points[0] << flip_rec_4_points[2];
         isShowCircle = false;
-        isShowBeforeFlip = false;
         isShowAfterFlip = false;
         update();
     }
-    //isShowBeforeFlip = false;
-    //isShowAfterFlip = false;
+    isShowBeforeFlip = false;
     update();
 }
 
@@ -292,7 +286,7 @@ void MainWindow::on_actionClear_triggered()
 {
     points.clear();
     triangles.clear();
-    flipping_triangles.clear();
+    flip_rec_4_points.clear();
 
     isTrianglated = false;
     isSelectMannually = true;
