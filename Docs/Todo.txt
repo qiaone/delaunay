@@ -56,5 +56,5 @@ viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
 viewer初始相机位置
     keep
 
-尝试animate viewer，如360旋转视角，设maintoolbar按钮调用
+尝试animate viewer，如360旋转视角，切换不同视角（东南西北）的快捷方式，设maintoolbar按钮调用
     postpone

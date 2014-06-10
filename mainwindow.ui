@@ -90,6 +90,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionRandomGeneration"/>
+   <addaction name="actionPerform"/>
+   <addaction name="separator"/>
    <addaction name="actionShow_Paraboloid"/>
    <addaction name="actionShow_Axis"/>
    <addaction name="separator"/>
@@ -107,6 +110,10 @@
    </property>
   </action>
   <action name="actionPerform">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/perform.png</normaloff>:/Img/perform.png</iconset>
+   </property>
    <property name="text">
     <string>Perform</string>
    </property>
@@ -114,6 +121,10 @@
   <action name="actionRandomGeneration">
    <property name="checkable">
     <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/random.png</normaloff>:/Img/random.png</iconset>
    </property>
    <property name="text">
     <string>Random Generation</string>
