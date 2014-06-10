@@ -183,7 +183,7 @@ void DViewer::drawMesh()
             auto point = delaunay_inc->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
-            glVertex3f(x, y, x * x + y * y + 0.1);
+            glVertex3f(x, y, x * x + y * y + 0.101);
             glNormal3f(0, 0, 1); // ???
         }
     }
