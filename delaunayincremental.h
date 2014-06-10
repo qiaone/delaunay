@@ -5,9 +5,10 @@
 #include <queue>
 #include <QObject>
 #include "def.h"
+#include "delaunaybase.h"
 #include <array>
 
-class DelaunayIncremental : public QObject
+class DelaunayIncremental : public DelaunayBase
 {
     Q_OBJECT
 
@@ -18,15 +19,14 @@ protected:
 
 public:
     DelaunayIncremental();
-    TriMesh mesh;
     std::queue<HHandle> legalize_queue;
     VHandle new_vh;
     std::vector<std::array<Point, 4>> flip_records;
     std::vector<Point> split_records;
     void reset();
     void performIncremental(Point new_point);
-    bool hasInfinitePoint(const FHandle &fh);
-    bool hasInfinitePoint(const std::array<Point, 4>& points);
+//    bool hasInfinitePoint(const FHandle &fh);
+//    bool hasInfinitePoint(const std::array<Point, 4>& points);
 
 
 private:

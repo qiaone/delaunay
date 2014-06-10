@@ -20,7 +20,6 @@ public:
 private slots:
     void on_actionPerform_triggered();
     void on_actionClear_triggered();
-    void on_actionSelectManually_triggered();
     void on_actionRandomGeneration_triggered();
     void on_actionShow_Axis_triggered();
     void on_actionShow_Paraboloid_triggered();

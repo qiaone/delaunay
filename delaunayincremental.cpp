@@ -4,9 +4,6 @@
 #include <QTime>
 #include <QApplication>
 
-const float INF = 1.0e5f;
-const float ESP = 1.0e-6f;
-
 DelaunayIncremental::DelaunayIncremental() :
     total_points_count(0)
 {
@@ -173,38 +170,38 @@ bool DelaunayIncremental::isOnEdge(Point& p, HHandle hh)
     return abs(rst) <= ESP;
 }
 
-bool DelaunayIncremental::hasInfinitePoint(const FHandle& fh)
-{
-    Point a(-INF, -INF, 0);
-    Point b(INF, -INF, 0);
-    Point c(0, INF, 0);
+//bool DelaunayIncremental::hasInfinitePoint(const FHandle& fh)
+//{
+//    Point a(-INF, -INF, 0);
+//    Point b(INF, -INF, 0);
+//    Point c(0, INF, 0);
 
-    for(auto& vh : mesh.fv_range(fh))
-    {
-        Point p = mesh.point(vh);
-        if (p == a || p == b || p == c)
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//    for(auto& vh : mesh.fv_range(fh))
+//    {
+//        Point p = mesh.point(vh);
+//        if (p == a || p == b || p == c)
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
-bool DelaunayIncremental::hasInfinitePoint(const std::array<Point, 4>& points)
-{
-    Point a(-INF, -INF, 0);
-    Point b(INF, -INF, 0);
-    Point c(0, INF, 0);
+//bool DelaunayIncremental::hasInfinitePoint(const std::array<Point, 4>& points)
+//{
+//    Point a(-INF, -INF, 0);
+//    Point b(INF, -INF, 0);
+//    Point c(0, INF, 0);
 
-    for(auto& p : points)
-    {
-        if (p == a || p == b || p == c)
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//    for(auto& p : points)
+//    {
+//        if (p == a || p == b || p == c)
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}
 
 bool DelaunayIncremental::isInTriangle(Point& point, FHandle fh)
 {

@@ -16,7 +16,7 @@ DViewer::DViewer(QWidget *parent)
 
 }
 
-DViewer::DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
+DViewer::DViewer(DelaunayBase* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
     : delaunay_inc(delaunay_inc_), mainwindow_width(mainwindow_width_), mainwindow_height(mainwindow_height_) { }
 
 void DViewer::toggleShowParaboloid()
@@ -25,7 +25,7 @@ void DViewer::toggleShowParaboloid()
     update();
 }
 
-void DViewer::setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
+void DViewer::setParam(DelaunayBase* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
 {
     delaunay_inc = delaunay_inc_;
     mainwindow_width = mainwindow_width_;

@@ -43,7 +43,6 @@
     <property name="title">
      <string>Points</string>
     </property>
-    <addaction name="actionSelectManually"/>
     <addaction name="actionRandomGeneration"/>
     <addaction name="separator"/>
     <addaction name="actionClear"/>
@@ -92,23 +91,13 @@
    </attribute>
    <addaction name="actionRandomGeneration"/>
    <addaction name="actionPerform"/>
+   <addaction name="actionClear"/>
    <addaction name="separator"/>
    <addaction name="actionShow_Paraboloid"/>
    <addaction name="actionShow_Axis"/>
    <addaction name="separator"/>
    <addaction name="actionGithub"/>
   </widget>
-  <action name="actionSelectManually">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Select Manually</string>
-   </property>
-  </action>
   <action name="actionPerform">
    <property name="icon">
     <iconset resource="resource.qrc">
@@ -131,6 +120,10 @@
    </property>
   </action>
   <action name="actionClear">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/clear.png</normaloff>:/Img/clear.png</iconset>
+   </property>
    <property name="text">
     <string>Clear</string>
    </property>
