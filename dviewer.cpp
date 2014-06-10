@@ -22,49 +22,67 @@ void DViewer::setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_
     mainwindow_height = mainwindow_height_;
 }
 
-void DViewer::showFlips3D( )
+void DViewer::drawBeforeFlip()
 {
-    // show all flips during a new point added
-    for (auto& flip : delaunay_inc->flip_records)
-    {
-        if (delaunay_inc->hasInfinitePoint(flip))
-        {
-            continue;
-        }
-//        flipping_triangles.clear();
-//        flipping_triangles
-//            << QPoint(flip[0][0],flip[0][1])
-//            << QPoint(flip[1][0],flip[1][1])
-//            << QPoint(flip[2][0],flip[2][1])
-//            << QPoint(flip[3][0],flip[3][1]);
-//        showCircle2D();
-//        isShowCircle = true;
-//        isShowBeforeFlip = true;
-//        update();
+    glColor3f(1, 0, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glBegin(GL_TRIANGLES);
 
-//        QTime t;
-//        t.start();
-//        while(t.elapsed() < 500)
-//            QCoreApplication::processEvents();
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[3][0]);
 
-//        isShowAfterFlip = true;
-//        update();
-
-//        t.start();
-//        while(t.elapsed() < 500)
-//            QCoreApplication::processEvents();
-
-//        isShowAfterFlip = false;
-    }
-//    isShowCircle = false;
-//    isShowBeforeFlip = false;
-//    update();
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
 }
 
-    void DViewer::showResult3D()
+void DViewer::drawAfterFlip()
+{
+    glColor3f(1, 1, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glBegin(GL_TRIANGLES);
+
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
+}
+
+void DViewer::showBeforeFlip3D()
+{
+    isDrawBeforeFlip = true;
+    update();
+}
+
+void DViewer::showAfterFlip3D()
+{
+    isDrawAfterFlip = true;
+    isDrawBeforeFlip = false;
+    update();
+}
+
+void DViewer::showResult3D()
 {
     isDrawResult = true;
     update();
+}
+
+void DViewer::initFlipDemoParams(std::array<Point, 4>& flip)
+{
+    for(int i = 0; i < 4; i++)
+    {
+        float x = (flip[i][0] - 300) / 400;
+        float y = (300 - flip[i][1]) / 400;
+        flip_space_points[i] = Point(x, y, x * x + y * y + 0.1);
+    }
 }
 
 void DViewer::drawMesh()
@@ -78,7 +96,7 @@ void DViewer::drawMesh()
     for (auto& vh: delaunay_inc->mesh.vertices())
     {
         auto point = delaunay_inc->mesh.point(vh);
-        glColor3f(1.0,0.0,0.0);
+        glColor3f(1.0, 0.0, 0.0);
         glVertex3f((point[0] - 300) / 400, (300 - point[1]) / 400, 0);
         //glVertex3f(point[0] / 400, -point[1] / 400, 0);
     }
@@ -201,6 +219,12 @@ void DViewer::draw()
     //drawAxis();
 
     //drawPoints();
+    if (isDrawBeforeFlip)
+        drawBeforeFlip();
+
+    if (isDrawAfterFlip)
+        drawAfterFlip();
+
     if (isDrawResult)
         drawMesh();
 

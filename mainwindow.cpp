@@ -19,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isTrianglated(false),
     isSelectMannually(true),
     isShowCircle(false),
-    isShowBeforeFlip(false),
-    isShowAfterFlip(false),
+    isShowFlip(false),
+    isShowFlippedEdge(false),
     isShowSplitTriangle(false),
     delay_mseconds(700)
 {
@@ -96,7 +96,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         }
     }
 
-    if (isShowBeforeFlip)
+    if (isShowFlip)
     {
         // two triangles
         pen.setWidth(3);
@@ -106,7 +106,7 @@ void MainWindow::paintEvent(QPaintEvent *)
         painter.drawPolygon(&flip_rec_4_points[0], 4);
 
         // flipping edge
-        if(isShowAfterFlip)
+        if(isShowFlippedEdge)
         {
             pen.setColor(QColor(0, 128, 0));
             painter.setPen(pen);
@@ -196,7 +196,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
     }
 }
 
-void MainWindow::initFlip(std::array<Point, 4>& flip)
+void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
 {
     flip_rec_4_points.clear();
     flip_rec_4_points
@@ -239,26 +239,35 @@ void MainWindow::showFlips()
     flipped_edges.clear();
     // show all flips during a new point added
 
-    isShowBeforeFlip = true;
+    isShowFlip = true;
     for (auto& flip : delaunay_inc->flip_records)
     {
-        initFlip(flip);
+        // 2d: show two triangles which will be flipped with in-circle test
+        initFlipDemoParams(flip);
+        ui->viewer->initFlipDemoParams(flip);
         isShowCircle = true;
         update();
+        // 3d
+        ui->viewer->showBeforeFlip3D();
 
         delay(delay_mseconds);
 
-        isShowAfterFlip = true;
+        // 2d: show flipped edge
+        isShowFlippedEdge = true;
         update();
+        // 3d
+        ui->viewer->showAfterFlip3D();
 
         delay(delay_mseconds);
 
+        // make flipped edges persistent during flips
         flipped_edges << flip_rec_4_points[0] << flip_rec_4_points[2];
+
         isShowCircle = false;
-        isShowAfterFlip = false;
+        isShowFlippedEdge = false;
         update();
     }
-    isShowBeforeFlip = false;
+    isShowFlip = false;
     update();
 }
 
@@ -291,8 +300,8 @@ void MainWindow::on_actionClear_triggered()
     isTrianglated = false;
     isSelectMannually = true;
     isShowCircle = false;
-    isShowBeforeFlip = false;
-    isShowAfterFlip = false;
+    isShowFlip = false;
+    isShowFlippedEdge = false;
     delay_mseconds = 700;
 
     delaunay_inc->mesh.clear();

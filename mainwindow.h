@@ -32,7 +32,7 @@ private:
     void wheelEvent(QWheelEvent * event);
     void showResult2D();
     void showFlips();
-    void initFlip(std::array<Point, 4>& flip);
+    void initFlipDemoParams(std::array<Point, 4>& flip);
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
@@ -53,8 +53,8 @@ private:
     bool isSelectMannually;
     bool isShowSplitTriangle;
     bool isShowCircle;
-    bool isShowBeforeFlip;
-    bool isShowAfterFlip;
+    bool isShowFlip;
+    bool isShowFlippedEdge;
 
     int delay_mseconds;
 };

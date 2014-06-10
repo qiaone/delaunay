@@ -2,6 +2,12 @@
 
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
 
+3d triangles用顶点数组优化
+
+random点的位置
+
+random出结果的计算和展示
+
 函数有些参数应当const
 
 随机生成点，不多于5000

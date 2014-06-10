@@ -17,17 +17,25 @@ public:
     DViewer(QWidget *parent);
     DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
     void setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
-    void showResult3D();
+    void initFlipDemoParams(std::array<Point, 4>& flip);
 
+    void showResult3D();
+    void showBeforeFlip3D();
+    void showAfterFlip3D();
 
 protected :
     virtual void init();
     virtual void draw();
     void drawMesh();
-    void showFlips3D();
     void drawParaboloid(Point bottom_point, float slice, float stack);
 
 private:
+    bool isDrawBeforeFlip;
+    bool isDrawAfterFlip;
+    void drawBeforeFlip();
+    void drawAfterFlip();
+
+    std::array<Point, 4> flip_space_points;
     DelaunayIncremental* delaunay_inc;
     int mainwindow_width, mainwindow_height;
     GLuint paraboloidListId; // display list name
