@@ -177,7 +177,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
-        if (event->pos().x() > 600 || event->pos().y() > 600)
+        if (event->pos().x() > 600 || event->pos().y() < 100)
         {
             return;
         }
@@ -334,7 +334,7 @@ void MainWindow::on_actionRandomGeneration_triggered()
     for(int i = 0; i < dialog->getPointsNumber(); i++)
     {
         std::uniform_int_distribution<int> randx(1, 600 - 1);
-        std::uniform_int_distribution<int> randy(1, 600 - 1); // 150 in order to avoid paint on toolbar
+        std::uniform_int_distribution<int> randy(100, 680 - 1); // 100 in order to avoid paint on toolbar
         points.append(QPoint(randx(gen), randy(gen)));
     }
 

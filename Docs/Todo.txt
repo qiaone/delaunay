@@ -9,11 +9,15 @@
 
 3d flip三角形的光照、颜色
 
-random点的位置
+3dviewer线框反走样
+
+鼠标点集、random点的位置
+    done
 
 random出结果的计算和展示
 
 函数有些参数应当const
+    postpone
 
 随机生成点，不多于5000
     20% 0529
@@ -27,9 +31,11 @@ clear选的点，重新开始
 
 3d viewer窗口关闭时需要做一些处理，析构、标志位变更等
 ->逻辑变化为：加入返回mainwindow的按钮，直接关闭窗口则退出整个程序
+    revised
 
 viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
     65% 0529
+    revised
 
 把碗提升一个高度
     done 0531 
@@ -38,15 +44,17 @@ viewer加入控制窗口viewerwindow，嵌入viewer以及一些控制按钮等
     done 0531(重新计算了顶点的法向。是否需要加光照效果？）
 
 平面三角形到空间三角形的映射，特别是flip操作前后造成的改变
-     done 0531
+    done 0531
 
 处理算法degenerate的情形
     如果有点重复的话会不会对算法产生影响？
-     doen 0531（如果发现点重复，直接跳过，不予处理）
+    doen 0531（如果发现点重复，直接跳过，不予处理）
 
 定时演示下一步，包括界面的设计，以及鼠标中键可以改变速度等操控
     done 0609
 
 viewer初始相机位置
+    keep
 
 尝试animate viewer，如360旋转视角，设maintoolbar按钮调用
+    postpone
