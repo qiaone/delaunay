@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowCircle(false),
     isShowBeforeFlip(false),
     isShowAfterFlip(false),
-    delayMSeconds(700)
+    isShowSplitTriangle(false),
+    delay_mseconds(700)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
@@ -35,37 +36,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::showCircle2D()
-{
-    double x1 = flipping_triangles[0].x();
-    double y1 = flipping_triangles[0].y();
-    double x2 = flipping_triangles[1].x();
-    double y2 = flipping_triangles[1].y();
-    double x3 = flipping_triangles[3].x();
-    double y3 = flipping_triangles[3].y();
-
-    in_circle_point.setX(flipping_triangles[2].x());
-    in_circle_point.setY(flipping_triangles[2].y());
-
-    double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
-                 (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
-                (2 * (y1 - y2) * (x3 - x1) - 2 * (y3 - y1) * (x1 - x2));
-    double y0 = (y3 * y3 - y1 * y1 - 2 * x0 * (x3 - x1) - x1 * x1 + x3 * x3) / (2 * (y3 - y1));
-    double r = sqrt((y0 - y2) * (y0 - y2) + (x0 - x2) * (x0 - x2));
-
-    circle_center.setX(x0);
-    circle_center.setY(y0);
-    circle_radius = r;
-
-    isShowCircle = true;
-}
-
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
+
+    // Points
     if (isSelectMannually)
     {
         pen.setColor(Qt::red);
@@ -82,6 +60,7 @@ void MainWindow::paintEvent(QPaintEvent *)
     for(auto p : points)
         painter.drawPoint(p);
 
+    // Triangles
     if (isTrianglated)
     {
         pen.setColor(QColor(63, 72, 204));
@@ -94,6 +73,29 @@ void MainWindow::paintEvent(QPaintEvent *)
             {
                 painter.drawPolygon(&triangles[i * 3], 3);
             }
+        }
+
+        // flipped edges
+        //if (isShowBeforeFlip)
+        {
+            pen.setColor(QColor(0, 128, 0));
+            painter.setPen(pen);
+            for(int i = 0; i < flipped_edges.size(); i += 2)
+            {
+                painter.drawLine(flipped_edges[i], flipped_edges[i + 1]);
+            }
+        }
+    }
+
+    // Split edges
+    if (isShowSplitTriangle)
+    {
+        pen.setColor(QColor(63, 72, 204));
+        painter.setPen(pen);
+        Point newpoint = delaunay_inc->mesh.point(delaunay_inc->new_vh);
+        for(auto& p : delaunay_inc->split_records)
+        {
+            painter.drawLine(QPoint(newpoint[0], newpoint[1]), QPoint(p[0], p[1]));
         }
     }
 
@@ -159,17 +161,17 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 {
     if (event->angleDelta().y() > 0)
     {
-        delayMSeconds += 100;
+        delay_mseconds += 100;
     }
     else
     {
-        delayMSeconds -= 100;
-        if (delayMSeconds < 0)
+        delay_mseconds -= 100;
+        if (delay_mseconds < 0)
         {
-            delayMSeconds = 0;
+            delay_mseconds = 0;
         }
     }
-    QString delay = QString("Delay between steps: %1 ms").arg(delayMSeconds);
+    QString delay = QString("Delay between steps: %1 ms").arg(delay_mseconds);
     QToolTip::showText(event->globalPos(), delay, this);
 }
 
@@ -188,49 +190,81 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+        isShowSplitTriangle = true;
         ui->viewer->showResult3D();
-        showFlips2D();
+        showFlips();
         showResult2D();
         isSelectMannually = true;
+        isShowSplitTriangle = false;
     }
 }
 
-void MainWindow::showFlips2D( )
+void MainWindow::initFlip(std::array<Point, 4>& flip)
 {
+    flipping_triangles.clear();
+    flipping_triangles
+        << QPoint(flip[0][0],flip[0][1])
+        << QPoint(flip[1][0],flip[1][1])
+        << QPoint(flip[2][0],flip[2][1])
+        << QPoint(flip[3][0],flip[3][1]);
+
+    double x1 = flipping_triangles[0].x();
+    double y1 = flipping_triangles[0].y();
+    double x2 = flipping_triangles[1].x();
+    double y2 = flipping_triangles[1].y();
+    double x3 = flipping_triangles[3].x();
+    double y3 = flipping_triangles[3].y();
+
+    in_circle_point.setX(flipping_triangles[2].x());
+    in_circle_point.setY(flipping_triangles[2].y());
+
+    double x0 = ((y3 - y1) * (y2 * y2 - y1 * y1) + (y3 - y1) * (x2 * x2 - x1 * x1) -
+                 (y1 - y2) * (y1 * y1 - y3 * y3) - (y1 - y2) * (x1 * x1 - x3 * x3)) /
+                (2 * (y1 - y2) * (x3 - x1) - 2 * (y3 - y1) * (x1 - x2));
+    double y0 = (y3 * y3 - y1 * y1 - 2 * x0 * (x3 - x1) - x1 * x1 + x3 * x3) / (2 * (y3 - y1));
+    double r = sqrt((y0 - y2) * (y0 - y2) + (x0 - x2) * (x0 - x2));
+
+    circle_center.setX(x0);
+    circle_center.setY(y0);
+    circle_radius = r;
+}
+
+inline void delay(float ms)
+{
+    QTime t;
+    t.start();
+    while(t.elapsed() < ms)
+        QCoreApplication::processEvents();
+}
+
+void MainWindow::showFlips()
+{
+    flipped_edges.clear();
     // show all flips during a new point added
     for (auto& flip : delaunay_inc->flip_records)
     {
-        if (delaunay_inc->hasInfinitePoint(flip))
-        {
-            continue;
-        }
-        flipping_triangles.clear();
-        flipping_triangles
-            << QPoint(flip[0][0],flip[0][1])
-            << QPoint(flip[1][0],flip[1][1])
-            << QPoint(flip[2][0],flip[2][1])
-            << QPoint(flip[3][0],flip[3][1]);
-        showCircle2D();
+        initFlip(flip);
+
         isShowCircle = true;
         isShowBeforeFlip = true;
         update();
 
-        QTime t;
-        t.start();
-        while(t.elapsed() < delayMSeconds)
-            QCoreApplication::processEvents();
+        delay(delay_mseconds);
 
         isShowAfterFlip = true;
         update();
 
-        t.start();
-        while(t.elapsed() < delayMSeconds)
-            QCoreApplication::processEvents();
+        delay(delay_mseconds);
 
+        flipped_edges << flipping_triangles[0] << flipping_triangles[2];
+
+        isShowCircle = false;
+        isShowBeforeFlip = false;
         isShowAfterFlip = false;
+        update();
     }
-    isShowCircle = false;
-    isShowBeforeFlip = false;
+    //isShowBeforeFlip = false;
+    //isShowAfterFlip = false;
     update();
 }
 
@@ -265,7 +299,7 @@ void MainWindow::on_actionClear_triggered()
     isShowCircle = false;
     isShowBeforeFlip = false;
     isShowAfterFlip = false;
-    delayMSeconds = 700;
+    delay_mseconds = 700;
 
     delaunay_inc->mesh.clear();
 

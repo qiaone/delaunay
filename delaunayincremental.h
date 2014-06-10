@@ -24,6 +24,7 @@ public:
     VHandle new_vh;
     bool isInCircle(HHandle hh, VHandle vh, VHandle vh_oppo);
     std::vector<std::array<Point, 4>> flip_records;
+    std::vector<Point> split_records;
     bool isFlipped;
     bool hasInfinitePoint(const FHandle &fh);
     bool hasInfinitePoint(const std::array<Point, 4>& points);

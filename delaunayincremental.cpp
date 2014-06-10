@@ -44,8 +44,10 @@ void DelaunayIncremental::pointLocation(VHandle& vh)
 
 void DelaunayIncremental::performIncremental(Point new_point)
 {
-    new_vh = mesh.add_vertex(new_point);
+    flip_records.clear();
+    split_records.clear();
 
+    new_vh = mesh.add_vertex(new_point);
     pointLocation(new_vh);
 
     FHandle fh = mesh.property(VertexToFace, new_vh);
@@ -65,9 +67,17 @@ void DelaunayIncremental::performIncremental(Point new_point)
 
         // split face
         mesh.split(fh, new_vh);
+
+        for(auto& vv : mesh.vv_range(new_vh))
+        {
+            Point vp = mesh.point(vv);
+            if (!isInfinite(vp))
+            {
+                split_records.push_back(mesh.point(vv));
+            }
+        }
     }
 
-    flip_records.clear();
     // legalize each triangle
     for(auto& hh : mesh.voh_range(new_vh))
     {
@@ -217,7 +227,6 @@ void DelaunayIncremental::legalize(HHandle hh)
     
     isFlipped = false;
 
-
     if (isInCircle(hh, new_vh, vh_oppo))
     {
         emit signalBeforeFlip(hh, new_vh, vh_oppo);
@@ -231,7 +240,11 @@ void DelaunayIncremental::legalize(HHandle hh)
             flip_record[1] = mesh.point(mesh.from_vertex_handle(hh));
             flip_record[2] = mesh.point(vh_oppo);
             flip_record[3] = mesh.point(mesh.to_vertex_handle(hh));
-            flip_records.push_back(flip_record);
+            if (!hasInfinitePoint(flip_record))
+            {
+                flip_records.push_back(flip_record);
+            }
+
 
             isFlipped = true;
             mesh.flip(eh);

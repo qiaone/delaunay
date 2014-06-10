@@ -31,8 +31,8 @@ private:
     void mouseReleaseEvent(QMouseEvent * event);
     void wheelEvent(QWheelEvent * event);
     void showResult2D();
-    void showCircle2D();
-    void showFlips2D();
+    void showFlips();
+    void initFlip(std::array<Point, 4>& flip);
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
@@ -43,10 +43,11 @@ private:
     QPen* pen;
     QVector<QPoint> points;
     QVector<QPoint> triangles;
-    QPoint in_circle_point;
+    QPointF in_circle_point;
     QPointF circle_center;
     double circle_radius;
     QVector<QPoint> flipping_triangles;
+    QVector<QPoint> flipped_edges;
 
     bool isTrianglated;
     bool isSelectMannually;
@@ -55,7 +56,7 @@ private:
     bool isShowBeforeFlip;
     bool isShowAfterFlip;
 
-    int delayMSeconds;
+    int delay_mseconds;
 };
 
 #endif // MAINWINDOW_H

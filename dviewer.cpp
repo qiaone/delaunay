@@ -71,6 +71,7 @@ void DViewer::drawMesh()
 {
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
+    // points
     glPointSize(4.0);
     glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
@@ -83,6 +84,7 @@ void DViewer::drawMesh()
     }
     glEnd();
 
+    // planar triangles
     glColor3f(0, 0, 1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
@@ -104,8 +106,9 @@ void DViewer::drawMesh()
     }
     glEnd();
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // space triangles fill
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor3f(0, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -127,7 +130,32 @@ void DViewer::drawMesh()
         }
     }
     glEnd();
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
+
+    // space triangles wireframe
+    glColor3f(0, 0, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glLineWidth(2.0f);
+    glBegin(GL_TRIANGLES);
+    for (auto& fh : delaunay_inc->mesh.faces())
+    {
+        if (delaunay_inc->hasInfinitePoint(fh))
+        {
+            continue;
+        }
+
+        for(auto& vh : delaunay_inc->mesh.fv_range(fh))
+        {
+            auto point = delaunay_inc->mesh.point(vh);
+            float x = (point[0] - 300) / 400;
+            float y = (300 - point[1]) / 400;
+            glVertex3f(x, y, x * x + y * y + 0.1);
+            glNormal3f(0, 0, 1); // ???
+        }
+    }
+    glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void DViewer::init()
@@ -177,10 +205,11 @@ void DViewer::draw()
         drawMesh();
 
 
-    glDepthMask(GL_FALSE); //将深度缓存设置为只读状态
+    // make depth buffer read-only
+    glDepthMask(GL_FALSE);
     // draw paraboloid
     glCallList(paraboloidListId);
-    glDepthMask(GL_TRUE); //深度缓存设置为正常状态
+    glDepthMask(GL_TRUE);
     // Restore the original (world) coordinate system
     //glPopMatrix();
 
@@ -244,4 +273,3 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);
 
 }
-
