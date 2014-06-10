@@ -305,7 +305,8 @@ void MainWindow::on_actionClear_triggered()
     isShowFlippedEdge = false;
     delay_mseconds = 700;
 
-    delaunay_inc->mesh.clear();
+    delaunay_inc->reset();
+    ui->viewer->clearAfterFlip3D();
 
     update();
 }
@@ -369,17 +370,6 @@ void MainWindow::on_actionPerform_triggered()
     }
     isTrianglated = true;
     update();
-
-//    // display 3d result
-//    if(ui->action3D_Viewer->isChecked())
-//    {
-//        if (viewer == nullptr)
-//        {
-//            DViewerWindow* dvwin = new DViewerWindow(delaunay, this->width(), this->height());
-//            dvwin->setWindowTitle("Delaunay Triangulation Viewer");
-//            dvwin->show();
-//        }
-//    }
 }
 
 

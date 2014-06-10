@@ -6,6 +6,10 @@
 using namespace qglviewer;
 using namespace std;
 
+const int half_window_width = 300;
+const int half_window_height = 340;
+const int scale_factor = 400;
+
 DViewer::DViewer(QWidget *parent)
     : QGLViewer(parent), isDrawResult(false), isShowParaboloid(true)
 {
@@ -75,6 +79,12 @@ void DViewer::showAfterFlip3D()
     update();
 }
 
+void DViewer::clearAfterFlip3D()
+{
+    isDrawAfterFlip = false;
+    update();
+}
+
 void DViewer::showResult3D()
 {
     isDrawResult = true;
@@ -85,8 +95,8 @@ void DViewer::initFlipDemoParams(std::array<Point, 4>& flip)
 {
     for(int i = 0; i < 4; i++)
     {
-        float x = (flip[i][0] - 300) / 400;
-        float y = (300 - flip[i][1]) / 400;
+        float x = (flip[i][0] - half_window_width) / scale_factor;
+        float y = (half_window_height - flip[i][1]) / scale_factor;
         flip_space_points[i] = Point(x, y, x * x + y * y + 0.1);
     }
 }
@@ -103,8 +113,7 @@ void DViewer::drawMesh()
     {
         auto point = delaunay_inc->mesh.point(vh);
         glColor3f(1.0, 0.0, 0.0);
-        glVertex3f((point[0] - 300) / 400, (300 - point[1]) / 400, 0);
-        //glVertex3f(point[0] / 400, -point[1] / 400, 0);
+        glVertex3f((point[0] - half_window_width) / scale_factor, (half_window_height - point[1]) / scale_factor, 0);
     }
     glEnd();
 
@@ -122,8 +131,8 @@ void DViewer::drawMesh()
         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
             auto point = delaunay_inc->mesh.point(vh);
-            float x = (point[0] - 300) / 400;
-            float y = (300 - point[1]) / 400;
+            float x = (point[0] - half_window_width) / scale_factor;
+            float y = (half_window_height - point[1]) / scale_factor;
             glVertex3f(x, y, 0);
             glNormal3f(1, 1, 0);
         }
@@ -147,8 +156,8 @@ void DViewer::drawMesh()
         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
             auto point = delaunay_inc->mesh.point(vh);
-            float x = (point[0] - 300) / 400;
-            float y = (300 - point[1]) / 400;
+            float x = (point[0] - half_window_width) / scale_factor;
+            float y = (half_window_height - point[1]) / scale_factor;
             glVertex3f(x, y, x * x + y * y + 0.1);
             glNormal3f(2 * x, 2 * y, -1);
         }
@@ -172,8 +181,8 @@ void DViewer::drawMesh()
         for(auto& vh : delaunay_inc->mesh.fv_range(fh))
         {
             auto point = delaunay_inc->mesh.point(vh);
-            float x = (point[0] - 300) / 400;
-            float y = (300 - point[1]) / 400;
+            float x = (point[0] - half_window_width) / scale_factor;
+            float y = (half_window_height - point[1]) / scale_factor;
             glVertex3f(x, y, x * x + y * y + 0.1);
             glNormal3f(0, 0, 1); // ???
         }

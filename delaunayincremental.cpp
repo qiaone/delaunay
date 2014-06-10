@@ -8,11 +8,29 @@ const float INF = 1.0e5f;
 const float ESP = 1.0e-6f;
 
 DelaunayIncremental::DelaunayIncremental() :
-    delay_seconds(0),
     total_points_count(0)
 {
     mesh.clear();
 
+    // add properties
+    mesh.add_property(FaceToVertices);
+    mesh.add_property(VertexToFace);
+    mesh.add_property(VertexToHEdge);
+
+    // add infinite vertices
+    VHandle vhs[3];
+    vhs[0] = mesh.add_vertex(Point(-INF, -INF, 0));
+    vhs[1] = mesh.add_vertex(Point(INF, -INF, 0));
+    vhs[2] = mesh.add_vertex(Point(0, INF, 0));
+
+    // add the initial triangle
+    FHandle big_triangle_fh = mesh.add_face(vhs, 3);
+}
+
+void DelaunayIncremental::reset()
+{
+    mesh.clear();
+    total_points_count = 0;
     // add properties
     mesh.add_property(FaceToVertices);
     mesh.add_property(VertexToFace);
@@ -55,16 +73,12 @@ void DelaunayIncremental::performIncremental(Point new_point)
 
     if (hh.is_valid())
     {
-        emit signalBeforeSplit(hh);
-
         // split edge
         mesh.split(mesh.edge_handle(hh), new_vh);
 
     }
     else if (fh.is_valid())
     {
-        emit signalBeforeSplit(fh);
-
         // split face
         mesh.split(fh, new_vh);
 
@@ -225,12 +239,9 @@ void DelaunayIncremental::legalize(HHandle hh)
 
     VHandle vh_oppo = mesh.opposite_he_opposite_vh(hh);
     
-    isFlipped = false;
 
     if (isInCircle(hh, new_vh, vh_oppo))
     {
-        emit signalBeforeFlip(hh, new_vh, vh_oppo);
-
         // flip edge
         EHandle eh = mesh.edge_handle(hh);
         if (mesh.is_flip_ok(eh))
@@ -245,10 +256,7 @@ void DelaunayIncremental::legalize(HHandle hh)
                 flip_records.push_back(flip_record);
             }
 
-
-            isFlipped = true;
             mesh.flip(eh);
-            emit signalAfterFlip();
 
             // iterative
             HHandle heh1, heh2;

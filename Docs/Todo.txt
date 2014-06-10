@@ -1,8 +1,13 @@
 ﻿clear() debug
+    done 0610
 
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
+    30% 0610
 
 3d triangles用顶点数组优化
+    postpone
+
+3d flip三角形的光照、颜色
 
 random点的位置
 
