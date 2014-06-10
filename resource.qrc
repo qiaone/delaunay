@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>Img/delaunay.png</file>
-        <file>Img/viewer.png</file>
-        <file>Img/step.png</file>
+        <file>Img/axis.png</file>
+        <file>Img/paraboloid.png</file>
+        <file>Img/github.png</file>
     </qresource>
 </RCC>

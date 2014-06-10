@@ -9,6 +9,7 @@
 #include <QWheelEvent>
 #include <QDebug>
 #include <QTime>
+#include <QDesktopServices>
 #include <cmath>
 
 const float INF = 1.0e5f;
@@ -331,8 +332,8 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     for(int i = 0; i < dialog->getPointsNumber(); i++)
     {
-        std::uniform_int_distribution<int> randx(1, this->width() - 1);
-        std::uniform_int_distribution<int> randy(150, this->height() - 1); // 150 in order to avoid paint on toolbar
+        std::uniform_int_distribution<int> randx(1, 600 - 1);
+        std::uniform_int_distribution<int> randy(1, 600 - 1); // 150 in order to avoid paint on toolbar
         points.append(QPoint(randx(gen), randy(gen)));
     }
 
@@ -381,3 +382,18 @@ void MainWindow::on_actionPerform_triggered()
 //    }
 }
 
+
+void MainWindow::on_actionShow_Axis_triggered()
+{
+    ui->viewer->toggleAxisIsDrawn();
+}
+
+void MainWindow::on_actionShow_Paraboloid_triggered()
+{
+    ui->viewer->toggleShowParaboloid();
+}
+
+void MainWindow::on_actionGithub_triggered()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/qiaone/delaunay", QUrl::TolerantMode));
+}

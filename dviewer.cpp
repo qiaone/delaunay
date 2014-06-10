@@ -7,13 +7,19 @@ using namespace qglviewer;
 using namespace std;
 
 DViewer::DViewer(QWidget *parent)
-    : QGLViewer(parent), isDrawResult(false)
+    : QGLViewer(parent), isDrawResult(false), isShowParaboloid(true)
 {
 
 }
 
 DViewer::DViewer(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
     : delaunay_inc(delaunay_inc_), mainwindow_width(mainwindow_width_), mainwindow_height(mainwindow_height_) { }
+
+void DViewer::toggleShowParaboloid()
+{
+    isShowParaboloid = !isShowParaboloid;
+    update();
+}
 
 void DViewer::setParam(DelaunayIncremental* delaunay_inc_, int mainwindow_width_, int mainwindow_height_)
 {
@@ -229,11 +235,15 @@ void DViewer::draw()
         drawMesh();
 
 
-    // make depth buffer read-only
-    glDepthMask(GL_FALSE);
-    // draw paraboloid
-    glCallList(paraboloidListId);
-    glDepthMask(GL_TRUE);
+    if (isShowParaboloid)
+    {
+        // make depth buffer read-only
+        glDepthMask(GL_FALSE);
+        // draw paraboloid
+        glCallList(paraboloidListId);
+        glDepthMask(GL_TRUE);
+    }
+
     // Restore the original (world) coordinate system
     //glPopMatrix();
 

@@ -23,6 +23,12 @@ private slots:
     void on_actionSelectManually_triggered();
     void on_actionRandomGeneration_triggered();
 
+    void on_actionShow_Axis_triggered();
+
+    void on_actionShow_Paraboloid_triggered();
+
+    void on_actionGithub_triggered();
+
 private:
     Ui::MainWindow *ui;
     void paintEvent(QPaintEvent *);

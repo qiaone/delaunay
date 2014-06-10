@@ -22,6 +22,7 @@ public:
     void showResult3D();
     void showBeforeFlip3D();
     void showAfterFlip3D();
+    void toggleShowParaboloid();
 
 protected :
     virtual void init();
@@ -34,6 +35,7 @@ private:
     bool isDrawAfterFlip;
     void drawBeforeFlip();
     void drawAfterFlip();
+    bool isShowParaboloid;
 
     std::array<Point, 4> flip_space_points;
     DelaunayIncremental* delaunay_inc;
