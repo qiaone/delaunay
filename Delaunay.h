@@ -5,9 +5,10 @@
 #include <vector>
 #include <QObject>
 #include <GL/glut.h>
+#include "delaunaybase.h"
 #include "def.h"
 
-class Delaunay : public QObject
+class Delaunay : public DelaunayBase
 {
     Q_OBJECT
 
@@ -22,7 +23,6 @@ public:
     void perform(PointVec& all_points);
     void drawMesh();
     void init(PointVec& points);
-    TriMesh mesh;
     int total_points_count;
 
 private:

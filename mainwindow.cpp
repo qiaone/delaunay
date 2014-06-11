@@ -12,8 +12,6 @@
 #include <QDesktopServices>
 #include <cmath>
 
-const float INF = 1.0e5f;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -177,7 +175,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
-        if (event->pos().x() > 600 || event->pos().y() > 600)
+        if (event->pos().x() > 600 || event->pos().y() < 100)
         {
             return;
         }
@@ -296,6 +294,7 @@ void MainWindow::on_actionClear_triggered()
 {
     points.clear();
     triangles.clear();
+    flipped_edges.clear();
     flip_rec_4_points.clear();
 
     isTrianglated = false;
@@ -306,14 +305,10 @@ void MainWindow::on_actionClear_triggered()
     delay_mseconds = 700;
 
     delaunay_inc->reset();
+    ui->viewer->setParam(delaunay_inc, this->width(), this->height());
     ui->viewer->clearAfterFlip3D();
 
     update();
-}
-
-void MainWindow::on_actionSelectManually_triggered()
-{
-    isSelectMannually = !isSelectMannually;
 }
 
 void MainWindow::on_actionRandomGeneration_triggered()
@@ -334,7 +329,7 @@ void MainWindow::on_actionRandomGeneration_triggered()
     for(int i = 0; i < dialog->getPointsNumber(); i++)
     {
         std::uniform_int_distribution<int> randx(1, 600 - 1);
-        std::uniform_int_distribution<int> randy(1, 600 - 1); // 150 in order to avoid paint on toolbar
+        std::uniform_int_distribution<int> randy(100, 680 - 1); // 100 in order to avoid paint on toolbar
         points.append(QPoint(randx(gen), randy(gen)));
     }
 
@@ -370,6 +365,10 @@ void MainWindow::on_actionPerform_triggered()
     }
     isTrianglated = true;
     update();
+
+    // display 3d result
+    ui->viewer->setParam(delaunay, this->width(), this->height());
+    ui->viewer->showResult3D();
 }
 
 

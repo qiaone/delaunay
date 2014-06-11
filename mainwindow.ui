@@ -43,7 +43,6 @@
     <property name="title">
      <string>Points</string>
     </property>
-    <addaction name="actionSelectManually"/>
     <addaction name="actionRandomGeneration"/>
     <addaction name="separator"/>
     <addaction name="actionClear"/>
@@ -93,23 +92,20 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionRandomGeneration"/>
+   <addaction name="actionPerform"/>
+   <addaction name="actionClear"/>
+   <addaction name="separator"/>
    <addaction name="actionShow_Paraboloid"/>
    <addaction name="actionShow_Axis"/>
    <addaction name="separator"/>
    <addaction name="actionGithub"/>
   </widget>
-  <action name="actionSelectManually">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Select Manually</string>
-   </property>
-  </action>
   <action name="actionPerform">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/perform.png</normaloff>:/Img/perform.png</iconset>
+   </property>
    <property name="text">
     <string>Perform</string>
    </property>
@@ -118,11 +114,19 @@
    <property name="checkable">
     <bool>false</bool>
    </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/random.png</normaloff>:/Img/random.png</iconset>
+   </property>
    <property name="text">
     <string>Random Generation</string>
    </property>
   </action>
   <action name="actionClear">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/clear.png</normaloff>:/Img/clear.png</iconset>
+   </property>
    <property name="text">
     <string>Clear</string>
    </property>

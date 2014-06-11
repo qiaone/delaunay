@@ -3,5 +3,8 @@
         <file>Img/axis.png</file>
         <file>Img/paraboloid.png</file>
         <file>Img/github.png</file>
+        <file>Img/random.png</file>
+        <file>Img/perform.png</file>
+        <file>Img/clear.png</file>
     </qresource>
 </RCC>

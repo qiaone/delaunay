@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     Tests/DelaunayTest.cpp \
     delaunay.cpp \
     randompointsdialog.cpp \
-    delaunayincremental.cpp
+    delaunayincremental.cpp \
+    delaunaybase.cpp
 
 HEADERS  += \
     ensure_exception.h \
@@ -27,7 +28,8 @@ HEADERS  += \
     delaunay.h \
     randompointsdialog.h \
     def.h \
-    delaunayincremental.h
+    delaunayincremental.h \
+    delaunaybase.h
 
 FORMS    += \
     mainwindow.ui \

@@ -4,9 +4,6 @@
 #include <QTime>
 #include <QApplication>
 
-const float INF = 1.0e5f;
-const float ESP = 1.0e-6f;
-
 Delaunay::Delaunay()
 {
 }

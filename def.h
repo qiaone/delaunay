@@ -23,4 +23,7 @@ typedef std::vector<VHandle> VHandleVec;
 typedef std::vector<FHandle> FHandleVec;
 typedef std::vector<HHandle> HHandleVec;
 
+const float INF = 1.0e5f;
+const float ESP = 1.0e-6f;
+
 #endif // DEF_H
