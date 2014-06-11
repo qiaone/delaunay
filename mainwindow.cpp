@@ -183,7 +183,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
     if(isSelectMannually)
     {
-        if (event->pos().x() > 600 || event->pos().y() < 100)
+        if (event->pos().x() > this->width() / 2 || event->pos().y() < 100)
         {
             return;
         }
@@ -195,10 +195,10 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         auto p = event->pos();
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
         isShowSplitTriangle = true;
-        ui->viewer->showResult3D();
         ui->actionClear->setDisabled(true);
         showFlips();
         ui->actionClear->setEnabled(true);
+        ui->viewer->showResult3D();
         showResult2D();
         isSelectMannually = true;
         isShowSplitTriangle = false;
@@ -262,6 +262,7 @@ void MainWindow::showFlips()
         isShowCircle = true;
         update();
         // 3d
+        ui->viewer->clearResult3D();
         ui->viewer->showBeforeFlip3D();
 
         delay(delay_mseconds);
@@ -269,11 +270,11 @@ void MainWindow::showFlips()
         // 2d: show flipped edge
         isShowFlippedEdge = true;
         update();
-        // 3d
         ui->viewer->showAfterFlip3D();
 
         delay(delay_mseconds);
 
+        // 3d
         // make flipped edges persistent during flips
         flipped_edges << flip_rec_4_points[0] << flip_rec_4_points[2];
 
@@ -282,6 +283,7 @@ void MainWindow::showFlips()
         update();
     }
     isShowFlip = false;
+    ui->viewer->clearAfterFlip3D();
     update();
 }
 

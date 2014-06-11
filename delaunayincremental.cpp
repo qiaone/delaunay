@@ -53,10 +53,23 @@ void DelaunayIncremental::pointLocation(VHandle& vh)
         {
             mesh.property(FaceToVertices, fh).push_back(vh);
             mesh.property(VertexToFace, vh) = fh;
-            break;
+            return;
         }
-        // if (isOnTriangleEdges)
     }
+
+    for(auto& hh : mesh.halfedges())
+    {
+        if (isOnEdge(mesh.point(vh), hh))
+        {
+            FHandle fh = mesh.face_handle(hh);
+            mesh.property(FaceToVertices, fh).push_back(vh);
+            mesh.property(VertexToFace, vh) = fh;
+            mesh.property(VertexToHEdge, vh) = hh;
+            return;
+        }
+    }
+
+
 }
 
 void DelaunayIncremental::performIncremental(Point new_point)

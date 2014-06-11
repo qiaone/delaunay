@@ -5,14 +5,19 @@
     4，不会gui无响应
     5，
 
-
 clear() debug
     done 0610
 
+重复点还是有bug，hash过滤下
+
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
     30% 0610
+    done 0611
 
 3d triangles用顶点数组优化
+    postpone
+
+非flip三角面片半透明已突出flip的
     postpone
 
 3d flip三角形的光照、颜色

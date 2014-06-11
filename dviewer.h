@@ -23,6 +23,7 @@ public:
     void showBeforeFlip3D();
     void showAfterFlip3D();
     void clearAfterFlip3D();
+    void clearResult3D();
     void toggleShowParaboloid();
 
 protected :

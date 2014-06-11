@@ -11,14 +11,25 @@ using namespace std;
 const int scale_factor = 400;
 const float lift_up_distance = 0.15f;
 
-DViewer::DViewer(QWidget *parent)
-    : QGLViewer(parent), isDrawResult(false), isShowParaboloid(true)
+DViewer::DViewer(QWidget *parent) :
+    QGLViewer(parent),
+    isDrawResult(false),
+    isShowParaboloid(true),
+    isDrawBeforeFlip(false),
+    isDrawAfterFlip(false)
 {
 
 }
 
-DViewer::DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height)
-    : delaunay(delaunay_), half_window_width(mainwindow_width / 4), half_window_height(mainwindow_height / 2) { }
+DViewer::DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height) :
+    delaunay(delaunay_),
+    half_window_width(mainwindow_width / 4),
+    half_window_height(mainwindow_height / 2),
+    isDrawBeforeFlip(false),
+    isDrawAfterFlip(false)
+{
+
+}
 
 void DViewer::toggleShowParaboloid()
 {
@@ -41,88 +52,88 @@ void DViewer::setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwi
 
 void DViewer::drawBeforeFlip()
 {
-	glColor3f(1, 0, 0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glPolygonOffset(1.0, 1.0);
+    glColor3f(1, 0, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
     auto norm1 = cross((flip_space_points[1] - flip_space_points[0]), (flip_space_points[3] - flip_space_points[0]));
     auto norm2 = cross((flip_space_points[2] - flip_space_points[1]), (flip_space_points[3] - flip_space_points[1]));
     glBegin(GL_TRIANGLES);
     glNormal3fv(&norm1[0]);
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[3][0]);
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[3][0]);
 
     glNormal3fv(&norm2[0]);
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[2][0]);
-	glVertex3fv(&flip_space_points[3][0]);
-	glEnd();
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
 
     //glDisable(GL_LIGHTING);
-	glColor3f(0.3, 0.3, 0.3);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
-	glBegin(GL_TRIANGLES);
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[3][0]);
+    glColor3f(0.3, 0.3, 0.3);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(1.0f);
+    glBegin(GL_TRIANGLES);
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[3][0]);
 
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[2][0]);
-	glVertex3fv(&flip_space_points[3][0]);
-	glEnd();
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
     //glEnable(GL_LIGHTING);
 }
 
 void DViewer::drawAfterFlip()
 {
-	glColor3f(1, 1, 0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glPolygonOffset(1.0, 1.0);
+    glColor3f(1, 1, 0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
     auto norm1 = cross((flip_space_points[1] - flip_space_points[0]), (flip_space_points[2] - flip_space_points[0]));
     auto norm2 = cross((flip_space_points[2] - flip_space_points[0]), (flip_space_points[3] - flip_space_points[0]));
     glBegin(GL_TRIANGLES);
     glNormal3fv(&norm1[0]);
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
 
     glNormal3fv(&norm2[0]);
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[2][0]);
-	glVertex3fv(&flip_space_points[3][0]);
-	glEnd();
-	glDisable(GL_POLYGON_OFFSET_FILL);
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
+    glDisable(GL_POLYGON_OFFSET_FILL);
 
-	glDisable(GL_LIGHTING);
-	glColor3f(0.3, 0.3, 0.3);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glLineWidth(1.0f);
-	glBegin(GL_TRIANGLES);
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[1][0]);
-	glVertex3fv(&flip_space_points[2][0]);
+    glDisable(GL_LIGHTING);
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(1.0f);
+    glBegin(GL_TRIANGLES);
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[1][0]);
+    glVertex3fv(&flip_space_points[2][0]);
 
-	glVertex3fv(&flip_space_points[0][0]);
-	glVertex3fv(&flip_space_points[2][0]);
-	glVertex3fv(&flip_space_points[3][0]);
-	glEnd();
-	glEnable(GL_LIGHTING);
-
+    glVertex3fv(&flip_space_points[0][0]);
+    glVertex3fv(&flip_space_points[2][0]);
+    glVertex3fv(&flip_space_points[3][0]);
+    glEnd();
+    glEnable(GL_LIGHTING);
 }
 
 void DViewer::showBeforeFlip3D()
 {
     isDrawBeforeFlip = true;
+    isDrawAfterFlip = false;
     update();
 }
 
 void DViewer::showAfterFlip3D()
 {
-    isDrawAfterFlip = true;
     isDrawBeforeFlip = false;
+    isDrawAfterFlip = true;
     update();
 }
 
@@ -135,6 +146,12 @@ void DViewer::clearAfterFlip3D()
 void DViewer::showResult3D()
 {
     isDrawResult = true;
+    update();
+}
+
+void DViewer::clearResult3D()
+{
+    isDrawResult = false;
     update();
 }
 
