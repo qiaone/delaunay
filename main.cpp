@@ -16,12 +16,12 @@
     int main(int argc, char *argv[])
     {
         QApplication a(argc, argv);
-        Qt::WindowFlags flags = 0;
-        flags |= Qt::WindowMinimizeButtonHint;
-        flags |= Qt::WindowCloseButtonHint;
-        flags |= Qt::MSWindowsFixedSizeDialogHint;
+//        Qt::WindowFlags flags = 0;
+//        flags |= Qt::WindowMinimizeButtonHint;
+//        flags |= Qt::WindowCloseButtonHint;
+//        flags |= Qt::MSWindowsFixedSizeDialogHint;
         MainWindow w;
-        w.setWindowFlags(flags);
+        //w.setWindowFlags(flags);
         w.show();
         return a.exec();
         //return 0;

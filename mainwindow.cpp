@@ -35,6 +35,11 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::resizeEvent(QResizeEvent *)
+{
+    ui->viewer->setParam(delaunay_inc, this->width(), this->height());
+}
+
 void MainWindow::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
@@ -43,7 +48,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     pen.setColor(Qt::black);
     painter.setPen(pen);
-    painter.drawLine(QPoint(600, 96), QPoint(600, 700));
+    painter.drawLine(QPoint(this->width() / 2 - 2, 96), QPoint(this->width() / 2, 1200));
 
     // Points
     if (isSelectMannually)

@@ -15,8 +15,8 @@ class DViewer : public QGLViewer
 public:
     PointVec points;
     DViewer(QWidget *parent);
-    DViewer(DelaunayBase* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
-    void setParam(DelaunayBase* delaunay_inc_, int mainwindow_width_, int mainwindow_height_);
+    DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height);
+    void setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height);
     void initFlipDemoParams(std::array<Point, 4>& flip);
 
     void showResult3D();
@@ -30,6 +30,7 @@ protected :
     virtual void draw();
     void drawMesh();
     void drawParaboloid(Point bottom_point, float slice, float stack);
+    //void resizeGL(int width, int height);
 
 private:
     bool isDrawBeforeFlip;
@@ -37,9 +38,12 @@ private:
     void drawBeforeFlip();
     void drawAfterFlip();
     bool isShowParaboloid;
+    int half_window_width;
+    int half_window_height;
+
 
     std::array<Point, 4> flip_space_points;
-    DelaunayBase* delaunay_inc;
+    DelaunayBase* delaunay;
     int mainwindow_width, mainwindow_height;
     GLuint paraboloidListId; // display list name
     bool isDrawResult;
