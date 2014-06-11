@@ -317,7 +317,7 @@ void MainWindow::on_actionClear_triggered()
     isShowCircle = false;
     isShowFlip = false;
     isShowFlippedEdge = false;
-    delay_mseconds = 700;
+    //delay_mseconds = 700;
 
     delaunay_inc->reset();
     ui->viewer->setParam(delaunay_inc, this->width(), this->height());

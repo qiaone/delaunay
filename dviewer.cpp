@@ -55,7 +55,7 @@ void DViewer::drawBeforeFlip()
 	glVertex3fv(&flip_space_points[3][0]);
 	glEnd();
 
-	glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
 	glColor3f(0.3, 0.3, 0.3);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
@@ -68,7 +68,7 @@ void DViewer::drawBeforeFlip()
 	glVertex3fv(&flip_space_points[2][0]);
 	glVertex3fv(&flip_space_points[3][0]);
 	glEnd();
-	glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 }
 
 void DViewer::drawAfterFlip()
