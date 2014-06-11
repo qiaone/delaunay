@@ -196,7 +196,9 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
         isShowSplitTriangle = true;
         ui->viewer->showResult3D();
+        ui->actionClear->setDisabled(true);
         showFlips();
+        ui->actionClear->setEnabled(true);
         showResult2D();
         isSelectMannually = true;
         isShowSplitTriangle = false;
