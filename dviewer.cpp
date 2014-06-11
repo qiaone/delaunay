@@ -9,6 +9,7 @@ using namespace std;
 //const int half_window_width = 300;
 //const int half_window_height = 340;
 const int scale_factor = 400;
+const float lift_up_distance = 0.15f;
 
 DViewer::DViewer(QWidget *parent)
     : QGLViewer(parent), isDrawResult(false), isShowParaboloid(true)
@@ -42,7 +43,6 @@ void DViewer::drawBeforeFlip()
 {
     glColor3f(1, 0, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glBegin(GL_TRIANGLES);
 
     glVertex3fv(&flip_space_points[0][0]);
@@ -59,7 +59,6 @@ void DViewer::drawAfterFlip()
 {
     glColor3f(1, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glBegin(GL_TRIANGLES);
 
     glVertex3fv(&flip_space_points[0][0]);
@@ -103,14 +102,12 @@ void DViewer::initFlipDemoParams(std::array<Point, 4>& flip)
     {
         float x = (flip[i][0] - half_window_width) / scale_factor;
         float y = (half_window_height - flip[i][1]) / scale_factor;
-        flip_space_points[i] = Point(x, y, x * x + y * y + 0.1);
+        flip_space_points[i] = Point(x, y, x * x + y * y + lift_up_distance);
     }
 }
 
 void DViewer::drawMesh()
 {
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
     // points
     glPointSize(4.0);
     glColor3f(1, 0, 0);
@@ -140,7 +137,7 @@ void DViewer::drawMesh()
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
             glVertex3f(x, y, 0);
-            glNormal3f(1, 1, 0);
+            glNormal3f(0, 0, 1);
         }
     }
     glEnd();
@@ -149,7 +146,6 @@ void DViewer::drawMesh()
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor3f(0, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -163,7 +159,7 @@ void DViewer::drawMesh()
             auto point = delaunay->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
-            glVertex3f(x, y, x * x + y * y + 0.1);
+            glVertex3f(x, y, x * x + y * y + lift_up_distance);
             glNormal3f(2 * x, 2 * y, -1);
         }
     }
@@ -172,7 +168,6 @@ void DViewer::drawMesh()
     // space triangles wireframe
     glColor3f(0, 0, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glLineWidth(2.0f);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
@@ -187,7 +182,7 @@ void DViewer::drawMesh()
             auto point = delaunay->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
-            glVertex3f(x, y, x * x + y * y + 0.101);
+            glVertex3f(x, y, x * x + y * y + lift_up_distance + 0.001);
             glNormal3f(0, 0, 1); // ???
         }
     }
@@ -217,19 +212,33 @@ void DViewer::init()
     // auto-normalize
     glEnable(GL_NORMALIZE);
 
+    glEnable(GL_BLEND);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glShadeModel(GL_SMOOTH);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
     glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
     glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_POLYGON_SMOOTH);
+
+//    // 全局光照
+//    GLfloat globel_ambient[] = { 0.0 , 0.0 , 0.0 , 1.0 };
+//    glLightModelfv(GL_LIGHT_MODEL_AMBIENT , globel_ambient);
+
+//    // 镜面反射
+//    GLfloat planet_specular[] = { 0.5 , 0.5 , 0.5 , 0.5 };
+//    glMaterialfv(GL_FRONT , GL_SPECULAR ,planet_specular);
+
+
     //glDisable(GL_DEPTH_TEST);
 
     // create display list
     paraboloidListId = glGenLists(1);
     glNewList(paraboloidListId, GL_COMPILE);
-    drawParaboloid(Point(0.0f, 0.0f, 0.1f), 50.0f, 50.0f);
+    drawParaboloid(Point(0.0f, 0.0f, lift_up_distance), 50.0f, 50.0f);
     glEndList();
+
+
 }
 
 void DViewer::draw()
@@ -248,7 +257,6 @@ void DViewer::draw()
     //drawAxis();
 
     //drawPoints();
-    glEnable(GL_BLEND);
 
     if (isDrawBeforeFlip)
         drawBeforeFlip();
@@ -256,10 +264,13 @@ void DViewer::draw()
     if (isDrawAfterFlip)
         drawAfterFlip();
 
-    glDepthMask(GL_FALSE);
+
     if (isDrawResult)
+    {
+        glDepthMask(GL_FALSE);
         drawMesh();
-    glDepthMask(GL_TRUE);
+        glDepthMask(GL_TRUE);
+    }
 
     if (isShowParaboloid)
     {
@@ -272,8 +283,6 @@ void DViewer::draw()
 
     // Restore the original (world) coordinate system
     //glPopMatrix();
-
-    glDisable(GL_BLEND);
 }
 
 inline float getx(float u, float v)
@@ -290,8 +299,6 @@ inline float gety(float u, float v)
 // slice , stack: control the number of triangles 
 void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 {
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
     const float step_v = (float)(M_PI / slice);
     const float step_u = 1.0 / stack;
 
@@ -329,6 +336,4 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 
     glDisable(GL_POLYGON_SMOOTH);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-
 }
