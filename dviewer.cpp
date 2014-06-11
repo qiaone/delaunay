@@ -143,6 +143,7 @@ void DViewer::initFlipDemoParams(std::array<Point, 4>& flip)
 void DViewer::drawMesh()
 {
     // points
+	glDisable(GL_LIGHTING);
     glPointSize(4.0);
     glColor3f(1, 0, 0);
     glBegin(GL_POINTS);
@@ -178,8 +179,11 @@ void DViewer::drawMesh()
 
     // space triangles fill
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor3f(0, 1, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_LIGHTING);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonOffset(1.0, 1.0);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glColor3f(0, 0.7, 0.7);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -198,12 +202,14 @@ void DViewer::drawMesh()
         }
     }
     glEnd();
+	glDisable(GL_POLYGON_OFFSET_FILL);
 
-    // space triangles wireframe
-    glColor3f(0, 0, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glLineWidth(2.0f);
-    glBegin(GL_TRIANGLES);
+	// space triangles wireframe
+	glDisable(GL_LIGHTING);
+	glColor3f(0.3, 0.3, 0.3);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+	glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
         if (delaunay->hasInfinitePoint(fh))
@@ -220,7 +226,8 @@ void DViewer::drawMesh()
             glNormal3f(0, 0, 1); // ???
         }
     }
-    glEnd();
+	glEnd();
+	glEnable(GL_LIGHTING);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
@@ -269,7 +276,7 @@ void DViewer::init()
     // create display list
     paraboloidListId = glGenLists(1);
     glNewList(paraboloidListId, GL_COMPILE);
-    drawParaboloid(Point(0.0f, 0.0f, lift_up_distance), 50.0f, 50.0f);
+    drawParaboloid(Point(0.0f, 0.0f, lift_up_distance-0.01), 50.0f, 50.0f);
     glEndList();
 
 
