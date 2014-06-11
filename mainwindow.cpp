@@ -365,6 +365,8 @@ void MainWindow::on_actionPerform_triggered()
         return;
     }
 
+    isRandomClicked = false;
+
     if (points.size() < 3)
     {
         return;
