@@ -19,17 +19,19 @@ public:
     void setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height);
     void initFlipDemoParams(std::array<Point, 4>& flip);
 
-    void showResult3D();
+    void showMesh3D();
+    void clearMesh3D();
+    void showMesh2D();
     void showBeforeFlip3D();
     void showAfterFlip3D();
     void clearAfterFlip3D();
-    void clearResult3D();
     void toggleShowParaboloid();
 
 protected :
     virtual void init();
     virtual void draw();
-    void drawMesh();
+    void drawMesh2D();
+    void drawMesh3D();
     void drawParaboloid(Point bottom_point, float slice, float stack, FunType funtype);
     //void resizeGL(int width, int height);
 
@@ -39,15 +41,16 @@ private:
     void drawBeforeFlip();
     void drawAfterFlip();
     bool isShowParaboloid;
+    bool isDrawMesh3D;
+    bool isDrawMesh2D;
+
     int half_window_width;
     int half_window_height;
-
 
     std::array<Point, 4> flip_space_points;
     DelaunayBase* delaunay;
     int mainwindow_width, mainwindow_height;
     GLuint paraboloidListId[3]; // display list name
-    bool isDrawResult;
 };
 
 #endif // VIEWER_H

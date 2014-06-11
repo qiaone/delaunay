@@ -199,7 +199,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         ui->actionClear->setDisabled(true);
         showFlips();
         ui->actionClear->setEnabled(true);
-        ui->viewer->showResult3D();
+        ui->viewer->showMesh2D();
+        ui->viewer->showMesh3D();
         showResult2D();
         isSelectMannually = true;
         isShowSplitTriangle = false;
@@ -263,7 +264,7 @@ void MainWindow::showFlips()
         isShowCircle = true;
         update();
         // 3d
-        ui->viewer->clearResult3D();
+        ui->viewer->clearMesh3D();
         ui->viewer->showBeforeFlip3D();
 
         delay(delay_mseconds);
@@ -395,7 +396,7 @@ void MainWindow::on_actionPerform_triggered()
 
     // display 3d result
     ui->viewer->setParam(delaunay, this->width(), this->height());
-    ui->viewer->showResult3D();
+    ui->viewer->showMesh3D();
 }
 
 
