@@ -183,7 +183,7 @@ void DViewer::drawMesh()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPolygonOffset(1.0, 1.0);
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glColor3f(0, 0.7, 0.7);
+	glColor3f(0, 1.0, 0.7);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -347,7 +347,7 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA /*GL_ONE*/);
 
-	glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
+	glColor4f(0.0f, 0.6f, 1.0f, 0.4f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBegin(GL_TRIANGLE_STRIP);
 	for (float u = 0; u < 1; u += step_u)
