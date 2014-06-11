@@ -150,7 +150,7 @@ float Delaunay::det4(Point pt[])
 	{
 		pt[i] = pt[i] - pt[3];
 	}
-	return dot(cross(pt[0], pt[1]), pt[2]) > 0;
+	return dot(cross(pt[0], pt[1]), pt[2]);
 }
 
 bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
