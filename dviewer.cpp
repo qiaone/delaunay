@@ -183,7 +183,7 @@ void DViewer::drawMesh()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPolygonOffset(1.0, 1.0);
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glColor3f(0, 1.0, 0.7);
+	glColor3f(0, 0.7, 0.7);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -197,8 +197,11 @@ void DViewer::drawMesh()
             auto point = delaunay->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
-            glVertex3f(x, y, x * x + y * y + lift_up_distance);
-            glNormal3f(2 * x, 2 * y, -1);
+			float z = delaunay->calcZ(x, y);
+			Point N = delaunay->calcN(x, y);
+			
+            glVertex3f(x, y, z + lift_up_distance);
+            glNormal3f(N[0], N[1], N[2]);
         }
     }
     glEnd();
@@ -222,8 +225,8 @@ void DViewer::drawMesh()
             auto point = delaunay->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
-            glVertex3f(x, y, x * x + y * y + lift_up_distance + 0.001);
-            glNormal3f(0, 0, 1); // ???
+            float z = delaunay->calcZ(x, y);
+            glVertex3f(x, y, z + lift_up_distance);
         }
     }
 	glEnd();
@@ -274,11 +277,20 @@ void DViewer::init()
     //glDisable(GL_DEPTH_TEST);
 
     // create display list
-    paraboloidListId = glGenLists(1);
-    glNewList(paraboloidListId, GL_COMPILE);
-    drawParaboloid(Point(0.0f, 0.0f, lift_up_distance-0.01), 50.0f, 50.0f);
+    paraboloidListId[0] = glGenLists(1);
+    glNewList(paraboloidListId[0], GL_COMPILE);
+    drawParaboloid(Point(0.0f, 0.0f, lift_up_distance-0.01), 50.0f, 50.0f, CIRCLE);
     glEndList();
 
+	paraboloidListId[1] = glGenLists(1);
+	glNewList(paraboloidListId[1], GL_COMPILE);
+	drawParaboloid(Point(0.0f, 0.0f, lift_up_distance-0.01), 50.0f, 50.0f, ELLIPSE);
+	glEndList();
+
+	paraboloidListId[2] = glGenLists(2);
+	glNewList(paraboloidListId[2], GL_COMPILE);
+	drawParaboloid(Point(0.0f, 0.0f, lift_up_distance-0.01), 50.0f, 50.0f, NORM2);
+	glEndList();
 
 }
 
@@ -318,7 +330,21 @@ void DViewer::draw()
         // make depth buffer read-only
         glDepthMask(GL_FALSE);
         // draw paraboloid
-        glCallList(paraboloidListId);
+		switch (delaunay->funType)
+		{
+		case CIRCLE:
+			  glCallList(paraboloidListId[0]);
+			  break;
+		case ELLIPSE:
+			glCallList(paraboloidListId[1]);
+			break;
+		case NORM2:
+			glCallList(paraboloidListId[2]);
+			break;
+		default:
+			break;
+		}
+      
         glDepthMask(GL_TRUE);
     }
 
@@ -338,7 +364,7 @@ inline float gety(float u, float v)
 
 // bottom_point: the lowest point of the paraboloid
 // slice , stack: control the number of triangles 
-void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
+void DViewer::drawParaboloid(Point bottom_point, float slice, float stack, FunType funtype)
 {
 	const float step_v = (float)(M_PI / slice);
 	const float step_u = 1.0 / stack;
@@ -347,7 +373,7 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA /*GL_ONE*/);
 
-	glColor4f(0.0f, 0.6f, 1.0f, 0.4f);
+	glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBegin(GL_TRIANGLE_STRIP);
 	for (float u = 0; u < 1; u += step_u)
@@ -356,18 +382,20 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 		{
 			float x = getx(u, v);
 			float y = gety(u, v);
-			Point N = Point(x, y, -0.5);
+			float z = delaunay->calcZ(x, y, funtype);
+			Point N = delaunay->calcN(x, y, funtype);
+			
 			glNormal3f(N[0], N[1], N[2]);
 			glVertex3f(x + bottom_point[0], y + bottom_point[1],
-				u * u + bottom_point[2]);
+				z + bottom_point[2]);
 
-			x = getx(u + step_u, v);
-			y = gety(u + step_u, v);
-			N = Point(x, y, -0.5);
+			x = getx(u+step_u, v);
+			y = gety(u+step_u, v);
+			z = delaunay->calcZ(x, y, funtype);
+			N = delaunay->calcN(x, y, funtype);
 			glNormal3f(N[0], N[1], N[2]);
 			glVertex3f(x + bottom_point[0], y + bottom_point[1],
-				(u + step_u) * (u + step_u) + bottom_point[2]);
-
+				z + bottom_point[2]);
 		}
 	}
 	glEnd();

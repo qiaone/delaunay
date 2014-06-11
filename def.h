@@ -12,6 +12,8 @@ struct MyTraits : public OpenMesh::DefaultTraits
     EdgeAttributes(OpenMesh::Attributes::Status);
 };
 
+enum FunType{ CIRCLE, ELLIPSE, NORM2};
+
 typedef OpenMesh::TriMesh_ArrayKernelT<MyTraits>  TriMesh;
 typedef TriMesh::Point Point;
 typedef std::vector<Point> PointVec;

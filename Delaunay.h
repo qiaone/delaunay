@@ -24,7 +24,6 @@ public:
     void drawMesh();
     void init(PointVec& points);
     int total_points_count;
-    FunType funType;
 
 private:
     void drawTriangle(FHandle fh);
@@ -42,13 +41,7 @@ private:
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
 
-    float det4(Point pt[]);
-    float circle(float x, float y);
-    Point nCircle(float x, float y);
-    float ellipse(float x, float y);
-    Point nEllipse(float x, float y);
-    float norm2(float x, float y);
-    Point nNorm2(float x, float y);
+	float det4(Point pt[]);
 
 signals:
     void signalRefreshGui();

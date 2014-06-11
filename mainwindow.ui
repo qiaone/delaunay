@@ -65,7 +65,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPoints">
@@ -80,8 +80,17 @@
     <property name="title">
      <string>Delaunay</string>
     </property>
+    <widget class="QMenu" name="menuType">
+     <property name="title">
+      <string>Function Type</string>
+     </property>
+     <addaction name="actionCircle"/>
+     <addaction name="actionEllipse"/>
+     <addaction name="actionNorm2"/>
+    </widget>
     <addaction name="separator"/>
     <addaction name="actionPerform"/>
+    <addaction name="menuType"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -210,6 +219,21 @@
    </property>
    <property name="text">
     <string>Take Snapshot</string>
+   </property>
+  </action>
+  <action name="actionCircle">
+   <property name="text">
+    <string>Circle</string>
+   </property>
+  </action>
+  <action name="actionEllipse">
+   <property name="text">
+    <string>Ellipse</string>
+   </property>
+  </action>
+  <action name="actionNorm2">
+   <property name="text">
+    <string>Norm2</string>
    </property>
   </action>
  </widget>

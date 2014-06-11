@@ -407,3 +407,13 @@ void MainWindow::on_actionTake_Snapshot_triggered()
     //ui->viewer->openSnapshotFormatDialog();
     ui->viewer->saveSnapshot(false);
 }
+
+void MainWindow::on_actionCircle_triggered()
+{
+	delaunay->funType = CIRCLE;
+}
+
+void MainWindow::on_actionEllipse_triggered()
+{
+	delaunay->funType = ELLIPSE;
+}

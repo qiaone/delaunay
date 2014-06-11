@@ -29,7 +29,7 @@ protected :
     virtual void init();
     virtual void draw();
     void drawMesh();
-    void drawParaboloid(Point bottom_point, float slice, float stack);
+    void drawParaboloid(Point bottom_point, float slice, float stack, FunType funtype);
     //void resizeGL(int width, int height);
 
 private:
@@ -45,7 +45,7 @@ private:
     std::array<Point, 4> flip_space_points;
     DelaunayBase* delaunay;
     int mainwindow_width, mainwindow_height;
-    GLuint paraboloidListId; // display list name
+    GLuint paraboloidListId[3]; // display list name
     bool isDrawResult;
 };
 

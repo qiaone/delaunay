@@ -7,6 +7,8 @@
 DelaunayIncremental::DelaunayIncremental() :
     total_points_count(0)
 {
+	funType = CIRCLE;
+
     mesh.clear();
 
     // add properties

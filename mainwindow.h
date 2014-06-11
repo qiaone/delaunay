@@ -25,6 +25,8 @@ private slots:
     void on_actionShow_Paraboloid_triggered();
     void on_actionGithub_triggered();
     void on_actionTake_Snapshot_triggered();
+	void on_actionCircle_triggered();
+	void on_actionEllipse_triggered();
 
 public slots:
     void slotRefreshGui();
