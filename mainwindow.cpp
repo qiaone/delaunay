@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlip(false),
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
+    isRandomClicked(false),
     delay_mseconds(700)
 {
     ui->setupUi(this);
@@ -352,10 +353,17 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     qDebug()<<"random time: "<<t.elapsed() / 1000.0;
     update();
+    isRandomClicked = true;
 }
 
 void MainWindow::on_actionPerform_triggered()
 {
+    if (!isRandomClicked)
+    {
+        QToolTip::showText(QPoint(20, 120), "Please Click Random Points Generation First", this);
+        return;
+    }
+
     if (points.size() < 3)
     {
         return;

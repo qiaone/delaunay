@@ -42,6 +42,7 @@ private:
     void showResult2D();
     void showFlips();
     void initFlipDemoParams(std::array<Point, 4>& flip);
+    bool isRandomClicked;
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
