@@ -44,12 +44,16 @@ void DViewer::drawBeforeFlip()
 	glColor3f(1, 0, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPolygonOffset(1.0, 1.0);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glBegin(GL_TRIANGLES);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    auto norm1 = cross((flip_space_points[1] - flip_space_points[0]), (flip_space_points[3] - flip_space_points[0]));
+    auto norm2 = cross((flip_space_points[2] - flip_space_points[1]), (flip_space_points[3] - flip_space_points[1]));
+    glBegin(GL_TRIANGLES);
+    glNormal3fv(&norm1[0]);
 	glVertex3fv(&flip_space_points[0][0]);
 	glVertex3fv(&flip_space_points[1][0]);
 	glVertex3fv(&flip_space_points[3][0]);
 
+    glNormal3fv(&norm2[0]);
 	glVertex3fv(&flip_space_points[1][0]);
 	glVertex3fv(&flip_space_points[2][0]);
 	glVertex3fv(&flip_space_points[3][0]);
@@ -76,12 +80,16 @@ void DViewer::drawAfterFlip()
 	glColor3f(1, 1, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPolygonOffset(1.0, 1.0);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glBegin(GL_TRIANGLES);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    auto norm1 = cross((flip_space_points[1] - flip_space_points[0]), (flip_space_points[2] - flip_space_points[0]));
+    auto norm2 = cross((flip_space_points[2] - flip_space_points[0]), (flip_space_points[3] - flip_space_points[0]));
+    glBegin(GL_TRIANGLES);
+    glNormal3fv(&norm1[0]);
 	glVertex3fv(&flip_space_points[0][0]);
 	glVertex3fv(&flip_space_points[1][0]);
 	glVertex3fv(&flip_space_points[2][0]);
 
+    glNormal3fv(&norm2[0]);
 	glVertex3fv(&flip_space_points[0][0]);
 	glVertex3fv(&flip_space_points[2][0]);
 	glVertex3fv(&flip_space_points[3][0]);
@@ -178,12 +186,12 @@ void DViewer::drawMesh()
     glEnd();
 
     // space triangles fill
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPolygonOffset(1.0, 1.0);
 	glEnable(GL_POLYGON_OFFSET_FILL);
-	glColor3f(0, 0.7, 0.7);
+	glColor3f(0, 1, 0.0);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -192,23 +200,30 @@ void DViewer::drawMesh()
             continue;
         }
 
+        vector<Point> face_vertices;
         for(auto& vh : delaunay->mesh.fv_range(fh))
         {
             auto point = delaunay->mesh.point(vh);
             float x = (point[0] - half_window_width) / scale_factor;
             float y = (half_window_height - point[1]) / scale_factor;
 			float z = delaunay->calcZ(x, y);
-			Point N = delaunay->calcN(x, y);
-			
-            glVertex3f(x, y, z + lift_up_distance);
-            glNormal3f(N[0], N[1], N[2]);
+            face_vertices.push_back(Point(x, y, z + lift_up_distance));
         }
+
+        auto edge1 = face_vertices[0] - face_vertices[1];
+        auto edge2 = face_vertices[0] - face_vertices[2];
+        auto norm = cross(edge1, edge2);
+
+        glNormal3fv(&norm[0]);
+        glVertex3fv(&face_vertices[0][0]);
+        glVertex3fv(&face_vertices[1][0]);
+        glVertex3fv(&face_vertices[2][0]);
     }
     glEnd();
 	glDisable(GL_POLYGON_OFFSET_FILL);
 
 	// space triangles wireframe
-	glDisable(GL_LIGHTING);
+	// glDisable(GL_LIGHTING);
 	glColor3f(0.3, 0.3, 0.3);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
@@ -320,9 +335,9 @@ void DViewer::draw()
 
     if (isDrawResult)
     {
-        glDepthMask(GL_FALSE);
+        // glDepthMask(GL_FALSE);
         drawMesh();
-        glDepthMask(GL_TRUE);
+        // glDepthMask(GL_TRUE);
     }
 
     if (isShowParaboloid)
@@ -373,7 +388,7 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack, FunTy
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA /*GL_ONE*/);
 
-	glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
+	glColor4f(0.0f, 0.6f, 7.0f, 0.2f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBegin(GL_TRIANGLE_STRIP);
 	for (float u = 0; u < 1; u += step_u)
