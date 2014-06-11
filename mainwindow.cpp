@@ -41,6 +41,9 @@ void MainWindow::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::Antialiasing, true);
     QPen pen;
 
+    pen.setColor(Qt::black);
+    painter.setPen(pen);
+    painter.drawLine(QPoint(600, 96), QPoint(600, 700));
 
     // Points
     if (isSelectMannually)
@@ -385,4 +388,10 @@ void MainWindow::on_actionShow_Paraboloid_triggered()
 void MainWindow::on_actionGithub_triggered()
 {
     QDesktopServices::openUrl(QUrl("https://github.com/qiaone/delaunay", QUrl::TolerantMode));
+}
+
+void MainWindow::on_actionTake_Snapshot_triggered()
+{
+    //ui->viewer->openSnapshotFormatDialog();
+    ui->viewer->saveSnapshot(false);
 }

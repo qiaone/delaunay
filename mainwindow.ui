@@ -60,6 +60,7 @@
     </property>
     <addaction name="actionShow_Axis"/>
     <addaction name="actionShow_Paraboloid"/>
+    <addaction name="actionTake_Snapshot"/>
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
@@ -98,6 +99,7 @@
    <addaction name="separator"/>
    <addaction name="actionShow_Paraboloid"/>
    <addaction name="actionShow_Axis"/>
+   <addaction name="actionTake_Snapshot"/>
    <addaction name="separator"/>
    <addaction name="actionGithub"/>
   </widget>
@@ -170,6 +172,15 @@
    </property>
    <property name="text">
     <string>Github</string>
+   </property>
+  </action>
+  <action name="actionTake_Snapshot">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/snapshot.png</normaloff>:/Img/snapshot.png</iconset>
+   </property>
+   <property name="text">
+    <string>Take Snapshot</string>
    </property>
   </action>
  </widget>

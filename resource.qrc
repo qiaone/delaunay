@@ -6,5 +6,6 @@
         <file>Img/random.png</file>
         <file>Img/perform.png</file>
         <file>Img/clear.png</file>
+        <file>Img/snapshot.png</file>
     </qresource>
 </RCC>

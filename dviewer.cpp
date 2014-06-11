@@ -197,6 +197,9 @@ void DViewer::init()
     glEnable(GL_RESCALE_NORMAL);
 #endif
 
+    //setBackgroundColor(QColor(172, 193, 236));
+    setBackgroundColor(QColor(240, 240, 240));
+
     setMouseBinding(Qt::NoModifier, Qt::LeftButton, CAMERA, TRANSLATE);
     setMouseBinding(Qt::NoModifier, Qt::RightButton, CAMERA, ROTATE);
 
