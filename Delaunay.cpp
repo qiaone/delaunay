@@ -6,7 +6,6 @@
 
 Delaunay::Delaunay()
 {
-	funType = CIRCLE;
 }
 
 void Delaunay::perform(PointVec& all_points)
@@ -143,82 +142,6 @@ void Delaunay::init(PointVec& points)
     }
 }
 
-
-float Delaunay::det4(Point pt[])
-{
-	for (int i=0; i<3; i++)
-	{
-		pt[i] = pt[i] - pt[3];
-	}
-	return dot(cross(pt[0], pt[1]), pt[2]) > 0;
-}
-
-float Delaunay::circle(float x, float y)
-{
-    return x*x + y*y;
-}
-
-Point Delaunay::nCircle(float x, float y)
-{
-    return Point(2.0 * x, 2.0 * y, -1.0);
-}
-
-float Delaunay::ellipse(float x, float y)
-{
-    return 2.0 * x*x + 0.1*y*y;
-}
-
-Point Delaunay::nEllipse(float x, float y)
-{
-    return Point(4.0*x, 0.2*y, -1.0);
-}
-
-float Delaunay::norm2(float x, float y)
-{
-    return sqrt(x*x + y*y);
-}
-
-Point Delaunay::nNorm2(float x, float y)
-{
-    float t = sqrt(x*x + y*y);
-    if (t < ESP) t = ESP;
-    return Point(x / t, y / t, -1);
-}
-
-
-//bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
-//{
-//    // boundary edge
-//    // an edge is boundary edge, when one of its halfedges
-//    // is boundary. Next line is equl functioanally.
-//    // if(mesh.is_boundary(mesh.edge_handle(hh)))
-//    if (mesh.is_boundary(hh) ||
-//            mesh.is_boundary(mesh.opposite_halfedge_handle(hh)))
-//        return false;
-
-//    Point pt[4];
-//    pt[0] = mesh.point(mesh.from_vertex_handle(hh));
-//    pt[1] = mesh.point(mesh.to_vertex_handle(hh));
-//    pt[2] = mesh.point(vh1);
-//    pt[3] = mesh.point(vh2);
-
-//    // deal with infinite point
-//    if (isInfinite(pt[3]))
-//    {
-//        if (!(isInfinite(pt[0])|| isInfinite(pt[1])))
-//            return false;
-//    }
-
-//    for (int i = 0; i < 3; i++)
-//    {
-//        pt[i] -= pt[3];
-//        pt[i][2] = pt[i][0] * pt[i][0] + pt[i][1] * pt[i][1];
-//    }
-
-//    float rst = dot(cross(pt[0], pt[1]), pt[2]);
-//    return rst > 0;
-//}
-
 bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
 {
     // boundary edge
@@ -242,26 +165,14 @@ bool Delaunay::isInCircle(HHandle hh, VHandle vh1, VHandle vh2)
             return false;
     }
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 3; i++)
     {
-		switch (funType)
-		{
-		case CIRCLE:
-			 pt[i][2] = circle (pt[i][0], pt[i][1]);
-			 break;
-		case ELLIPSE:
-			 pt[i][2] = ellipse(pt[i][0], pt[i][1]);
-			 break;
-		case NORM2:
-			 pt[i][2] = norm2(pt[i][0], pt[i][1]);
-			 break;
-		default:
-			break;
-		}
-       
+        pt[i] -= pt[3];
+        pt[i][2] = pt[i][0] * pt[i][0] + pt[i][1] * pt[i][1];
     }
 
-    return det4(pt)> 0;
+    float rst = dot(cross(pt[0], pt[1]), pt[2]);
+    return rst > 0;
 }
 
 bool Delaunay::isLeft(Point& p, Point& a, Point& b)
