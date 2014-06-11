@@ -146,7 +146,6 @@ void DViewer::drawMesh()
     glEnd();
 
     // space triangles fill
-    //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor3f(0, 1, 0);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -169,7 +168,6 @@ void DViewer::drawMesh()
         }
     }
     glEnd();
-    //glDisable(GL_BLEND);
 
     // space triangles wireframe
     glColor3f(0, 0, 0);
@@ -218,7 +216,14 @@ void DViewer::init()
 
     // auto-normalize
     glEnable(GL_NORMALIZE);
+
     glShadeModel(GL_SMOOTH);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
+    glEnable(GL_POLYGON_SMOOTH);
+    //glDisable(GL_DEPTH_TEST);
 
     // create display list
     paraboloidListId = glGenLists(1);
@@ -243,15 +248,18 @@ void DViewer::draw()
     //drawAxis();
 
     //drawPoints();
+    glEnable(GL_BLEND);
+
     if (isDrawBeforeFlip)
         drawBeforeFlip();
 
     if (isDrawAfterFlip)
         drawAfterFlip();
 
+    glDepthMask(GL_FALSE);
     if (isDrawResult)
         drawMesh();
-
+    glDepthMask(GL_TRUE);
 
     if (isShowParaboloid)
     {
@@ -265,7 +273,7 @@ void DViewer::draw()
     // Restore the original (world) coordinate system
     //glPopMatrix();
 
-
+    glDisable(GL_BLEND);
 }
 
 inline float getx(float u, float v)
@@ -287,7 +295,6 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
     const float step_v = (float)(M_PI / slice);
     const float step_u = 1.0 / stack;
 
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
 
@@ -320,8 +327,8 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
     glEnd();
 
     glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    glDisable(GL_BLEND);
+
     glDisable(GL_POLYGON_SMOOTH);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_FALSE);
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
 
 }
