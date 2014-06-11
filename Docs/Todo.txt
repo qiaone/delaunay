@@ -10,6 +10,8 @@ clear() debug
 
 重复点还是有bug，hash过滤下
 
+记住和恢复相机位置
+
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
     30% 0610
     done 0611
@@ -17,10 +19,11 @@ clear() debug
 3d triangles用顶点数组优化
     postpone
 
-非flip三角面片半透明已突出flip的
+非flip三角面片半透明，突出flip的
     postpone
 
 3d flip三角形的光照、颜色
+	done 0611
 
 3dviewer线框反走样
 
