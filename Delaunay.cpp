@@ -26,6 +26,8 @@ void Delaunay::perform()
 
     for(size_t i = 0; i < total_points_count; i++)
     {
+        emit signalRefreshGui();
+
         VHandle vh = mesh.vertex_handle((unsigned int)i);
         FHandle fh = mesh.property(VertexToFace, vh);
         HHandle hh = mesh.property(VertexToHEdge, vh);

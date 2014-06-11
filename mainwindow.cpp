@@ -241,6 +241,11 @@ inline void delay(float ms)
         QCoreApplication::processEvents();
 }
 
+void MainWindow::slotRefreshGui()
+{
+    QCoreApplication::processEvents();
+}
+
 void MainWindow::showFlips()
 {
     flipped_edges.clear();
@@ -336,8 +341,8 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     for(int i = 0; i < dialog->getPointsNumber(); i++)
     {
-        std::uniform_int_distribution<int> randx(1, 600 - 1);
-        std::uniform_int_distribution<int> randy(100, 680 - 1); // 100 in order to avoid paint on toolbar
+        std::uniform_int_distribution<int> randx(1, this->width() / 2 - 2);
+        std::uniform_int_distribution<int> randy(100, this->height() - 2); // 100 in order to avoid paint on toolbar
         points.append(QPoint(randx(gen), randy(gen)));
     }
 
@@ -354,6 +359,8 @@ void MainWindow::on_actionPerform_triggered()
 
     isSelectMannually = false;
     triangles.clear();
+
+    QObject::connect(delaunay, SIGNAL(signalRefreshGui()), this, SLOT(slotRefreshGui()));
 
     PointVec mesh_points;
     for(auto& p : points)

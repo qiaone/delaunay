@@ -40,6 +40,9 @@ private:
     void saveVhs(HHandle hh, VHandleVec &vhs_buffer);
     void legalize(HHandle hh, VHandle vh);
     void deleteVertices(int n);
+
+signals:
+    void signalRefreshGui();
 };
 
 #endif // DELAUNAY_H

@@ -24,8 +24,10 @@ private slots:
     void on_actionShow_Axis_triggered();
     void on_actionShow_Paraboloid_triggered();
     void on_actionGithub_triggered();
-
     void on_actionTake_Snapshot_triggered();
+
+public slots:
+    void slotRefreshGui();
 
 private:
     Ui::MainWindow *ui;

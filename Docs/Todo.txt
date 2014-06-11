@@ -1,4 +1,12 @@
-﻿clear() debug
+﻿presentation值得一提的:
+    1，点的坐标，松开选点
+    2，滚轮调节速度
+    3，各个功能
+    4，不会gui无响应
+    5，
+
+
+clear() debug
     done 0610
 
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等

@@ -17,7 +17,7 @@ DViewer::DViewer(QWidget *parent)
 }
 
 DViewer::DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_height)
-    : delaunay(delaunay_), half_window_width(mainwindow_width / 4), half_window_height((mainwindow_height - 94) / 2) { }
+    : delaunay(delaunay_), half_window_width(mainwindow_width / 4), half_window_height(mainwindow_height / 2) { }
 
 void DViewer::toggleShowParaboloid()
 {
@@ -29,7 +29,7 @@ void DViewer::setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwi
 {
     delaunay = delaunay_;
     half_window_width = mainwindow_width / 4;
-    half_window_height = (mainwindow_height - 94) / 2;
+    half_window_height = mainwindow_height / 2;
 }
 
 //void DViewer::resizeGL(int width, int height)
