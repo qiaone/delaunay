@@ -41,34 +41,68 @@ void DViewer::setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwi
 
 void DViewer::drawBeforeFlip()
 {
-    glColor3f(1, 0, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glBegin(GL_TRIANGLES);
+	glColor3f(1, 0, 0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonOffset(1.0, 1.0);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glBegin(GL_TRIANGLES);
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[3][0]);
 
-    glVertex3fv(&flip_space_points[0][0]);
-    glVertex3fv(&flip_space_points[1][0]);
-    glVertex3fv(&flip_space_points[3][0]);
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[2][0]);
+	glVertex3fv(&flip_space_points[3][0]);
+	glEnd();
 
-    glVertex3fv(&flip_space_points[1][0]);
-    glVertex3fv(&flip_space_points[2][0]);
-    glVertex3fv(&flip_space_points[3][0]);
-    glEnd();
+	glDisable(GL_LIGHTING);
+	glColor3f(0.3, 0.3, 0.3);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[3][0]);
+
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[2][0]);
+	glVertex3fv(&flip_space_points[3][0]);
+	glEnd();
+	glEnable(GL_LIGHTING);
 }
 
 void DViewer::drawAfterFlip()
 {
-    glColor3f(1, 1, 0);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glBegin(GL_TRIANGLES);
+	glColor3f(1, 1, 0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonOffset(1.0, 1.0);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glBegin(GL_TRIANGLES);
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[2][0]);
 
-    glVertex3fv(&flip_space_points[0][0]);
-    glVertex3fv(&flip_space_points[1][0]);
-    glVertex3fv(&flip_space_points[3][0]);
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[2][0]);
+	glVertex3fv(&flip_space_points[3][0]);
+	glEnd();
+	glDisable(GL_POLYGON_OFFSET_FILL);
 
-    glVertex3fv(&flip_space_points[1][0]);
-    glVertex3fv(&flip_space_points[2][0]);
-    glVertex3fv(&flip_space_points[3][0]);
-    glEnd();
+	glDisable(GL_LIGHTING);
+	glColor3f(0.3, 0.3, 0.3);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1.0f);
+	glBegin(GL_TRIANGLES);
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[1][0]);
+	glVertex3fv(&flip_space_points[2][0]);
+
+	glVertex3fv(&flip_space_points[0][0]);
+	glVertex3fv(&flip_space_points[2][0]);
+	glVertex3fv(&flip_space_points[3][0]);
+	glEnd();
+	glEnable(GL_LIGHTING);
+
 }
 
 void DViewer::showBeforeFlip3D()
@@ -299,41 +333,37 @@ inline float gety(float u, float v)
 // slice , stack: control the number of triangles 
 void DViewer::drawParaboloid(Point bottom_point, float slice, float stack)
 {
-    const float step_v = (float)(M_PI / slice);
-    const float step_u = 1.0 / stack;
+	const float step_v = (float)(M_PI / slice);
+	const float step_u = 1.0 / stack;
 
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.6f, 0.6f, 0.7f, 0.4f);
+	glEnable(GL_SMOOTH);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA /*GL_ONE*/);
 
-    glBegin(GL_TRIANGLE_STRIP);
-    for (float u = 0; u < 1; u += step_u)
-    {
-        for (float v = 0; v < 2 * M_PI + step_v; v += step_v)
-        {
-            Point Tu, Tv, N;
+	glColor4f(0.0f, 0.6f, 1.0f, 0.5f);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_TRIANGLE_STRIP);
+	for (float u = 0; u < 1; u += step_u)
+	{
+		for (float v = 0; v < 2 * M_PI + step_v; v += step_v)
+		{
+			float x = getx(u, v);
+			float y = gety(u, v);
+			Point N = Point(x, y, -0.5);
+			glNormal3f(N[0], N[1], N[2]);
+			glVertex3f(x + bottom_point[0], y + bottom_point[1],
+				u * u + bottom_point[2]);
 
-            // calculate Normal
-            Tu = Point(cos(v), sin(v), 2 * u);
-            Tv = Point(-sin(v), cos(v), 0);
-            N = cross(Tu, Tv);
-            N.normalize();
-            glNormal3f(N[0], N[1], N[2]);
-            glVertex3f(getx(u, v) + bottom_point[0], gety(u, v) + bottom_point[1], u * u + bottom_point[2]);
+			x = getx(u + step_u, v);
+			y = gety(u + step_u, v);
+			N = Point(x, y, -0.5);
+			glNormal3f(N[0], N[1], N[2]);
+			glVertex3f(x + bottom_point[0], y + bottom_point[1],
+				(u + step_u) * (u + step_u) + bottom_point[2]);
 
-            // calculate Normal
-            Tu = Point(cos(v), sin(v), 2 * (u + step_u));
-            N = cross(Tu, Tv);
-            N.normalize();
-            glNormal3f(N[0], N[1], N[2]);
-
-            glVertex3f(getx((u + step_u), (v)) + bottom_point[0],
-                    gety((u + step_u), (v)) + bottom_point[1],
-                    (u + step_u) * (u + step_u) + bottom_point[2]);
-        }
-    }
-    glEnd();
-
-    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-
-    glDisable(GL_POLYGON_SMOOTH);
+		}
+	}
+	glEnd();
+	glDisable(GL_BLEND);
+	glDisable(GL_POLYGON_SMOOTH);
 }
