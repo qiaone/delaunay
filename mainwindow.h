@@ -28,6 +28,7 @@ private slots:
     void on_actionTake_Snapshot_triggered();
     void on_actionCircle_triggered();
     void on_actionEllipse_triggered();
+	void on_actionNorm2_triggered();
     void on_actionReal_Time_toggled(bool isRealTime_);
 
 public slots:

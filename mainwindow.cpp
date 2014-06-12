@@ -465,6 +465,11 @@ void MainWindow::on_actionEllipse_triggered()
     delaunay->funType = ELLIPSE;
 }
 
+void MainWindow::on_actionNorm2_triggered()
+{
+	delaunay->funType = NORM2;
+}
+
 void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
 {
     if (points.size() > 0)
