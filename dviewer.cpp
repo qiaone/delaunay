@@ -13,10 +13,12 @@ const float lift_up_distance = 0.15f;
 
 DViewer::DViewer(QWidget *parent) :
     QGLViewer(parent),
-    isDrawMesh3D(false),
     isDrawParaboloid(true),
     isDrawBeforeFlip(false),
-    isDrawAfterFlip(false)
+    isDrawAfterFlip(false),
+    isDrawMesh3D(false),
+    isDrawMesh2D(false),
+    isKillMesh2D(false)
 {
 
 }
@@ -25,8 +27,12 @@ DViewer::DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_h
     delaunay(delaunay_),
     half_window_width(mainwindow_width / 4),
     half_window_height(mainwindow_height / 2),
+    isDrawParaboloid(true),
     isDrawBeforeFlip(false),
-    isDrawAfterFlip(false)
+    isDrawAfterFlip(false),
+    isDrawMesh3D(false),
+    isDrawMesh2D(false),
+    isKillMesh2D(false)
 {
 
 }
@@ -396,8 +402,11 @@ void DViewer::draw()
         glDepthMask(GL_TRUE);
     }
 
-    if (isDrawMesh2D)
-        drawMesh2D();
+    if (!isKillMesh2D)
+    {
+        if (isDrawMesh2D)
+            drawMesh2D();
+    }
 
     // Restore the original (world) coordinate system
     //glPopMatrix();

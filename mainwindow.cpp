@@ -428,6 +428,7 @@ void MainWindow::on_actionPerform_triggered()
 
     // display 3d result
     ui->viewer->setParam(delaunay, this->width(), this->height());
+    ui->viewer->showMesh2D();
     ui->viewer->showMesh3D();
 }
 
@@ -439,6 +440,7 @@ void MainWindow::on_actionShow_Axis_triggered()
 
 void MainWindow::on_actionShow_Paraboloid_triggered()
 {
+    ui->viewer->isKillMesh2D = !ui->viewer->isKillMesh2D;
     ui->viewer->toggleShowParaboloid();
 }
 
