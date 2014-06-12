@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "delaunay.h"
 #include "delaunayincremental.h"
+#include <QSet>
 
 namespace Ui {
 class MainWindow;
@@ -52,6 +53,7 @@ private:
     QPainter* painter;
     QPen* pen;
     QVector<QPoint> points;
+    QSet<QString> points_set;
     QVector<QPoint> triangles;
     QPointF in_circle_point;
     QPointF circle_center;

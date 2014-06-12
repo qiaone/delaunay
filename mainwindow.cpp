@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
     isRandomClicked(false),
-    delay_mseconds(700)
+    delay_mseconds(2000)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
@@ -182,15 +182,20 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
+    QString pos = QString("%1,%2").arg(event->pos().x()).arg(event->pos().y());
     if(isSelectMannually)
     {
-        if (event->pos().x() > this->width() / 2 || event->pos().y() < 100)
+        if (event->pos().x() > this->width() / 2 ||
+                event->pos().y() < 100 ||
+                points_set.contains(pos))
         {
             return;
         }
 
         isSelectMannually = false;
+
         points.append(event->pos());
+        points_set.insert(pos);
         update();
 
         auto p = event->pos();
@@ -312,6 +317,7 @@ void MainWindow::showResult2D()
 void MainWindow::on_actionClear_triggered()
 {
     points.clear();
+    points_set.clear();
     triangles.clear();
     flipped_edges.clear();
     flip_rec_4_points.clear();
