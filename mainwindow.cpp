@@ -12,6 +12,14 @@
 #include <QDesktopServices>
 #include <cmath>
 
+inline void delay(float ms)
+{
+    QTime t;
+    t.start();
+    while(t.elapsed() < ms)
+        QCoreApplication::processEvents();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -21,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlip(false),
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
-    isRandomClicked(false),
-    delay_mseconds(700)
+    isPerformClickable(false),
+    delay_mseconds(2000)
 {
     ui->setupUi(this);
     delaunay = new Delaunay;
@@ -116,13 +124,18 @@ void MainWindow::paintEvent(QPaintEvent *)
         // flipping edge
         if(isShowFlippedEdge)
         {
+            pen.setStyle(Qt::DotLine);
             pen.setColor(QColor(0, 128, 0));
+            pen.setWidth(6);
             painter.setPen(pen);
             painter.drawLine(flip_rec_4_points[0], flip_rec_4_points[2]);
+            pen.setStyle(Qt::SolidLine);
         }
         else
         {
             pen.setStyle(Qt::DotLine);
+            pen.setColor(Qt::red);
+            pen.setWidth(6);
             painter.setPen(pen);
             painter.drawLine(flip_rec_4_points[1], flip_rec_4_points[3]);
             pen.setStyle(Qt::SolidLine);
@@ -182,29 +195,47 @@ void MainWindow::wheelEvent(QWheelEvent *event)
 
 void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 {
+    QString pos = QString("%1,%2").arg(event->pos().x()).arg(event->pos().y());
     if(isSelectMannually)
     {
-        if (event->pos().x() > this->width() / 2 || event->pos().y() < 100)
+        if (event->pos().x() > this->width() / 2 ||
+                event->pos().y() < 100 ||
+                points_set.contains(pos))
         {
             return;
         }
 
-        isSelectMannually = false;
         points.append(event->pos());
+        points_set.insert(pos);
         update();
 
-        auto p = event->pos();
-        delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-        isShowSplitTriangle = true;
-        ui->actionClear->setDisabled(true);
-        showFlips();
-        ui->actionClear->setEnabled(true);
-        ui->viewer->showMesh2D();
-        ui->viewer->showMesh3D();
-        showResult2D();
-        isSelectMannually = true;
-        isShowSplitTriangle = false;
+        if (ui->actionReal_Time->isChecked())
+        {
+            demoRealTime(event->pos());
+        }
     }
+}
+
+void MainWindow::demoRealTime(QPoint& p)
+{
+    ui->actionClear->setDisabled(true);
+    isSelectMannually = false;
+
+    delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+
+    isShowSplitTriangle = true;
+    showFlips();
+    ui->viewer->showMesh2D();
+    ui->viewer->showMesh3D();
+    if (!ui->actionReal_Time->isChecked())
+    {
+        delay(delay_mseconds);
+    }
+    showResult2D();
+    isShowSplitTriangle = false;
+
+    isSelectMannually = true;
+    ui->actionClear->setEnabled(true);
 }
 
 void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
@@ -235,14 +266,6 @@ void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
     circle_center.setX(x0);
     circle_center.setY(y0);
     circle_radius = r;
-}
-
-inline void delay(float ms)
-{
-    QTime t;
-    t.start();
-    while(t.elapsed() < ms)
-        QCoreApplication::processEvents();
 }
 
 void MainWindow::slotRefreshGui()
@@ -312,6 +335,7 @@ void MainWindow::showResult2D()
 void MainWindow::on_actionClear_triggered()
 {
     points.clear();
+    points_set.clear();
     triangles.clear();
     flipped_edges.clear();
     flip_rec_4_points.clear();
@@ -326,6 +350,8 @@ void MainWindow::on_actionClear_triggered()
     delaunay_inc->reset();
     ui->viewer->setParam(delaunay_inc, this->width(), this->height());
     ui->viewer->clearAfterFlip3D();
+    ui->actionReal_Time->setEnabled(true);
+    ui->actionReal_Time->setChecked(true);
 
     update();
 }
@@ -354,19 +380,30 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     qDebug()<<"random time: "<<t.elapsed() / 1000.0;
     update();
-    isRandomClicked = true;
+    isPerformClickable = true;
 }
 
 void MainWindow::on_actionPerform_triggered()
 {
-    if (!isRandomClicked)
+    if (!isPerformClickable)
     {
-        QToolTip::showText(QPoint(20, 120), "Please Click Random Points Generation First", this);
+        QToolTip::showText(QPoint(this->x() + 20, this->y() + 120), "Please click Random Generation or disable Real Time Mode first", this);
         return;
     }
 
+    isPerformClickable = false;
+
     if (points.size() < 3)
     {
+        return;
+    }
+
+    if (!ui->actionReal_Time->isChecked())
+    {
+        for(auto& p : points)
+        {
+            demoRealTime(p);
+        }
         return;
     }
 
@@ -396,6 +433,7 @@ void MainWindow::on_actionPerform_triggered()
 
     // display 3d result
     ui->viewer->setParam(delaunay, this->width(), this->height());
+    ui->viewer->showMesh2D();
     ui->viewer->showMesh3D();
 }
 
@@ -407,6 +445,7 @@ void MainWindow::on_actionShow_Axis_triggered()
 
 void MainWindow::on_actionShow_Paraboloid_triggered()
 {
+    ui->viewer->isKillMesh2D = !ui->viewer->isKillMesh2D;
     ui->viewer->toggleShowParaboloid();
 }
 
@@ -423,10 +462,27 @@ void MainWindow::on_actionTake_Snapshot_triggered()
 
 void MainWindow::on_actionCircle_triggered()
 {
-	delaunay->funType = CIRCLE;
+    delaunay->funType = CIRCLE;
 }
 
 void MainWindow::on_actionEllipse_triggered()
 {
-	delaunay->funType = ELLIPSE;
+    delaunay->funType = ELLIPSE;
+}
+
+void MainWindow::on_actionNorm2_triggered()
+{
+	delaunay->funType = NORM2;
+}
+
+void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
+{
+    if (points.size() > 0)
+    {
+        QToolTip::showText(QPoint(this->x() + 200, this->y() + 120),
+                           "Please click Clear first", this);
+        ui->actionReal_Time->setDisabled(true);
+        return;
+    }
+    isPerformClickable = !isRealTime_;
 }

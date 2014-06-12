@@ -3,12 +3,28 @@
     2，滚轮调节速度
     3，各个功能
     4，不会gui无响应
-    5，
+    5，相机位置记录恢复的快捷键
+    6，左边窗口各颜色线条的意义
+    7，
+
+
+Note:
+    非Realtime demo不能直接停，需要鼠标滚轮调节速度到最快
+    realtime选项一旦选点后不可切换
+    func type的用法：random->perform
 
 clear() debug
     done 0610
 
 重复点还是有bug，hash过滤下
+    done
+
+记住和恢复相机位置
+    just alt+f1->f1
+    button postpone
+
+实时计算与否的选项
+    done
 
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
     30% 0610
@@ -17,12 +33,14 @@ clear() debug
 3d triangles用顶点数组优化
     postpone
 
-非flip三角面片半透明已突出flip的
+非flip三角面片半透明，突出flip的
     postpone
 
 3d flip三角形的光照、颜色
+    done 0611
 
 3dviewer线框反走样
+    done 0612
 
 准备一个低分辨率版本，或者自适应
     自适应 done 0611
@@ -31,6 +49,7 @@ clear() debug
     done
 
 random出结果的计算和展示
+    done
 
 函数有些参数应当const
     postpone

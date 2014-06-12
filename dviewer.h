@@ -27,6 +27,8 @@ public:
     void clearAfterFlip3D();
     void toggleShowParaboloid();
 
+    bool isKillMesh2D;
+
 protected :
     virtual void init();
     virtual void draw();
@@ -40,7 +42,7 @@ private:
     bool isDrawAfterFlip;
     void drawBeforeFlip();
     void drawAfterFlip();
-    bool isShowParaboloid;
+    bool isDrawParaboloid;
     bool isDrawMesh3D;
     bool isDrawMesh2D;
 

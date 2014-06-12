@@ -13,10 +13,12 @@ const float lift_up_distance = 0.15f;
 
 DViewer::DViewer(QWidget *parent) :
     QGLViewer(parent),
-    isDrawMesh3D(false),
-    isShowParaboloid(true),
+    isDrawParaboloid(true),
     isDrawBeforeFlip(false),
-    isDrawAfterFlip(false)
+    isDrawAfterFlip(false),
+    isDrawMesh3D(false),
+    isDrawMesh2D(false),
+    isKillMesh2D(false)
 {
 
 }
@@ -25,15 +27,19 @@ DViewer::DViewer(DelaunayBase* delaunay_, int mainwindow_width, int mainwindow_h
     delaunay(delaunay_),
     half_window_width(mainwindow_width / 4),
     half_window_height(mainwindow_height / 2),
+    isDrawParaboloid(true),
     isDrawBeforeFlip(false),
-    isDrawAfterFlip(false)
+    isDrawAfterFlip(false),
+    isDrawMesh3D(false),
+    isDrawMesh2D(false),
+    isKillMesh2D(false)
 {
 
 }
 
 void DViewer::toggleShowParaboloid()
 {
-    isShowParaboloid = !isShowParaboloid;
+    isDrawParaboloid = !isDrawParaboloid;
     update();
 }
 
@@ -52,7 +58,7 @@ void DViewer::setParam(DelaunayBase* delaunay_, int mainwindow_width, int mainwi
 
 void DViewer::drawBeforeFlip()
 {
-    glColor3f(1, 0, 0);
+    glColor3f(1.0f, 0.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -70,7 +76,7 @@ void DViewer::drawBeforeFlip()
     glVertex3fv(&flip_space_points[3][0]);
     glEnd();
 
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
     glColor3f(0.3f, 0.3f, 0.3f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glLineWidth(1.0f);
@@ -83,12 +89,12 @@ void DViewer::drawBeforeFlip()
     glVertex3fv(&flip_space_points[2][0]);
     glVertex3fv(&flip_space_points[3][0]);
     glEnd();
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 }
 
 void DViewer::drawAfterFlip()
 {
-    glColor3f(1, 1, 0);
+    glColor3f(1.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
@@ -107,7 +113,7 @@ void DViewer::drawAfterFlip()
     glEnd();
     glDisable(GL_POLYGON_OFFSET_FILL);
 
-    glDisable(GL_LIGHTING);
+    //glDisable(GL_LIGHTING);
     glColor3f(0.3f, 0.3f, 0.3f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glLineWidth(1.0f);
@@ -120,7 +126,7 @@ void DViewer::drawAfterFlip()
     glVertex3fv(&flip_space_points[2][0]);
     glVertex3fv(&flip_space_points[3][0]);
     glEnd();
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 }
 
 void DViewer::showBeforeFlip3D()
@@ -176,18 +182,18 @@ void DViewer::drawMesh2D()
     // points
     glDisable(GL_LIGHTING);
     glPointSize(4.0);
-    glColor3f(1, 0, 0);
+    glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_POINTS);
     for (auto& vh: delaunay->mesh.vertices())
     {
         auto point = delaunay->mesh.point(vh);
-        glColor3f(1.0, 0.0, 0.0);
+        glColor3f(1.0f, 0.0f, 0.0f);
         glVertex3f((point[0] - half_window_width) / scale_factor, (half_window_height - point[1]) / scale_factor, 0);
     }
     glEnd();
 
     // planar triangles
-    glColor3f(0, 0, 1);
+    glColor3f(0.246f, 0.281f, 0.797f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
@@ -207,17 +213,18 @@ void DViewer::drawMesh2D()
         }
     }
     glEnd();
+    glEnable(GL_LIGHTING);
 }
 
 void DViewer::drawMesh3D()
 {
     // space triangles fill
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_LIGHTING);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glEnable(GL_LIGHTING);
+    glColor3f(0.0f, 1.0f, 0.0f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glPolygonOffset(1.0, 1.0);
     glEnable(GL_POLYGON_OFFSET_FILL);
-    glColor3f(0, 1, 0.0);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())
     {
@@ -246,10 +253,10 @@ void DViewer::drawMesh3D()
         glVertex3fv(&face_vertices[2][0]);
     }
     glEnd();
-    glDisable(GL_POLYGON_OFFSET_FILL);
+    //glDisable(GL_POLYGON_OFFSET_FILL);
 
     // space triangles wireframe
-    // glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
     glColor3f(0.3f, 0.3f, 0.3f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glLineWidth(1.0f);
@@ -271,8 +278,8 @@ void DViewer::drawMesh3D()
         }
     }
     glEnd();
-    glEnable(GL_LIGHTING);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_LIGHTING);
 }
 
 void DViewer::init()
@@ -352,15 +359,6 @@ void DViewer::draw()
 
     //drawPoints();
 
-    if (isDrawBeforeFlip)
-        drawBeforeFlip();
-
-    if (isDrawAfterFlip)
-        drawAfterFlip();
-
-    if (isDrawMesh2D)
-        drawMesh2D();
-
     if (isDrawMesh3D)
     {
         glDepthMask(GL_FALSE);
@@ -368,7 +366,21 @@ void DViewer::draw()
         glDepthMask(GL_TRUE);
     }
 
-    if (isShowParaboloid)
+    if (isDrawBeforeFlip)
+    {
+        glDepthMask(GL_FALSE);
+        drawBeforeFlip();
+        glDepthMask(GL_TRUE);
+    }
+
+    if (isDrawAfterFlip)
+    {
+        glDepthMask(GL_FALSE);
+        drawAfterFlip();
+        glDepthMask(GL_TRUE);
+    }
+
+    if (isDrawParaboloid)
     {
         // make depth buffer read-only
         glDepthMask(GL_FALSE);
@@ -387,8 +399,13 @@ void DViewer::draw()
         default:
             break;
         }
-
         glDepthMask(GL_TRUE);
+    }
+
+    if (!isKillMesh2D)
+    {
+        if (isDrawMesh2D)
+            drawMesh2D();
     }
 
     // Restore the original (world) coordinate system
@@ -410,16 +427,16 @@ inline float gety(float u, float v)
 void DViewer::drawParaboloid(Point bottom_point, float slice, float stack, FunType funtype)
 {
     const float step_v = (float)(M_PI / slice);
-    const float step_u = 1.0 / stack;
+    const float step_u = 1.2 / stack;
 
-    glEnable(GL_SMOOTH);
-    glEnable(GL_BLEND);
+    //glEnable(GL_SMOOTH);
+    //glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA /*GL_ONE*/);
 
     glColor4f(0.0f, 0.6f, 7.0f, 0.2f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBegin(GL_TRIANGLE_STRIP);
-    for (float u = 0; u < 1; u += step_u)
+    for (float u = 0; u < 1.2; u += step_u)
     {
         for (float v = 0; v < 2 * M_PI + step_v; v += step_v)
         {
@@ -442,6 +459,6 @@ void DViewer::drawParaboloid(Point bottom_point, float slice, float stack, FunTy
         }
     }
     glEnd();
-    glDisable(GL_BLEND);
-    glDisable(GL_POLYGON_SMOOTH);
+    //glDisable(GL_BLEND);
+    //glDisable(GL_POLYGON_SMOOTH);
 }

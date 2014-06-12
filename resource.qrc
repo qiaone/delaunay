@@ -7,5 +7,6 @@
         <file>Img/perform.png</file>
         <file>Img/clear.png</file>
         <file>Img/snapshot.png</file>
+        <file>Img/realtime.png</file>
     </qresource>
 </RCC>
