@@ -213,6 +213,7 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
 
 void MainWindow::demoRealTime(QPoint& p)
 {
+    ui->actionClear->setDisabled(true);
     isSelectMannually = false;
 
     delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
@@ -229,6 +230,7 @@ void MainWindow::demoRealTime(QPoint& p)
     isShowSplitTriangle = false;
 
     isSelectMannually = true;
+    ui->actionClear->setEnabled(true);
 }
 
 void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
@@ -268,7 +270,6 @@ void MainWindow::slotRefreshGui()
 
 void MainWindow::showFlips()
 {
-    ui->actionClear->setDisabled(true);
     flipped_edges.clear();
     // show all flips during a new point added
 
@@ -304,7 +305,6 @@ void MainWindow::showFlips()
     isShowFlip = false;
     ui->viewer->clearAfterFlip3D();
     update();
-    ui->actionClear->setEnabled(true);
 }
 
 void MainWindow::showResult2D()
