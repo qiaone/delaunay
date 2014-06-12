@@ -40,7 +40,7 @@ private:
     bool isDrawAfterFlip;
     void drawBeforeFlip();
     void drawAfterFlip();
-    bool isShowParaboloid;
+    bool isDrawParaboloid;
     bool isDrawMesh3D;
     bool isDrawMesh2D;
 

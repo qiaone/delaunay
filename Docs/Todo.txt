@@ -12,6 +12,8 @@ clear() debug
 
 记住和恢复相机位置
 
+实时计算与否的选项
+
 挑选maintoolbar按钮图标，加入dviewer的控制：如坐标轴、显示旋转抛物面等
     30% 0610
     done 0611
