@@ -187,7 +187,7 @@ void DViewer::drawMesh2D()
     glEnd();
 
     // planar triangles
-    glColor3f(0.0f, 0.0f, 1.0f);
+    glColor3f(0.246f, 0.281f, 0.797f);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_TRIANGLES);
     for (auto& fh : delaunay->mesh.faces())

@@ -12,6 +12,14 @@
 #include <QDesktopServices>
 #include <cmath>
 
+inline void delay(float ms)
+{
+    QTime t;
+    t.start();
+    while(t.elapsed() < ms)
+        QCoreApplication::processEvents();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -21,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlip(false),
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
-    isRandomClicked(false),
+    isPerformClickable(false),
     delay_mseconds(2000)
 {
     ui->setupUi(this);
@@ -192,24 +200,35 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
             return;
         }
 
-        isSelectMannually = false;
-
         points.append(event->pos());
         points_set.insert(pos);
         update();
 
-        auto p = event->pos();
-        delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
-        isShowSplitTriangle = true;
-        ui->actionClear->setDisabled(true);
-        showFlips();
-        ui->actionClear->setEnabled(true);
-        ui->viewer->showMesh2D();
-        ui->viewer->showMesh3D();
-        showResult2D();
-        isSelectMannually = true;
-        isShowSplitTriangle = false;
+        if (ui->actionReal_Time->isChecked())
+        {
+            demoRealTime(event->pos());
+        }
     }
+}
+
+void MainWindow::demoRealTime(QPoint& p)
+{
+    isSelectMannually = false;
+
+    delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
+
+    isShowSplitTriangle = true;
+    showFlips();
+    ui->viewer->showMesh2D();
+    ui->viewer->showMesh3D();
+    if (!ui->actionReal_Time->isChecked())
+    {
+        delay(delay_mseconds);
+    }
+    showResult2D();
+    isShowSplitTriangle = false;
+
+    isSelectMannually = true;
 }
 
 void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
@@ -242,14 +261,6 @@ void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
     circle_radius = r;
 }
 
-inline void delay(float ms)
-{
-    QTime t;
-    t.start();
-    while(t.elapsed() < ms)
-        QCoreApplication::processEvents();
-}
-
 void MainWindow::slotRefreshGui()
 {
     QCoreApplication::processEvents();
@@ -257,6 +268,7 @@ void MainWindow::slotRefreshGui()
 
 void MainWindow::showFlips()
 {
+    ui->actionClear->setDisabled(true);
     flipped_edges.clear();
     // show all flips during a new point added
 
@@ -292,6 +304,7 @@ void MainWindow::showFlips()
     isShowFlip = false;
     ui->viewer->clearAfterFlip3D();
     update();
+    ui->actionClear->setEnabled(true);
 }
 
 void MainWindow::showResult2D()
@@ -332,6 +345,8 @@ void MainWindow::on_actionClear_triggered()
     delaunay_inc->reset();
     ui->viewer->setParam(delaunay_inc, this->width(), this->height());
     ui->viewer->clearAfterFlip3D();
+    ui->actionReal_Time->setEnabled(true);
+    ui->actionReal_Time->setChecked(true);
 
     update();
 }
@@ -360,21 +375,30 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     qDebug()<<"random time: "<<t.elapsed() / 1000.0;
     update();
-    isRandomClicked = true;
+    isPerformClickable = true;
 }
 
 void MainWindow::on_actionPerform_triggered()
 {
-    if (!isRandomClicked)
+    if (!isPerformClickable)
     {
-        QToolTip::showText(QPoint(20, 120), "Please Click Random Points Generation First", this);
+        QToolTip::showText(QPoint(this->x() + 20, this->y() + 120), "Please click Random Generation or disable Real Time Mode first", this);
         return;
     }
 
-    isRandomClicked = false;
+    isPerformClickable = false;
 
     if (points.size() < 3)
     {
+        return;
+    }
+
+    if (!ui->actionReal_Time->isChecked())
+    {
+        for(auto& p : points)
+        {
+            demoRealTime(p);
+        }
         return;
     }
 
@@ -431,10 +455,22 @@ void MainWindow::on_actionTake_Snapshot_triggered()
 
 void MainWindow::on_actionCircle_triggered()
 {
-	delaunay->funType = CIRCLE;
+    delaunay->funType = CIRCLE;
 }
 
 void MainWindow::on_actionEllipse_triggered()
 {
-	delaunay->funType = ELLIPSE;
+    delaunay->funType = ELLIPSE;
+}
+
+void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
+{
+    if (points.size() > 0)
+    {
+        QToolTip::showText(QPoint(this->x() + 200, this->y() + 120),
+                           "Please click Clear first", this);
+        ui->actionReal_Time->setDisabled(true);
+        return;
+    }
+    isPerformClickable = !isRealTime_;
 }

@@ -65,7 +65,7 @@
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPoints">
@@ -96,6 +96,7 @@
     <property name="title">
      <string>Options</string>
     </property>
+    <addaction name="actionReal_Time"/>
     <addaction name="actionShow_Axis"/>
     <addaction name="actionShow_Paraboloid"/>
     <addaction name="actionTake_Snapshot"/>
@@ -135,8 +136,9 @@
    <addaction name="actionPerform"/>
    <addaction name="actionClear"/>
    <addaction name="separator"/>
-   <addaction name="actionShow_Paraboloid"/>
+   <addaction name="actionReal_Time"/>
    <addaction name="actionShow_Axis"/>
+   <addaction name="actionShow_Paraboloid"/>
    <addaction name="actionTake_Snapshot"/>
    <addaction name="separator"/>
    <addaction name="actionGithub"/>
@@ -234,6 +236,21 @@
   <action name="actionNorm2">
    <property name="text">
     <string>Norm2</string>
+   </property>
+  </action>
+  <action name="actionReal_Time">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/Img/realtime.png</normaloff>:/Img/realtime.png</iconset>
+   </property>
+   <property name="text">
+    <string>Real Time</string>
    </property>
   </action>
  </widget>

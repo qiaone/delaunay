@@ -26,8 +26,9 @@ private slots:
     void on_actionShow_Paraboloid_triggered();
     void on_actionGithub_triggered();
     void on_actionTake_Snapshot_triggered();
-	void on_actionCircle_triggered();
-	void on_actionEllipse_triggered();
+    void on_actionCircle_triggered();
+    void on_actionEllipse_triggered();
+    void on_actionReal_Time_toggled(bool isRealTime_);
 
 public slots:
     void slotRefreshGui();
@@ -43,12 +44,14 @@ private:
     void showResult2D();
     void showFlips();
     void initFlipDemoParams(std::array<Point, 4>& flip);
-    bool isRandomClicked;
+    void demoRealTime(QPoint& p);
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
 
-// painter related
+    bool isPerformClickable;
+
+    // painter related
 private:
     QPainter* painter;
     QPen* pen;
