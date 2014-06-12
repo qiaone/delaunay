@@ -430,8 +430,3 @@ void MainWindow::on_actionEllipse_triggered()
 {
 	delaunay->funType = ELLIPSE;
 }
-
-void MainWindow::on_actionNorm2_triggered()
-{
-	delaunay->funType = NORM2;
-}
