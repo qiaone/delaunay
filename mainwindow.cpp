@@ -124,13 +124,18 @@ void MainWindow::paintEvent(QPaintEvent *)
         // flipping edge
         if(isShowFlippedEdge)
         {
+            pen.setStyle(Qt::DotLine);
             pen.setColor(QColor(0, 128, 0));
+            pen.setWidth(6);
             painter.setPen(pen);
             painter.drawLine(flip_rec_4_points[0], flip_rec_4_points[2]);
+            pen.setStyle(Qt::SolidLine);
         }
         else
         {
             pen.setStyle(Qt::DotLine);
+            pen.setColor(Qt::red);
+            pen.setWidth(6);
             painter.setPen(pen);
             painter.drawLine(flip_rec_4_points[1], flip_rec_4_points[3]);
             pen.setStyle(Qt::SolidLine);
