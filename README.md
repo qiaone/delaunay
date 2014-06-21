@@ -1,13 +1,19 @@
-delaunay demo
+Delaunay Triangulation Demo
 ========
 
-computational geometry class project @ tsinghua university:
+Computational Geometry Class (2014, [邓俊辉](http://dsa.cs.tsinghua.edu.cn/~deng/index.htm)) Project @ Tsinghua University:
 
-delaunay incremental algorithm with geometric transformation demo
+Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_1.png)
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_2.png)
+
+# User Manual #
+
+[Click Here to Download](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/user_manual.pdf)
+
+[![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/user_manual.png)](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/user_manual.pdf)
 
 # Performance #
 
