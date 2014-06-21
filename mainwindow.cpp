@@ -10,13 +10,14 @@
 #include <QDebug>
 #include <QTime>
 #include <QDesktopServices>
+#include <QFileDialog>
 #include <cmath>
 
-inline void delay(float ms)
+inline void MainWindow::delay(float ms)
 {
     QTime t;
     t.start();
-    while(t.elapsed() < ms)
+    while(t.elapsed() < ms && !isStopDemoRealTime)
         QCoreApplication::processEvents();
 }
 
@@ -30,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
     isPerformClickable(false),
+    isDemoRealTimeFinished(true),
+    isStopDemoRealTime(false),
     delay_mseconds(2000)
 {
     ui->setupUi(this);
@@ -57,7 +60,7 @@ void MainWindow::paintEvent(QPaintEvent *)
 
     pen.setColor(Qt::black);
     painter.setPen(pen);
-    painter.drawLine(QPoint(this->width() / 2 - 2, 96), QPoint(this->width() / 2, 1200));
+    painter.drawLine(QPoint(this->width() / 2 - 2, 96), QPoint(this->width() / 2, this->height()));
 
     // Points
     if (isSelectMannually)
@@ -209,16 +212,18 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         points_set.insert(pos);
         update();
 
+        isDemoRealTimeFinished = false;
         if (ui->actionReal_Time->isChecked())
         {
             demoRealTime(event->pos());
         }
+        isDemoRealTimeFinished = true;
     }
 }
 
 void MainWindow::demoRealTime(QPoint& p)
 {
-    ui->actionClear->setDisabled(true);
+    //ui->actionClear->setDisabled(true);
     isSelectMannually = false;
 
     delaunay_inc->performIncremental(Point(p.x(), p.y(), 0));
@@ -235,7 +240,12 @@ void MainWindow::demoRealTime(QPoint& p)
     isShowSplitTriangle = false;
 
     isSelectMannually = true;
-    ui->actionClear->setEnabled(true);
+    if (isStopDemoRealTime)
+    {
+        isDemoRealTimeFinished = true;
+        on_actionClear_triggered();
+    }
+    //ui->actionClear->setEnabled(true);
 }
 
 void MainWindow::initFlipDemoParams(std::array<Point, 4>& flip)
@@ -334,6 +344,19 @@ void MainWindow::showResult2D()
 
 void MainWindow::on_actionClear_triggered()
 {
+    if (!isDemoRealTimeFinished)
+    {
+        delay_mseconds_bak = delay_mseconds;
+        delay_mseconds = 0;
+        isStopDemoRealTime = true;
+        return;
+    }
+    if (isStopDemoRealTime)
+    {
+        isStopDemoRealTime = false;
+        delay_mseconds = delay_mseconds_bak;
+    }
+
     points.clear();
     points_set.clear();
     triangles.clear();
@@ -398,14 +421,16 @@ void MainWindow::on_actionPerform_triggered()
         return;
     }
 
-    if (!ui->actionReal_Time->isChecked())
-    {
-        for(auto& p : points)
-        {
-            demoRealTime(p);
-        }
-        return;
-    }
+//    if (!ui->actionReal_Time->isChecked())
+//    {
+//          isDemoRealTimeFinished = false;
+//        for(auto& p : points)
+//        {
+//            demoRealTime(p);
+//        }
+//          isDemoRealTimeFinished = true;
+//        return;
+//    }
 
     isSelectMannually = false;
     triangles.clear();
@@ -485,4 +510,79 @@ void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
         return;
     }
     isPerformClickable = !isRealTime_;
+}
+
+void MainWindow::on_actionOpen_triggered()
+{
+    on_actionReal_Time_toggled(false);
+    QFileDialog * dialog = new QFileDialog(this);
+    dialog->setNameFilter(tr("data files (*.txt)"));
+    dialog->setDirectory(QDir::currentPath());
+    dialog->exec();
+    QStringList filename_list = dialog->selectedFiles();
+    QString datafilename = filename_list.first();
+
+    QFile datafile(datafilename);
+    if (!datafile.open(QIODevice::ReadOnly))
+        return;
+
+    QTextStream in_stream(&datafile);
+
+    QVector<QPoint> in_points;
+
+    while (!in_stream.atEnd())
+    {
+        float x, y;
+        in_stream >> x >> y;
+        in_points << QPoint(x, y);
+        //qDebug() << x << ", " << y;
+    }
+
+    points = in_points;
+    update();
+    //on_actionPerform_triggered();
+}
+
+void MainWindow::on_actionSaveTriangles_triggered()
+{
+    QFileDialog * dialog = new QFileDialog(this);
+    dialog->setNameFilter(tr("data files (*.txt)"));
+    dialog->setDirectory(QDir::currentPath());
+    dialog->exec();
+    QStringList filename_list = dialog->selectedFiles();
+    QString datafilename = filename_list.first();
+
+    QFile datafile(datafilename);
+    if (!datafile.open(QIODevice::WriteOnly))
+        return;
+
+    QTextStream out_stream(&datafile);
+
+    for (int i = 0; i < triangles.size(); i += 3)
+    {
+        out_stream << triangles[i].x() << " " << triangles[i].y() << " ";
+        out_stream << triangles[i + 1].x() << " " << triangles[i + 1].y() << " ";
+        out_stream << triangles[i + 2].x() << " " << triangles[i + 2].y() << endl;
+    }
+}
+
+void MainWindow::on_actionSave_Points_triggered()
+{
+    QFileDialog * dialog = new QFileDialog(this);
+    dialog->setNameFilter(tr("data files (*.txt)"));
+    dialog->setDirectory(QDir::currentPath());
+    dialog->exec();
+    QStringList filename_list = dialog->selectedFiles();
+    QString datafilename = filename_list.first();
+
+    QFile datafile(datafilename);
+    if (!datafile.open(QIODevice::WriteOnly))
+        return;
+
+    QTextStream out_stream(&datafile);
+
+    for(auto& p : points)
+    {
+        out_stream << p.x() << " " << p.y() << endl;
+    }
 }

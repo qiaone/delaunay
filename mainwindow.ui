@@ -108,6 +108,15 @@
     <addaction name="actionGithub"/>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave_Points"/>
+    <addaction name="actionSaveTriangles"/>
+   </widget>
+   <addaction name="menuFile"/>
    <addaction name="menuPoints"/>
    <addaction name="menuViewer"/>
    <addaction name="menuOptions"/>
@@ -251,6 +260,21 @@
    </property>
    <property name="text">
     <string>Real Time</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open Points</string>
+   </property>
+  </action>
+  <action name="actionSaveTriangles">
+   <property name="text">
+    <string>Save Triangles</string>
+   </property>
+  </action>
+  <action name="actionSave_Points">
+   <property name="text">
+    <string>Save Points</string>
    </property>
   </action>
  </widget>

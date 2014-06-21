@@ -28,8 +28,11 @@ private slots:
     void on_actionTake_Snapshot_triggered();
     void on_actionCircle_triggered();
     void on_actionEllipse_triggered();
-	void on_actionNorm2_triggered();
+    void on_actionNorm2_triggered();
     void on_actionReal_Time_toggled(bool isRealTime_);
+    void on_actionOpen_triggered();
+    void on_actionSaveTriangles_triggered();
+    void on_actionSave_Points_triggered();
 
 public slots:
     void slotRefreshGui();
@@ -46,6 +49,7 @@ private:
     void showFlips();
     void initFlipDemoParams(std::array<Point, 4>& flip);
     void demoRealTime(QPoint& p);
+    void delay(float ms);
 
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
@@ -71,8 +75,11 @@ private:
     bool isShowCircle;
     bool isShowFlip;
     bool isShowFlippedEdge;
+    bool isDemoRealTimeFinished;
+    bool isStopDemoRealTime;
 
     int delay_mseconds;
+    int delay_mseconds_bak;
 };
 
 #endif // MAINWINDOW_H
