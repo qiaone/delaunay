@@ -16,6 +16,9 @@ public:
     ~RandomPointsDialog();
     int getPointsNumber();
 
+private slots:
+    void on_checkBox_toggled(bool checked);
+
 private:
     Ui::RandomPointsDialog *ui;
 };

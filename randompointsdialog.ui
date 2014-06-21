@@ -68,6 +68,19 @@
     </item>
    </layout>
   </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>240</y>
+     <width>91</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Rocket Mode</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>

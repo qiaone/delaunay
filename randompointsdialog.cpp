@@ -17,3 +17,15 @@ int RandomPointsDialog::getPointsNumber()
 {
     return ui->spinBox->value();
 }
+
+void RandomPointsDialog::on_checkBox_toggled(bool checked)
+{
+    if (checked)
+    {
+        ui->spinBox->setMaximum(10000000);
+    }
+    else
+    {
+        ui->spinBox->setMaximum(2000);
+    }
+}
