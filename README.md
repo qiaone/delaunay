@@ -5,7 +5,7 @@ Computational Geometry Class (2014, [邓俊辉](http://dsa.cs.tsinghua.edu.cn/~d
 
 Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
-    *The Project is licensed under the GNU GPL v2*
+   *The Project is licensed under the GNU GPL v2*
 
 [Click Here to Download Excutables for Windows x64](https://raw.githubusercontent.com/qiaone/delaunay/master/Bin/delaunay.7z)
 
@@ -36,7 +36,7 @@ Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/performance.png)
 
-    *With Intel Core i7-3770 3.4GHz * 4, 16GB RAM, Windows 7 Enterprise Edition, Visual Studio 2012 + Qt 5.1.1*
+   *With Intel Core i7-3770 3.4GHz * 4, 16GB RAM, Windows 7 Enterprise Edition, Visual Studio 2012 + Qt 5.1.1*
 
 # Configuration #
 
