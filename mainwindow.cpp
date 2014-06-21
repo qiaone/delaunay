@@ -456,7 +456,13 @@ void MainWindow::on_actionPerform_triggered()
     {
         mesh_points.push_back(Point(p.x(), p.y(), 0));
     }
+
+    QTime t;
+    t.start();
+
     delaunay->perform(mesh_points);
+
+    qDebug()<<"delaunay time: "<<t.elapsed() / 1000.0;
 
     // display 2d result
     for (auto& fh : delaunay->mesh.faces())
