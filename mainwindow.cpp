@@ -382,8 +382,8 @@ void MainWindow::on_actionClear_triggered()
     delaunay_inc->reset();
     ui->viewer->setParam(delaunay_inc, this->width(), this->height());
     ui->viewer->clearAfterFlip3D();
-    ui->actionReal_Time->setEnabled(true);
-    ui->actionReal_Time->setChecked(true);
+//    ui->actionReal_Time->setEnabled(true);
+//    ui->actionReal_Time->setChecked(true);
 
     update();
 }
@@ -511,14 +511,11 @@ void MainWindow::on_actionNorm2_triggered()
 
 void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
 {
+    isPerformClickable = !isRealTime_;
     if (points.size() > 0)
     {
-        QToolTip::showText(QPoint(this->x() + 200, this->y() + 120),
-                           "Please click Clear first", this);
-        ui->actionReal_Time->setDisabled(true);
-        return;
+        on_actionClear_triggered();
     }
-    isPerformClickable = !isRealTime_;
 }
 
 void MainWindow::on_actionOpen_triggered()
