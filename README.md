@@ -9,6 +9,8 @@ Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_2.png)
 
+ *The Project is licensed under the GNU GPL v2*
+
 # User Manual #
 
 [Click Here to Download](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/user_manual.pdf)
@@ -71,4 +73,3 @@ Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
         * 也可参考 Tests/Smples 目录下的例子
     * OpenMesh 3.1 (x64 静态链接 从源码编译)
     * libQGLViewer 2.5.2 (x64 动态链接 从源码编译)
-    * Routines for Arbitrary Precision Floating-point Arithmetic and Fast Robust Geometric Predicates (predicates.c)
