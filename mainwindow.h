@@ -56,7 +56,7 @@ private:
     Delaunay* delaunay;
     DelaunayIncremental* delaunay_inc;
 
-    bool isPerformClickable;
+    bool isRandomized;
 
     // painter related
 private:

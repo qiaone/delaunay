@@ -244,6 +244,9 @@
    </property>
   </action>
   <action name="actionNorm2">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Norm2</string>
    </property>

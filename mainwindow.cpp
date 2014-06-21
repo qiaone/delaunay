@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isShowFlip(false),
     isShowFlippedEdge(false),
     isShowSplitTriangle(false),
-    isPerformClickable(false),
+    isRandomized(false),
     isDemoRealTimeFinished(true),
     isStopDemoRealTime(false),
     isContinuousDrawing(false),
@@ -226,12 +226,16 @@ void MainWindow::mouseReleaseEvent(QMouseEvent * event)
         points_set.insert(pos);
         update();
 
-        isDemoRealTimeFinished = false;
         if (ui->actionReal_Time->isChecked())
         {
+            isDemoRealTimeFinished = false;
             demoRealTime(event->pos());
+            isDemoRealTimeFinished = true;
+            if (isStopDemoRealTime)
+            {
+                on_actionClear_triggered();
+            }
         }
-        isDemoRealTimeFinished = true;
     }
 }
 
@@ -254,11 +258,6 @@ void MainWindow::demoRealTime(QPoint& p)
     isShowSplitTriangle = false;
 
     isSelectMannually = true;
-    if (isStopDemoRealTime)
-    {
-        isDemoRealTimeFinished = true;
-        on_actionClear_triggered();
-    }
     //ui->actionClear->setEnabled(true);
 }
 
@@ -360,15 +359,12 @@ void MainWindow::on_actionClear_triggered()
 {
     if (!isDemoRealTimeFinished)
     {
-        delay_mseconds_bak = delay_mseconds;
-        delay_mseconds = 0;
         isStopDemoRealTime = true;
         return;
     }
     if (isStopDemoRealTime)
     {
         isStopDemoRealTime = false;
-        delay_mseconds = delay_mseconds_bak;
     }
 
     points.clear();
@@ -417,34 +413,38 @@ void MainWindow::on_actionRandomGeneration_triggered()
 
     qDebug()<<"random time: "<<t.elapsed() / 1000.0;
     update();
-    isPerformClickable = true;
+    isRandomized = true;
 }
 
 void MainWindow::on_actionPerform_triggered()
 {
-    if (!isPerformClickable)
+    if (ui->actionReal_Time->isChecked() && !isRandomized)
     {
         QToolTip::showText(QPoint(this->x() + 20, this->y() + 120), "Please click Random Generation or disable Real Time Mode first", this);
         return;
     }
 
-    isPerformClickable = false;
+    isRandomized = false;
 
     if (points.size() < 3)
     {
         return;
     }
 
-//    if (!ui->actionReal_Time->isChecked())
-//    {
-//          isDemoRealTimeFinished = false;
-//        for(auto& p : points)
-//        {
-//            demoRealTime(p);
-//        }
-//          isDemoRealTimeFinished = true;
-//        return;
-//    }
+    if (delay_mseconds != 0)
+    {
+        isDemoRealTimeFinished = false;
+        for(auto& p : points)
+        {
+            demoRealTime(p);
+        }
+        isDemoRealTimeFinished = true;
+        if (isStopDemoRealTime)
+        {
+            on_actionClear_triggered();
+        }
+        return;
+    }
 
     isSelectMannually = false;
     triangles.clear();
@@ -522,7 +522,7 @@ void MainWindow::on_actionNorm2_triggered()
 
 void MainWindow::on_actionReal_Time_toggled(bool isRealTime_)
 {
-    isPerformClickable = !isRealTime_;
+    isRandomized = !isRealTime_;
     if (points.size() > 0)
     {
         on_actionClear_triggered();
