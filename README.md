@@ -11,6 +11,13 @@ Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
  *The Project is licensed under the GNU GPL v2*
 
+# Lab Report #
+
+[Click Here to Download](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/report.pdf)
+
+[![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/lab_report.png)](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/report.pdf)
+
+
 # User Manual #
 
 [Click Here to Download](https://raw.githubusercontent.com/qiaone/delaunay/master/Docs/user_manual.pdf)
