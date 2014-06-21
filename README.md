@@ -4,12 +4,13 @@ Delaunay Triangulation Demo
 Computational Geometry Class (2014, [邓俊辉](http://dsa.cs.tsinghua.edu.cn/~deng/index.htm)) Project @ Tsinghua University:
 
 Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
+ *The Project is licensed under the GNU GPL v2*
+
+[Click Here to Download Excutables for Windows x64](https://raw.githubusercontent.com/qiaone/delaunay/master/Bin/delaunay.7z)
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_1.png)
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_2.png)
-
- *The Project is licensed under the GNU GPL v2*
 
 # Lab Report #
 
