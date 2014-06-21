@@ -9,7 +9,7 @@ delaunay incremental algorithm with geometric transformation demo
 
 ![](https://raw.githubusercontent.com/qiaone/delaunay/master/Img/gate_2.png)
 
-# Performance Test #
+# Performance #
 - 1000 points, 0.005s
 - 5000 points, 0.048s
 - 10000 points, 0.073s
