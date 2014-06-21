@@ -46,6 +46,7 @@ private:
     void mouseReleaseEvent(QMouseEvent * event);
     void resizeEvent(QResizeEvent *);
     void wheelEvent(QWheelEvent * event);
+    void closeEvent(QCloseEvent *);
     void showResult2D();
     void showFlips();
     void initFlipDemoParams(std::array<Point, 4>& flip);

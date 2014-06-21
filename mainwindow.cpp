@@ -13,6 +13,12 @@
 #include <QFileDialog>
 #include <cmath>
 
+void MainWindow::closeEvent(QCloseEvent * e)
+{
+    on_actionClear_triggered();
+    QMainWindow::closeEvent(e);
+}
+
 inline void MainWindow::delay(float ms)
 {
     QTime t;
@@ -44,7 +50,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    //delete delaunay;
     delete ui;
 }
 
