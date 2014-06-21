@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     isPerformClickable(false),
     isDemoRealTimeFinished(true),
     isStopDemoRealTime(false),
+    isContinuousDrawing(false),
     delay_mseconds(2000)
 {
     ui->setupUi(this);
@@ -167,6 +168,10 @@ void MainWindow::mousePressEvent(QMouseEvent * event)
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
     }
+    if (isContinuousDrawing)
+    {
+        mouseReleaseEvent(event);
+    }
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent * event)
@@ -175,6 +180,10 @@ void MainWindow::mouseMoveEvent(QMouseEvent * event)
     {
         QString pos = QString("%1, %2").arg(event->pos().x()).arg(event->pos().y());
         QToolTip::showText(event->globalPos(), pos, this);
+    }
+    if (isContinuousDrawing)
+    {
+        mouseReleaseEvent(event);
     }
 }
 
@@ -538,6 +547,11 @@ void MainWindow::on_actionOpen_triggered()
         //qDebug() << x << ", " << y;
     }
 
+    if (in_points.last().x() == 0 && in_points.last().y() == 0)
+    {
+        in_points.pop_back();
+    }
+
     points = in_points;
     update();
     //on_actionPerform_triggered();
@@ -585,4 +599,9 @@ void MainWindow::on_actionSave_Points_triggered()
     {
         out_stream << p.x() << " " << p.y() << endl;
     }
+}
+
+void MainWindow::on_actionContinuous_Drawing_toggled(bool isContinuous)
+{
+    isContinuousDrawing = isContinuous;
 }

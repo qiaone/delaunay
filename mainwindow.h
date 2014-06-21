@@ -33,6 +33,7 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionSaveTriangles_triggered();
     void on_actionSave_Points_triggered();
+    void on_actionContinuous_Drawing_toggled(bool isContinuous);
 
 public slots:
     void slotRefreshGui();
@@ -77,6 +78,7 @@ private:
     bool isShowFlippedEdge;
     bool isDemoRealTimeFinished;
     bool isStopDemoRealTime;
+    bool isContinuousDrawing;
 
     int delay_mseconds;
     int delay_mseconds_bak;

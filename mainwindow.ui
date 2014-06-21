@@ -72,9 +72,10 @@
     <property name="title">
      <string>Points</string>
     </property>
+    <addaction name="actionClear"/>
     <addaction name="actionRandomGeneration"/>
     <addaction name="separator"/>
-    <addaction name="actionClear"/>
+    <addaction name="actionContinuous_Drawing"/>
    </widget>
    <widget class="QMenu" name="menuViewer">
     <property name="title">
@@ -88,8 +89,8 @@
      <addaction name="actionEllipse"/>
      <addaction name="actionNorm2"/>
     </widget>
-    <addaction name="separator"/>
     <addaction name="actionPerform"/>
+    <addaction name="separator"/>
     <addaction name="menuType"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
@@ -275,6 +276,14 @@
   <action name="actionSave_Points">
    <property name="text">
     <string>Save Points</string>
+   </property>
+  </action>
+  <action name="actionContinuous_Drawing">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Continuous Drawing</string>
    </property>
   </action>
  </widget>
