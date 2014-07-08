@@ -1,7 +1,7 @@
 Delaunay Triangulation Demo
 ========
 
-Computational Geometry Class (2014, [邓俊辉](http://dsa.cs.tsinghua.edu.cn/~deng/index.htm)) Project @ Tsinghua University:
+Computational Geometry Course (2014, [邓俊辉](http://dsa.cs.tsinghua.edu.cn/~deng/index.htm)) Project @ Tsinghua University:
 
 Delaunay Incremental Algorithm with Geometric Transformation 3D Demo
 
